@@ -8,7 +8,9 @@ subtitle: '享受片刻寧靜'
 description: ''
 keywords: Web, Angular, JavaScript, Java, Vercel
 author: Kun-Neng Hung
-language: en
+language:
+- zh-tw
+- en
 timezone: 'Asia/Taipei'
 
 # URL
