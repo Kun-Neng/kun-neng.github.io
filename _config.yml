@@ -3,12 +3,12 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 各領域技術的學習心得筆記
-subtitle: ''
+title: 爐邊雜談
+subtitle: '享受片刻寧靜'
 description: ''
-keywords:
+keywords: Web, Angular, JavaScript, Java, Vercel
 author: Kun-Neng Hung
-language: zh
+language: en
 timezone: 'Asia/Taipei'
 
 # URL
@@ -31,7 +31,7 @@ i18n_dir: :lang
 skip_render:
 
 # Writing
-new_post_name: :title.md # File name of new posts
+new_post_name: :year-:month-:day-:title.md # File name of new posts
 default_layout: post
 titlecase: false # Transform title into titlecase
 external_link:
@@ -96,7 +96,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
