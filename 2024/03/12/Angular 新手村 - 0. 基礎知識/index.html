@@ -27,14 +27,15 @@
 <meta property="og:site_name" content="爐邊雜談">
 <meta property="og:description" content="現在人們的生活已離不開網頁，上網這個行為充斥在各個層面的操作，有很大機會代表操作網頁，舉凡收發 E-mail、看 YouTube 影片、讀新聞等可以透過網頁完成。但這些服務並非只仰賴眼前看到的網頁畫面，甚至有更龐大、在幕後運作的系統，處理大量使用者的請求並回應資料。 基本上，大致歸納上述＂在幕後運作的系統＂就是伺服器，也就是後端；＂網頁畫面＂則是前端。 前端的網頁架構由於早期的網頁架構、功能簡單，">
 <meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/blog_scenario.svg">
 <meta property="og:image" content="https://kun-neng.github.io/images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/trends.png">
 <meta property="og:image" content="https://kun-neng.github.io/images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/angular_logo.png">
 <meta property="article:published_time" content="2024-03-12T23:19:16.000Z">
-<meta property="article:modified_time" content="2024-04-05T14:27:53.708Z">
+<meta property="article:modified_time" content="2024-04-05T23:26:32.275Z">
 <meta property="article:author" content="Kun-Neng Hung">
 <meta property="article:tag" content="Angular, Web">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://kun-neng.github.io/images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/trends.png">
+<meta name="twitter:image" content="https://kun-neng.github.io/images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/blog_scenario.svg">
 
 
 <link rel="canonical" href="https://kun-neng.github.io/2024/03/12/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/">
@@ -212,7 +213,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-04-05 22:27:53" itemprop="dateModified" datetime="2024-04-05T22:27:53+08:00">2024-04-05</time>
+      <time title="Modified: 2024-04-06 07:26:32" itemprop="dateModified" datetime="2024-04-06T07:26:32+08:00">2024-04-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -241,14 +242,14 @@
 </blockquote>
 <span id="more"></span>
 
-<p>想像一個場景：使用者在一個部落格的網頁中，選取文章A以進行閱讀的行為，如下圖所示。前端的任務看似不多，但顧及<strong>使用者體驗</strong>，就需要考量</p>
+<p>想像一個場景：使用者在一個部落格的網頁中，選取文章A以進行閱讀的行為，如下圖所示。前端（粗框方塊）的任務看似不多，但顧及<strong>使用者體驗</strong>，就需要考量</p>
 <ol start="0">
 <li>設計 <br>  進行切版、元件配色、動畫特效等，讓部落格吸引使用者想再次造訪。</li>
 <li>互動 <br>  接受使用者的要求，將後端所需資訊進行打包、透過網路送至後端。 </li>
 <li>反應 <br>  收到後端回應內容後，即時將其呈現在網頁，並優化在大量文章下的流暢性。</li>
 </ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">  A[使用者] --&gt;|點選文章A的連結| B(部落格:前端)</span><br><span class="line">  B -.-&gt;|發送要求以獲取文章A內容| C(伺服器:後端)</span><br><span class="line">  style B stroke-width:4px</span><br><span class="line">  C --&gt;|尋找文章A內容| D[(資料庫)]</span><br><span class="line">  D --&gt;|取得文章A內容| C</span><br><span class="line">  C -.-&gt;|回應文章A內容| B</span><br><span class="line">  B --&gt;|在網頁中呈現文章A| A</span><br></pre></td></tr></table></figure>
-
+<p><img data-src="/../images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/blog_scenario.svg"></p>
+<p>註：虛線代表透過網際網路</p>
 <blockquote>
 <p>使用者體驗（user experience, UX）指的是使用者與產品、服務或系統互動時所產生的整體感受。</p>
 </blockquote>
