@@ -20,7 +20,40 @@ comments: false
     * Python
     * Java
 
-* 喜好
-  * Side Project
+* 興趣
   * Soccer
-  * Travel
+  * Swimming
+  * Traveling
+
+---
+
+* Side Projects
+  * 2024 Gemini AI Playground
+    - https://github.com/Kun-Neng/ai-playground-angular
+    - Angular, Google Gemini API
+  * 2024 Taiwan Bus dashboard
+    - https://twn-bus.vercel.app
+    - Angular
+  * 2023 Taiwan AQI dashboard
+    - https://kunaqi.vercel.app
+    - Angular
+  * 2023 🎮 Aircraft shooting game
+    - https://galaxian-3d.appspot.com
+    - Angular, [Babylon.js](https://www.babylonjs.com/)
+  * 2020 🎮 Tower defense game
+    - https://knocking-you-up.appspot.com
+    - Angular, [p5.js](https://p5js.org/)
+  * 2020 🧠 Flocking boid simulation
+    - https://flocking-boid-simulation.appspot.com
+    - Angular
+  * 2019 🧠 A* path planning
+    - https://a-star-path-planning.appspot.com
+    - Angular, [A* module](https://github.com/Kun-Neng/hpp)
+  * 2019 Path planning using HERE Routing API on Google Maps
+    - https://pathplanning2019.appspot.com
+    - VanillaJS
+  * 2015 Card game for Taiwan history (closed)
+  * 2012 EzQueue Android App (closed)
+  * 2012 Linear control cystem course website
+    - https://nctu-lcs.appspot.com
+    - VanillaJS, jQuery
