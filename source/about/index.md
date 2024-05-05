@@ -7,7 +7,7 @@ comments: false
 自學軟體的工程師，對什麼都很好奇，在各種領域探索並鑽研著。
 
 * 其他身份
-  * GDG Taoyuan organizer / speaker
+  * [GDG Taoyuan](https://gdg.community.dev/gdg-taoyuan/) organizer / speaker
   * MDN zh-TW translation contributor
   * Certificated drone operator
 
@@ -16,14 +16,15 @@ comments: false
     * VanillaJS
     * Angular
   * 後端 Backend
-    * NodeJS
+    * Node.js
     * Python
     * Java
 
 * 興趣
   * Soccer
   * Swimming
-  * Traveling
+  * Travelling
+  * [Tech Writing](https://medium.com/@kunneng.hung)
 
 ---
 
