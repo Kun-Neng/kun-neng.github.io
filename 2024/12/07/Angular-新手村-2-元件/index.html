@@ -23,27 +23,27 @@
     <meta name="description" content="延續上一篇，我們完成以 Angular CLI 建立了聊天室專案 chatroom ，並認識一些環境參數與設定選項。 元件（component）本篇首先認識集合呈現與行為的元件，它是由 CLI 所建立最頂層的元件，位於 src&#x2F;app&#x2F; ，基本上由 4 支檔案所組成：  app.component.html 提供網頁元素 app.component.css 提供樣式 app.component.t">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Angular 新手村 - 2. 元件">
-<meta property="og:url" content="https://kun-neng.github.io/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/index.html">
+<meta property="og:url" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/index.html">
 <meta property="og:site_name" content="爐邊雜談">
 <meta property="og:description" content="延續上一篇，我們完成以 Angular CLI 建立了聊天室專案 chatroom ，並認識一些環境參數與設定選項。 元件（component）本篇首先認識集合呈現與行為的元件，它是由 CLI 所建立最頂層的元件，位於 src&#x2F;app&#x2F; ，基本上由 4 支檔案所組成：  app.component.html 提供網頁元素 app.component.css 提供樣式 app.component.t">
 <meta property="og:locale" content="zh_TW">
-<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/first_screenshot.png">
-<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/1_design.png">
-<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/2_layout.png">
-<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/ng_g_c.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/first_screenshot.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/1_design.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/2_layout.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/ng_g_c.png">
 <meta property="article:published_time" content="2024-12-07T12:25:00.000Z">
-<meta property="article:modified_time" content="2024-12-07T12:27:57.379Z">
+<meta property="article:modified_time" content="2024-12-07T23:45:16.490Z">
 <meta property="article:author" content="Kun-Neng Hung">
 <meta property="article:tag" content="Angular, Web">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://kun-neng.github.io/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/first_screenshot.png">
+<meta name="twitter:image" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/first_screenshot.png">
 
 
-<link rel="canonical" href="https://kun-neng.github.io/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/">
+<link rel="canonical" href="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/","path":"2024/12/07/Angular 新手村 - 2. 元件/","title":"Angular 新手村 - 2. 元件"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/","path":"2024/12/07/Angular-新手村-2-元件/","title":"Angular 新手村 - 2. 元件"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>Angular 新手村 - 2. 元件 | 爐邊雜談</title>
@@ -181,7 +181,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
-    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -209,9 +209,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2024-12-07 20:25:00 / Modified: 20:27:57" itemprop="dateCreated datePublished" datetime="2024-12-07T20:25:00+08:00">2024-12-07</time>
+      <time title="Created: 2024-12-07 20:25:00" itemprop="dateCreated datePublished" datetime="2024-12-07T20:25:00+08:00">2024-12-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-12-08 07:45:16" itemprop="dateModified" datetime="2024-12-08T07:45:16+08:00">2024-12-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,7 +282,7 @@
 <blockquote>
 <p>此處的 <code>&#123;&#123; title &#125;&#125;</code> 是為<strong>範本插值（ template interpolation ）</strong>，為 <code>app.component.ts</code> 提供資料給 <code>app.component.html</code> 呈現的方式之一，亦即 <code>&#123;&#123; title &#125;&#125;</code> 會被它本身的值（ <code>chatroom</code> ）替換掉。</p>
 </blockquote>
-<img data-src="/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/first_screenshot.png" class="">
+<img data-src="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/first_screenshot.png" class="">
 
 <span id="more"></span>
 
@@ -334,10 +340,10 @@ flowchart LR
 <li>在聊天室視窗中，有訊息串與輸入框，經由發送（Send）按鈕可將所輸入的訊息加入至訊息串</li>
 <li>在聊天室視窗中，有返回按鈕可回到大廳</li>
 </ol>
-<img data-src="/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/1_design.png" class="">
+<img data-src="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/1_design.png" class="">
 
 <p>對上述需求進行分析後，我們可以勾勒出基本架構與相關元件：</p>
-<img data-src="/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/2_layout.png" class="">
+<img data-src="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/2_layout.png" class="">
 
 <p>按以下步驟使用 Angular CLI 即可迅速建立所有檔案</p>
 <ol>
@@ -346,7 +352,7 @@ flowchart LR
 <li>接著在 <code>chatroom</code> 資料夾內部建立 <code>components</code> 資料夾，內部包含 <code>messages</code> 與 <code>message-input</code> 兩個資料夾與其元件：<br>  <code>ng g c pages/chatroom/components/messages</code><br>  <code>ng g c pages/chatroom/components/message-input</code></li>
 </ol>
 <p>最終在 <code>src/app/</code> 成功建立所需元件。</p>
-<img data-src="/2024/12/07/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%202.%20%E5%85%83%E4%BB%B6/ng_g_c.png" class="">
+<img data-src="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/ng_g_c.png" class="">
 
 <p>下一章，我們會介紹如何將以上所建立的元件組合在一起。</p>
 
@@ -365,7 +371,7 @@ flowchart LR
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/11/30/Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%201.%20%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/" rel="prev" title="Angular 新手村 - 1. 開發環境與操作指令">
+                <a href="/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/" rel="prev" title="Angular 新手村 - 1. 開發環境與操作指令">
                   <i class="fa fa-angle-left"></i> Angular 新手村 - 1. 開發環境與操作指令
                 </a>
             </div>
