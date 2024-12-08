@@ -45,15 +45,16 @@ render_drafts: false
 post_asset_folder: true
 relative_link: false
 future: true
-syntax_highlighter: highlight.js
+syntax_highlighter: prismjs # highlight.js
 highlight:
-  enable: true
+  enable: false
   line_number: true
   auto_detect: false
   tab_replace: ''
   wrap: true
   hljs: false
 prismjs:
+  enable: true
   preprocess: true
   line_number: true
   tab_replace: ''
