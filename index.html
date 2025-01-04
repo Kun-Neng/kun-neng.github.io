@@ -198,9 +198,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2025-01-03 15:00:00 / Modified: 14:22:56" itemprop="dateCreated datePublished" datetime="2025-01-03T15:00:00+08:00">2025-01-03</time>
+      <time title="Created: 2025-01-03 15:00:00" itemprop="dateCreated datePublished" datetime="2025-01-03T15:00:00+08:00">2025-01-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-01-04 11:08:43" itemprop="dateModified" datetime="2025-01-04T11:08:43+08:00">2025-01-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -222,7 +228,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>延續上一篇，我們已經在 <code>hall</code> 建立一個聊天室物件 <code>mockChatroom</code> ，並在 <code>hall.component.html</code> 顯示其路由連結，點選該聊天室則導引到相關頁面。實際上大廳會存在許多聊天室物件，在介紹服務（service）之前，先嘗試在 <code>hall</code> 建立更多測試資料，確保聊天室顯示與連結均正常：</p>
+          <p>延續上一篇，我們已經在 <code>hall</code> 建立一個聊天室物件 <code>mockChatroom</code> ，並在 <code>hall.component.html</code> 顯示其路由連結，點擊該聊天室則導引到相關頁面。實際上大廳會存在許多聊天室物件，在介紹服務（service）之前，先嘗試在 <code>hall</code> 建立更多測試資料，確保聊天室顯示與連結均正常：</p>
 <ol>
 <li>在 <code>src/app</code> 下手動新增 <code>models</code> 資料夾並在內部新增檔案 <code>chatroom.model.ts</code> ，這個介面後續將會頻繁使用。  <img data-src="/2025/01/03/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/1_chatroom_model.png" class="">
   定義 <code>ChatroomModel</code> 介面需要的屬性與型態：  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">ChatroomModel</span> <span class="token punctuation">&#123;</span>
@@ -270,8 +276,8 @@
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
 <li>第 3 行的 <code>@for</code> 是一種控制流語法（control flow syntax），用來遍歷陣列並依序取出項目。該行的意思為依序取出在 <code>chatrooms()</code> 內的 <code>chatroom</code> 項目並以 <code>chatroom.id</code> 當作追蹤每個項目的唯一識別子，這是 Angular 用來提升效能的方式。每當陣列中某個項目有變動時，因為有識別子，僅需要更新該物件即可，而非整個陣列。</li>
-<li>第 4 ~ 8 行大括號內則是用來呈現每個 <code>chatroom</code> 項目，我們建立路由與每個路由顯示各自的 <code>chatroom.name</code> ，經由點選導引到不同的聊天室頁面。</li>
-<li>第 9 ~ 10 行會在 <code>chatrooms()</code> 為空（或 <code>null</code> 或 <code>undefined</code> ）時顯示 No chatrooms 字樣。</li>
+<li>第 4 ~ 8 行大括號內則是用來呈現每個 <code>chatroom</code> 項目，我們建立路由與每個路由顯示各自的 <code>chatroom.name</code> ，經由點擊導引到不同的聊天室頁面。</li>
+<li>第 9 ~ 10 行的 <code>@empty</code> 會在 <code>chatrooms()</code> 為空（或 <code>null</code> 或 <code>undefined</code> ）時顯示 No chatrooms 字樣，而不會在此區塊中留白。</li>
 </ul>
 <blockquote>
 <p>控制流語法（control flow syntax）：</p>
@@ -350,7 +356,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-01-03 14:22:56" itemprop="dateModified" datetime="2025-01-03T14:22:56+08:00">2025-01-03</time>
+      <time title="Modified: 2025-01-04 11:08:43" itemprop="dateModified" datetime="2025-01-04T11:08:43+08:00">2025-01-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -517,7 +523,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-01-03 14:22:56" itemprop="dateModified" datetime="2025-01-03T14:22:56+08:00">2025-01-03</time>
+      <time title="Modified: 2025-01-04 11:08:43" itemprop="dateModified" datetime="2025-01-04T11:08:43+08:00">2025-01-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -663,7 +669,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-01-03 14:22:56" itemprop="dateModified" datetime="2025-01-03T14:22:56+08:00">2025-01-03</time>
+      <time title="Modified: 2025-01-04 11:08:43" itemprop="dateModified" datetime="2025-01-04T11:08:43+08:00">2025-01-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -789,7 +795,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-01-03 14:22:56" itemprop="dateModified" datetime="2025-01-03T14:22:56+08:00">2025-01-03</time>
+      <time title="Modified: 2025-01-04 11:08:43" itemprop="dateModified" datetime="2025-01-04T11:08:43+08:00">2025-01-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -886,7 +892,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-01-03 14:22:56" itemprop="dateModified" datetime="2025-01-03T14:22:56+08:00">2025-01-03</time>
+      <time title="Modified: 2025-01-04 11:08:43" itemprop="dateModified" datetime="2025-01-04T11:08:43+08:00">2025-01-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
