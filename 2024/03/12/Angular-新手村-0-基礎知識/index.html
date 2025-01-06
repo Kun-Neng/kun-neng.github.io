@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="現在人們的生活已離不開網頁，上網這個行為充斥在各個層面的操作，有很大機會代表操作網頁，舉凡收發 E-mail、看 YouTube 影片、讀新聞等可以透過網頁完成。但這些服務並非只仰賴眼前看到的網頁畫面，甚至有更龐大、在幕後運作的系統，處理大量使用者的請求並回應資料。 基本上，大致歸納上述＂在幕後運作的系統＂就是伺服器，也就是後端；＂網頁畫面＂則是前端。 前端的網頁架構由於早期的網頁架構、功能簡單，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 新手村 - 0. 基礎知識">
+<meta property="og:url" content="https://kun-neng.github.io/2024/03/12/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-0-%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="現在人們的生活已離不開網頁，上網這個行為充斥在各個層面的操作，有很大機會代表操作網頁，舉凡收發 E-mail、看 YouTube 影片、讀新聞等可以透過網頁完成。但這些服務並非只仰賴眼前看到的網頁畫面，甚至有更龐大、在幕後運作的系統，處理大量使用者的請求並回應資料。 基本上，大致歸納上述＂在幕後運作的系統＂就是伺服器，也就是後端；＂網頁畫面＂則是前端。 前端的網頁架構由於早期的網頁架構、功能簡單，">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/blog_scenario.svg">
+<meta property="og:image" content="https://kun-neng.github.io/images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/trends.png">
+<meta property="og:image" content="https://kun-neng.github.io/images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/angular_logo.png">
+<meta property="article:published_time" content="2024-03-12T23:19:16.000Z">
+<meta property="article:modified_time" content="2025-01-06T12:31:48.228Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/blog_scenario.svg">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2024/03/12/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-0-%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2024/03/12/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-0-%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/","path":"2024/03/12/Angular-新手村-0-基礎知識/","title":"Angular 新手村 - 0. 基礎知識"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular 新手村 - 0. 基礎知識 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%AB%AF%E7%9A%84%E7%B6%B2%E9%A0%81%E6%9E%B6%E6%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">前端的網頁架構</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E5%A4%A7%E4%B8%BB%E6%B5%81"><span class="nav-number">2.</span> <span class="nav-text">三大主流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%9C%E6%96%BC-Angular-%E6%A1%86%E6%9E%B6"><span class="nav-number">3.</span> <span class="nav-text">關於 Angular 框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E5%8C%B9%E9%85%8D%E8%A1%A8"><span class="nav-number">4.</span> <span class="nav-text">版本匹配表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%A0%E7%AF%80%E4%BB%8B%E7%B4%B9"><span class="nav-number">5.</span> <span class="nav-text">章節介紹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%98%E6%96%B9%E7%B6%B2%E7%AB%99"><span class="nav-number">6.</span> <span class="nav-text">官方網站</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E6%B2%BF%E9%9D%A9"><span class="nav-number">7.</span> <span class="nav-text">版本沿革</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2024/03/12/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-0-%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular 新手村 - 0. 基礎知識 | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular 新手村 - 0. 基礎知識
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-03-13 07:19:16" itemprop="dateCreated datePublished" datetime="2024-03-13T07:19:16+08:00">2024-03-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-01-06 20:31:48" itemprop="dateModified" datetime="2025-01-06T20:31:48+08:00">2025-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>現在人們的生活已離不開網頁，<strong>上網</strong>這個行為充斥在各個層面的操作，有很大機會代表<strong>操作網頁</strong>，舉凡收發 E-mail、看 YouTube 影片、讀新聞等可以透過網頁完成。但這些服務並非只仰賴眼前看到的網頁畫面，甚至有更龐大、在幕後運作的系統，處理大量使用者的請求並回應資料。</p>
+<p>基本上，大致歸納上述＂在幕後運作的系統＂就是伺服器，也就是後端；＂網頁畫面＂則是前端。</p>
+<h3 id="前端的網頁架構"><a href="#前端的網頁架構" class="headerlink" title="前端的網頁架構"></a>前端的網頁架構</h3><p>由於早期的網頁架構、功能簡單，沒有太多的畫面渲染需求，因此幾乎可以由一個人包辦前、後端的開發。隨著科技發達、技術演進，現在的網頁能做出任何想的到的畫面，當然架構也隨之龐大、複雜。若沒有<strong>前後端分離</strong>，光靠一個人會很難兼顧系統穩定與畫面流暢。</p>
+<blockquote>
+<p>前後端分離的好處是前、後端可以分別專注在實現自己的業務邏輯，降低耦合，兩者間藉由 HTTP&#x2F;HTTPS 或 WebSocket 進行溝通即可。</p>
+</blockquote>
+<span id="more"></span>
+
+<p>想像一個場景：使用者在一個部落格的網頁中，選取文章A以進行閱讀的行為，如下圖所示。前端（粗框方塊）的任務看似不多，但顧及<strong>使用者體驗</strong>，就需要考量</p>
+<ol start="0">
+<li>設計 <br>  進行切版、元件配色、動畫特效等，讓部落格吸引使用者想再次造訪。</li>
+<li>互動 <br>  接受使用者的要求，將後端所需資訊進行打包、透過網路送至後端。 </li>
+<li>反應 <br>  收到後端回應內容後，即時將其呈現在網頁，並優化在大量文章下的流暢性。</li>
+</ol>
+<p><img data-src="/../images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/blog_scenario.svg"></p>
+<p>註：虛線代表透過網際網路</p>
+<blockquote>
+<p>使用者體驗（user experience, UX）指的是使用者與產品、服務或系統互動時所產生的整體感受。</p>
+</blockquote>
+<h3 id="三大主流"><a href="#三大主流" class="headerlink" title="三大主流"></a>三大主流</h3><table>
+<thead>
+<tr>
+<th>前端框架／函式庫</th>
+<th>官網</th>
+<th>簡介</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Angular</td>
+<td><a target="_blank" rel="noopener" href="https://angular.dev/">https://angular.dev</a></td>
+<td>由 Google 開發和維護，適用於大型應用程式和企業級開發</td>
+</tr>
+<tr>
+<td>React</td>
+<td><a target="_blank" rel="noopener" href="https://react.dev/">https://react.dev</a></td>
+<td>由 Meta 開發和維護，採用組件化開發，提供靈活的開發方式</td>
+</tr>
+<tr>
+<td>Vue</td>
+<td><a target="_blank" rel="noopener" href="https://vuejs.org/">https://vuejs.org</a></td>
+<td>由個人開發者尤雨溪（Evan You）創建並維護，使用簡潔的模板語法，學習曲線相對較低</td>
+</tr>
+</tbody></table>
+<p>截至 2024 年 Stack Overflow 詢問度趨勢， React （藍）為大宗、 Angular （橘）暫居第二：<br><img data-src="/../images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/trends.png"></p>
+<p>以上選擇因人而異，找出適合自己的來學即可。本系列以 Angular 為主題，後續章節會帶出由基礎到進階的相關知識。</p>
+<h3 id="關於-Angular-框架"><a href="#關於-Angular-框架" class="headerlink" title="關於 Angular 框架"></a>關於 Angular 框架</h3><p><img data-src="/../images/2024-03-13-Angular%20%E6%96%B0%E6%89%8B%E6%9D%91%20-%200.%20%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/angular_logo.png"></p>
+<p>Angular 是由 Google 團隊所開發的網頁開發<strong>框架</strong>，以 Node.js 進行套件管理、以 TypeScript 語言撰寫。Angular 提供簡潔、系統性、有規範的設計方式，打造出的適合於大型架構的<strong>單頁應用程式</strong>。</p>
+<blockquote>
+<p>框架（framework）是一種使用規範，它能保證按照它所訂定的規則來執行就會得到預期效果。因此框架能夠提供比函式庫更完整的功能與開發環境，達到較完整的解決方案。相反地，我們口語常說＂跳脫框架＂也就是不受到約束，可以隨心所欲按照自己的方式開發。</p>
+</blockquote>
+<blockquote>
+<p>單頁應用程式（Single Page Application, SPA）的特性是使用者與網頁的互動都在同一個網址，不會因轉址而刷新網頁造成畫面閃爍。</p>
+</blockquote>
+<h3 id="版本匹配表"><a href="#版本匹配表" class="headerlink" title="版本匹配表"></a>版本匹配表</h3><p>Angular 的核心也是 Node.js 的套件（package），因此除了 TypeScript 以外，也需要相依 Node.js 的版本進行開發。而 RxJS 是 Angular 內部經常使用到的 reactive 函式庫（library）</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://angular.io/guide/versions#actively-supported-versions">Angular 目前支援的版本</a></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">Angular</th>
+<th align="center">Node.js</th>
+<th align="center">TypeScript</th>
+<th align="center">RxJS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">17.1.x || 17.2.x</td>
+<td align="center">^18.13.0 || ^20.9.0</td>
+<td align="center">&gt;&#x3D;5.2.0 &lt;5.4.0</td>
+<td align="center">^6.5.3 || ^7.4.0</td>
+</tr>
+<tr>
+<td align="center">17.0.x</td>
+<td align="center">^18.13.0 || ^20.9.0</td>
+<td align="center">&gt;&#x3D;5.2.0 &lt;5.3.0</td>
+<td align="center">^6.5.3 || ^7.4.0</td>
+</tr>
+<tr>
+<td align="center">16.1.x || 16.2.x</td>
+<td align="center">^16.14.0 || ^18.10.0</td>
+<td align="center">&gt;&#x3D;4.9.3 &lt;5.2.0</td>
+<td align="center">^6.5.3 || ^7.4.0</td>
+</tr>
+<tr>
+<td align="center">16.0.x</td>
+<td align="center">^16.14.0 || ^18.10.0</td>
+<td align="center">&gt;&#x3D;4.9.3 &lt;5.1.0</td>
+<td align="center">^6.5.3 || ^7.4.0</td>
+</tr>
+<tr>
+<td align="center">15.1.x || 15.2.x</td>
+<td align="center">^14.20.0 || ^16.13.0 || ^18.10.0</td>
+<td align="center">&gt;&#x3D;4.8.2 &lt;5.0.0</td>
+<td align="center">^6.5.3 || ^7.4.0</td>
+</tr>
+<tr>
+<td align="center">15.0.x</td>
+<td align="center">^14.20.0 || ^16.13.0 || ^18.10.0</td>
+<td align="center">~4.8.2</td>
+<td align="center">^6.5.3 || ^7.4.0</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Angular 9 後，<a target="_blank" rel="noopener" href="https://angular.io/guide/versions#unsupported-angular-versions">不再長期支援的版本</a></li>
+</ul>
+<blockquote>
+<p>長期支援（long-term support, LTS）是指期間內會維持該版本的安全漏洞修復（fix）</p>
+</blockquote>
+<h3 id="章節介紹"><a href="#章節介紹" class="headerlink" title="章節介紹"></a>章節介紹</h3><p>新手村系列教學以 Angular 19 為基準，主要著重在建立下列基礎知識</p>
+<ul>
+<li>開發環境</li>
+<li>操作指令（command line, CLI）</li>
+<li>參數設定（configuration）</li>
+<li>元件（component）</li>
+<li>路由（routing）</li>
+<li>服務（service）</li>
+<li>指令（directive）</li>
+<li>生命週期（life cycle）</li>
+<li>表單（form）</li>
+<li>動畫（animation）</li>
+</ul>
+<h3 id="官方網站"><a href="#官方網站" class="headerlink" title="官方網站"></a>官方網站</h3><ul>
+<li>舊網站<ul>
+<li><a target="_blank" rel="noopener" href="https://angular.io/">英文版</a></li>
+<li><a target="_blank" rel="noopener" href="https://angular.tw/">中文版</a></li>
+</ul>
+</li>
+<li>新網站（配合 Angular 17 推出）<ul>
+<li><a target="_blank" rel="noopener" href="https://angular.dev/">英文版</a></li>
+<li><a target="_blank" rel="noopener" href="https://dev.angular.tw/">中文版</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="版本沿革"><a href="#版本沿革" class="headerlink" title="版本沿革"></a>版本沿革</h3><table>
+<thead>
+<tr>
+<th>年.月</th>
+<th>版本</th>
+<th>特色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2010.10</td>
+<td>AngularJS (1.x)</td>
+<td>基於 JavaScript 的框架，為 MVC 架構</td>
+</tr>
+<tr>
+<td>2016.09</td>
+<td>Angular<del>JS</del> 2</td>
+<td>版本改以數字命名。基於 TypeScript 的框架，為元件（component）架構，且程式碼完全重寫，不能與 AngularJS 共用程式碼</td>
+</tr>
+<tr>
+<td>2017.03</td>
+<td>Angular 4</td>
+<td>在路由模組（routing module）出了版本對齊問題，決定放棄 Angular 3 、直奔 Angular 4 並引入 HttpClient</td>
+</tr>
+<tr>
+<td>2017.11</td>
+<td>Angular 5</td>
+<td>改進對漸進式網路應用程式（PWA）的支援</td>
+</tr>
+<tr>
+<td>2018.05</td>
+<td>Angular 6</td>
+<td>改進工具鏈（toolchain）</td>
+</tr>
+<tr>
+<td>2018.10</td>
+<td>Angular 7</td>
+<td>加強 Angular Material 和 CDK 功能</td>
+</tr>
+<tr>
+<td>2019.05</td>
+<td>Angular 8</td>
+<td>改進 Angular CLI</td>
+</tr>
+<tr>
+<td>2020.02</td>
+<td>Angular 9</td>
+<td>使用 Ivy 渲染引擎（redering engine）以降低捆綁檔案大小（bundle size）並增進效能</td>
+</tr>
+<tr>
+<td>2020.06</td>
+<td>Angular 10</td>
+<td>改進 Angular Material 、更新 TypeScript 語法</td>
+</tr>
+<tr>
+<td>2020.11</td>
+<td>Angular 11</td>
+<td>加強 Angular CLI 、更新 TypeScript 4.0</td>
+</tr>
+<tr>
+<td>2021.05</td>
+<td>Angular 12</td>
+<td>引入更嚴格的型別檢查、更新 Angular CLI</td>
+</tr>
+<tr>
+<td>2021.11</td>
+<td>Angular 13</td>
+<td>支援 TypeScript 4.4 、加強 Angular tests 、預設使用 RxJS 7.4</td>
+</tr>
+<tr>
+<td>2022.06</td>
+<td>Angular 14</td>
+<td>引入 standalone</td>
+</tr>
+<tr>
+<td>2022.11</td>
+<td>Angular 15</td>
+<td>預設使用 standalone 取代 NgModule</td>
+</tr>
+<tr>
+<td>2023.05</td>
+<td>Angular 16</td>
+<td>提升效能、加強除錯能力，翻新 Angular Material</td>
+</tr>
+<tr>
+<td>2023.11</td>
+<td>Angular 17</td>
+<td>引入控制流程（control flow）語法、…等</td>
+</tr>
+<tr>
+<td>2024.05</td>
+<td>Angular 18</td>
+<td>穩定版的控制流程語法、實驗階段的 zoneless change detection</td>
+</tr>
+<tr>
+<td>2024.11</td>
+<td>Angular 19</td>
+<td>針對 signal 加入反應式原語（Reactivity Primitives）、開發者預覽漸增式水合(hydration)</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>註 1：每 6 個月釋出 1 個主版本</p>
+</blockquote>
+<blockquote>
+<p>註 2：主版本的支援週期為 18 個月</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/03/03/%E8%90%AC%E4%BA%8B%E8%B5%B7%E9%A0%AD%E9%9B%A3/" rel="prev" title="萬事起頭難">
+                  <i class="fa fa-angle-left"></i> 萬事起頭難
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/" rel="next" title="Angular 新手村 - 1. 開發環境與操作指令">
+                  Angular 新手村 - 1. 開發環境與操作指令 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js","integrity":"sha256-mm3Re3y7xlvh+yCD+l/Zs1d+PU0AEad93MkWvljfm/s="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

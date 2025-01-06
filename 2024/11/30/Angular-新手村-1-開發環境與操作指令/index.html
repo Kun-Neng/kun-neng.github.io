@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="開發環境建置   下載並安裝 Node.js 後，確認版本安裝完成  npm --version 安裝 Angular CLI 來快速建構專案及其所需各種設定與元件  npm install -g @angular&#x2F;cli  若要安裝特定版本（如 19.0.1），則使用  npm install -g @angular&#x2F;cli@19.0.1  參考官網：  Install the Angular">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 新手村 - 1. 開發環境與操作指令">
+<meta property="og:url" content="https://kun-neng.github.io/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="開發環境建置   下載並安裝 Node.js 後，確認版本安裝完成  npm --version 安裝 Angular CLI 來快速建構專案及其所需各種設定與元件  npm install -g @angular&#x2F;cli  若要安裝特定版本（如 19.0.1），則使用  npm install -g @angular&#x2F;cli@19.0.1  參考官網：  Install the Angular">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/angular_logo.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/ng_new.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/ng_serve.png">
+<meta property="article:published_time" content="2024-11-30T22:10:00.000Z">
+<meta property="article:modified_time" content="2025-01-06T12:31:48.228Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/angular_logo.png">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/","path":"2024/11/30/Angular-新手村-1-開發環境與操作指令/","title":"Angular 新手村 - 1. 開發環境與操作指令"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular 新手村 - 1. 開發環境與操作指令 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E5%BB%BA%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">開發環境建置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%88%E6%A1%88%E8%A8%AD%E5%AE%9A"><span class="nav-number">2.</span> <span class="nav-text">專案設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%96%8B%E7%99%BC%E5%B7%A5%E5%85%B7"><span class="nav-number">3.</span> <span class="nav-text">開發工具</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular 新手村 - 1. 開發環境與操作指令 | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular 新手村 - 1. 開發環境與操作指令
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-12-01 06:10:00" itemprop="dateCreated datePublished" datetime="2024-12-01T06:10:00+08:00">2024-12-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-01-06 20:31:48" itemprop="dateModified" datetime="2025-01-06T20:31:48+08:00">2025-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="開發環境建置"><a href="#開發環境建置" class="headerlink" title="開發環境建置"></a>開發環境建置</h3><img data-src="/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/angular_logo.png" class="">
+
+<ol>
+<li>下載並安裝 <a target="_blank" rel="noopener" href="https://nodejs.org/en/download">Node.js</a> 後，確認版本安裝完成<br>  <code>npm --version</code></li>
+<li>安裝 Angular CLI 來快速建構專案及其所需各種設定與元件<br>  <code>npm install -g @angular/cli</code><br>  若要安裝特定版本（如 <code>19.0.1</code>），則使用<br>  <code>npm install -g @angular/cli@19.0.1</code></li>
+</ol>
+<p>參考官網：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://v17.angular.io/guide/setup-local#install-the-angular-cli">Install the Angular CLI</a></li>
+</ul>
+<blockquote>
+<p>注意：</p>
+<ul>
+<li>Windows 預設使用 PowerShell 指令執行 <code>npm</code> 全域安裝，因此執行 <code>npm install</code> 前需要設定執行權限：<br><code>Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></li>
+<li>從 Angular 版本 7 開始，@angular&#x2F;core 和 CLI 的版本必須相同</li>
+</ul>
+</blockquote>
+<ol start="3">
+<li>創建一個新專案，以聊天室專案為例<br>  <code>ng new chatroom</code></li>
+</ol>
+<blockquote>
+<p>過程中會詢問選擇何種樣式格式、是否啟用伺服器渲染等，先使用預設選項</p>
+<img data-src="/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/ng_new.png" class="">
+<p>由於我們使用 Angular CLI 的指令建立專案，它會產生所有能讓應用程式首次啟動的檔案，同時建立 git 版控並幫你提交當前檔案！</p>
+</blockquote>
+<ol start="4">
+<li>建立完畢，進入該專案目錄並啟動<br>  <code>cd chatroom</code><br>  <code>ng serve</code></li>
+</ol>
+<blockquote>
+<p>執行指令後，看到專案內的檔案最終被打包成數個檔案，提供給瀏覽器渲染在網頁上</p>
+<img data-src="/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/ng_serve.png" class="">
+</blockquote>
+<ol start="5">
+<li>在瀏覽器輸入以下網址，可看見運行結果（確認專案建置成功）<br>  <code>http://localhost:4200</code></li>
+</ol>
+<span id="more"></span>
+
+<h3 id="專案設定"><a href="#專案設定" class="headerlink" title="專案設定"></a>專案設定</h3><p>確認專案正常運行後，我們要先了解以下專案的參數設定(configuration)檔，再進行開發（程式撰寫）：</p>
+<ul>
+<li><code>package.json</code> 包含我們所安裝的套件列表，包含<ul>
+<li><code>@angular</code> 為 Angular 官方套件</li>
+<li><code>rxjs</code> 為響應式（reactive）開發套件</li>
+<li><code>zone.js</code> 用來偵測應用程式的變更</li>
+<li>其他，如 <code>tslib</code> 、 <code>karma</code> 等</li>
+</ul>
+</li>
+<li><code>tsconfig.json</code> 為 TypeScript 的設定檔（編譯選項）</li>
+<li><code>angular.json</code> 為 Angular 設定檔，包含環境參數、打包選項等</li>
+</ul>
+<p>例如，在 <code>angular.json</code> 的 <code>projects.chatroom.architect.build</code> 設定 <code>production</code> 的 <code>budgets</code> 參數，用來偵測並提示打包後的檔案大小，避免專案過於肥大造成瀏覽器載入畫面過慢。</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token property">"configurations"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">"production"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"budgets"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">&#123;</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"initial"</span><span class="token punctuation">,</span>
+        <span class="token property">"maximumWarning"</span><span class="token operator">:</span> <span class="token string">"500kB"</span><span class="token punctuation">,</span>
+        <span class="token property">"maximumError"</span><span class="token operator">:</span> <span class="token string">"1MB"</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#123;</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"anyComponentStyle"</span><span class="token punctuation">,</span>
+        <span class="token property">"maximumWarning"</span><span class="token operator">:</span> <span class="token string">"4kB"</span><span class="token punctuation">,</span>
+        <span class="token property">"maximumError"</span><span class="token operator">:</span> <span class="token string">"8kB"</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"outputHashing"</span><span class="token operator">:</span> <span class="token string">"all"</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token property">"development"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"optimization"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    <span class="token property">"extractLicenses"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    <span class="token property">"sourceMap"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>另外，也可自行新增 <code>fileReplacements</code> 參數與相關檔案至 <code>development</code> 參數中，方便在開發階段使用不同的環境設定檔。</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token property">"fileReplacements"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token property">"replace"</span><span class="token operator">:</span> <span class="token string">"src/environments/environment.ts"</span><span class="token punctuation">,</span>
+    <span class="token property">"with"</span><span class="token operator">:</span> <span class="token string">"src/environments/environment.development.ts"</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p><code>fileReplacements</code> 在 Angular CLI v15 後預設不再自動加入至 <code>angular.json</code> 檔</p>
+</blockquote>
+<h3 id="開發工具"><a href="#開發工具" class="headerlink" title="開發工具"></a>開發工具</h3><p>選擇您喜歡的開發編輯器（IDE），如 <a target="_blank" rel="noopener" href="https://code.visualstudio.com/">Visual Studio Code</a> 或 <a target="_blank" rel="noopener" href="https://www.jetbrains.com/webstorm/">WebStorm</a> 來開啟專案。這些工具能幫助進行型別檢查，減少開發時期的錯誤。</p>
+<p>下一篇，我們就可以直接使用開發編輯器來編輯第一個元件。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/03/12/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-0-%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/" rel="prev" title="Angular 新手村 - 0. 基礎知識">
+                  <i class="fa fa-angle-left"></i> Angular 新手村 - 0. 基礎知識
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/" rel="next" title="Angular 新手村 - 2. 元件">
+                  Angular 新手村 - 2. 元件 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js","integrity":"sha256-mm3Re3y7xlvh+yCD+l/Zs1d+PU0AEad93MkWvljfm/s="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

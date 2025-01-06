@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="延續上一篇，我們以 Angular CLI 建立了聊天室專案 chatroom 所有的元件，接下來介紹如何將它們組合在一起。 路由（Routing）若要將元件組合在一起，只需要放置元件的標籤（ tag ）在適合的位置即可，例如：  把 hall 與 chatroom 元件放置在 pages 元件中，在 pages.component.html 加入元件的 CSS selector&lt;app-h">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 新手村 - 3. 路由">
+<meta property="og:url" content="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="延續上一篇，我們以 Angular CLI 建立了聊天室專案 chatroom 所有的元件，接下來介紹如何將它們組合在一起。 路由（Routing）若要將元件組合在一起，只需要放置元件的標籤（ tag ）在適合的位置即可，例如：  把 hall 與 chatroom 元件放置在 pages 元件中，在 pages.component.html 加入元件的 CSS selector&lt;app-h">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/1_components_show.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/2_router_outlet.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/3_routes.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/4_results.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/5_navigation_results.png">
+<meta property="article:published_time" content="2024-12-29T13:10:00.000Z">
+<meta property="article:modified_time" content="2025-01-06T12:31:48.230Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/1_components_show.png">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/","path":"2024/12/29/Angular-新手村-3-路由/","title":"Angular 新手村 - 3. 路由"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular 新手村 - 3. 路由 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%EF%BC%88Routing%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">路由（Routing）</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular 新手村 - 3. 路由 | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular 新手村 - 3. 路由
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-12-29 21:10:00" itemprop="dateCreated datePublished" datetime="2024-12-29T21:10:00+08:00">2024-12-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-01-06 20:31:48" itemprop="dateModified" datetime="2025-01-06T20:31:48+08:00">2025-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>延續上一篇，我們以 Angular CLI 建立了聊天室專案 <code>chatroom</code> 所有的元件，接下來介紹如何將它們組合在一起。</p>
+<h3 id="路由（Routing）"><a href="#路由（Routing）" class="headerlink" title="路由（Routing）"></a>路由（Routing）</h3><p>若要將元件組合在一起，只需要放置元件的標籤（ <code>tag</code> ）在適合的位置即可，例如：</p>
+<ul>
+<li>把 <code>hall</code> 與 <code>chatroom</code> 元件放置在 <code>pages</code> 元件中，在 <code>pages.component.html</code> 加入元件的 CSS selector<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-hall</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-hall</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-chatroom</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-chatroom</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+同時，加入元件實體至 <code>pages.component.ts</code> 的 <code>metadata</code><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-pages'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>HallComponent<span class="token punctuation">,</span> ChatroomComponent<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// ←</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./pages.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./pages.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>把 <code>messages</code> 與 <code>message-input</code> 元件放置在 <code>chatroom</code> 元件中，在 <code>chatroom.component.html</code> 加入元件的 CSS selector<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-messages</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-messages</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-message-input</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-message-input</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+同時，加入元件實體至 <code>chatroom.component.ts</code> 的 <code>metadata</code><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-chatroom'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>MessagesComponent<span class="token punctuation">,</span> MessageInputComponent<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// ←</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./chatroom.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./chatroom.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+<p>我們可以看到除了 <code>pages</code> 與 <code>chatroom</code> 以外的元件都顯示各自的初始文字，這是因為在 <code>pages</code> 與 <code>chatroom</code> 的內部元素已其他元件置換掉。</p>
+<img data-src="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/1_components_show.png" class="">
+
+<p>但是，這樣的呈現方式並不是我們想要的畫面。我們想要的是讓使用者能在 <code>hall</code> 與 <code>chatroom</code> 之間切換顯示，這個部分可以使用路由達到這樣的效果。除此之外，使用路由的好處在於：</p>
+<ul>
+<li>套用守衛（guard）根據訂製的規則來限制或允許路由導引</li>
+<li>套用解析器（resolver）來處理或加工路由間傳遞的資料</li>
+<li>在不同的路由共享共通範本（template）</li>
+</ul>
+<p>我們在 <code>hall</code> 與 <code>chatroom</code> 的上一層 <code>pages</code> 資料夾內建立路由檔 <code>pages.routes.ts</code> ，內容如下：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Routes <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/router'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token constant">PAGES_ROUTES</span><span class="token operator">:</span> Routes <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    redirectTo<span class="token operator">:</span> <span class="token string">'hall'</span><span class="token punctuation">,</span>
+    pathMatch<span class="token operator">:</span> <span class="token string">'full'</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">'hall'</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">loadComponent</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./hall/hall.component'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span>HallComponent<span class="token punctuation">)</span>  
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">'chatroom'</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">loadComponent</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./chatroom/chatroom.component'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span>ChatroomComponent<span class="token punctuation">)</span>  
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">'**'</span><span class="token punctuation">,</span>
+    redirectTo<span class="token operator">:</span> <span class="token string">'hall'</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>這個路由檔分成四個由 <code>&#123;</code> 與 <code>&#125;</code> 括起來的路由：</p>
+<ul>
+<li>第一項（4 ~ 8 行）：若沒有給定路徑（空字串），則導到 <code>hall</code> 路徑</li>
+<li>第二項（9 ~ 12 行）：在 <code>hall</code> 路徑下會顯示 <code>HallComponent</code> 內容</li>
+<li>第三項（13 ~ 16 行）：在 <code>chatroom</code> 路徑下會顯示 <code>ChatroomComponent</code> 內容</li>
+<li>第四項（17 ~ 20 行）：給定任何路徑都會導到 <code>hall</code> 路徑</li>
+</ul>
+<blockquote>
+<ol>
+<li><code>path</code> 為網址會驅動而進行導引的路徑。</li>
+<li>這些路由有其順序性（由上而下），若第四項移到第一項，造成給定 <code>chatroom</code> 路徑也會導到 <code>hall</code> 路徑的不預期後果。</li>
+<li>第 11 與 15 行的 <code>loadComponent</code> 提供 Lazy-loading 的效果。</li>
+</ol>
+</blockquote>
+<p>接著在應用程式的路由檔 <code>app.routes.ts</code> 匯入 <code>pages.routes.ts</code>：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">const</span> routes<span class="token operator">:</span> Routes <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">loadChildren</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./pages/pages.routes'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span><span class="token constant">PAGES_ROUTES</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>雖然我們已建立路由，但當導到某個元件時，它應該在何處顯示，此時就需要在上層元件加入一個特殊的標籤 <code>&lt;router-outlet&gt;</code> ，用來乘載由路由導到的元件。因此元件架構中的 <code>app-hall</code> 與 <code>app-chatroom</code> 可以被 <code>&lt;router-outlet&gt;</code> 取代掉，如下圖所示。</p>
+<img data-src="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/2_router_outlet.png" class="">
+
+<span id="more"></span>
+
+<p>實作步驟如下：</p>
+<ol>
+<li><p>確認在 <code>app.config.ts</code> 中，已經啟用路由功能並加入路由檔。</p>
+  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ApplicationConfig <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> provideRouter <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/router'</span><span class="token punctuation">;</span> <span class="token comment">// ←</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> routes <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./app.routes'</span><span class="token punctuation">;</span> <span class="token comment">// ←</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> appConfig<span class="token operator">:</span> ApplicationConfig <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  providers<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token function">provideRouter</span><span class="token punctuation">(</span>routes<span class="token punctuation">)</span> <span class="token comment">// ←</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>在 <code>pages.component.ts</code> 將 <code>RouterOutlet</code> 匯入。</p>
+  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> RouterOutlet <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/router'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-pages'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>RouterOutlet<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// ←</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./pages.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./pages.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">PagesComponent</span> <span class="token punctuation">&#123;</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>在 <code>pages.component.html</code> 直接將 <code>hall</code> 與 <code>chatroom</code> 元件都移除，只留下 <code>&lt;router-outlet&gt;</code> 。</p>
+  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>router-outlet</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>router-outlet</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+</ol>
+<p>我們在瀏覽器輸入一樣的 <code>http://localhost:4200</code> 網址時，看到路徑會導到 <code>http://localhost:4200/hall</code> 並呈現大廳（hall）的畫面（如下圖左）；手動改變網址 <code>http://localhost:4200/chatroom</code> 則會呈現聊天室視窗（chatroom）的畫面（如下圖右）。</p>
+<img data-src="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/3_routes.png" class="">
+
+<p>由於目前兩個元件都顯得單調，讓我們稍微點綴它們吧！</p>
+<ul>
+<li><p>分別在 <code>hall.component.html</code> 與 <code>hall.component.css</code> 加入以下元素與樣式：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span> <span class="token property">flex-grow</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span> <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    chatrooms will be shown here
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Create a new one<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">:host</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>分別在 <code>chatroom.component.html</code> 與 <code>chatroom.component.css</code> 加入以下元素與樣式：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> space-between<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>chatroom name will be shown here<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Back to hall<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-grow</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span> <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-messages</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-messages</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">height</span><span class="token punctuation">:</span> 4rem<span class="token punctuation">;</span> <span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">gap</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">align-items</span><span class="token punctuation">:</span> stretch<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">flex-grow</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-message-input</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-message-input</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>Send<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">:host</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>分別在 <code>messages.component.html</code> 與 <code>message-input.component.html</code> 加入以下元素：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>messages will be shown here<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>textarea</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span> <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span> <span class="token property">outline</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span> <span class="token property">resize</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span> <span class="token attr-name">placeholder</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>say something here<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>textarea</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>將以下全域樣式加入至 <code>src</code> 資料夾下的 <code>style.css</code> 檔：</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">html, body</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 100lvw<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 100lvh<span class="token punctuation">;</span>
+  <span class="token property">margin</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token selector">body</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">font-family</span><span class="token punctuation">:</span> Roboto<span class="token punctuation">,</span> <span class="token string">"Helvetica Neue"</span><span class="token punctuation">,</span> sans-serif<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+<p>重新在瀏覽器輸入 <code>http://localhost:4200/hall</code> 與 <code>http://localhost:4200/chatroom</code> ，能看見排版後的效果。</p>
+<img data-src="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/4_results.png" class="">
+
+<p>即使兩個元件都能在各自網址中呈現，但這並不是我們要的結果。我們可以加入導引（navigation）機制，讓使用者經由互動來切換它們，而非手動改變網址。在此，我們先針對 <code>chatroom</code> 加入返回 <code>hall</code> 的功能：</p>
+<ol>
+<li><p>在按鈕點擊後會呼叫 <code>backToHall()</code> 函式</p>
+  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">(click)</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>backToHall()<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Back to hall<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>在 <code>chatroom.component.ts</code> 中注入 <code>Router</code> 服務，並使用它進行網址導引</p>
+  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 略</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">ChatroomComponent</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">private</span> <span class="token keyword">readonly</span> router <span class="token operator">=</span> <span class="token function">inject</span><span class="token punctuation">(</span>Router<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">backToHall</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>router<span class="token punctuation">.</span><span class="token function">navigate</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'/hall'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<p>試著點擊”Back to hall”按鈕，它會預期地將網址導引至 <code>http://localhost:4200/hall</code> 。</p>
+<p>接著，針對由 <code>hall</code> 進入 <code>chatroom</code> 加入路由：</p>
+<ol>
+<li>在 <code>hall.component.ts</code> 建立聊天室物件，並在 <code>hall.component.html</code> 顯示其路由連結。  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> RouterLink <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/router'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-hall'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>RouterLink<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./hall.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./hall.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">HallComponent</span> <span class="token punctuation">&#123;</span>
+  mockChatroom<span class="token operator">:</span> <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    name<span class="token operator">:</span> <span class="token string">'Chatroom A'</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span> <span class="token property">flex-grow</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> start<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">[routerLink]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>['/chatroom', mockChatroom.id]<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 2px 0<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 4px<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid blue<span class="token punctuation">;</span> <span class="token property">border-radius</span><span class="token punctuation">:</span> 4px<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+        &#123;&#123; mockChatroom.name &#125;&#125;
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Create a new one<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+  解析上述行為：</li>
+</ol>
+<ul>
+<li>匯入 <code>RouterLink</code> 讓我們能在範本使用 <code>routerLink</code> 。</li>
+<li>以超連結 <code>&lt;a [routerLink]=&quot;[&#39;/chatroom&#39;, mockChatroom.id]&quot;&gt;</code> 讀取特定路徑（串接 <code>/chatroom</code> 與 <code>id</code> ）。</li>
+<li>當使用者點選連結時，根據特定路徑導引至該聊天室。</li>
+</ul>
+<blockquote>
+<p>我們不使用傳統超連結（如 <code>&lt;a href=&quot;…&quot;&gt;&lt;/a&gt;</code> ）來進行網址導引，因為它會讓瀏覽器重新載入該網址並重啟整個應用程式，此舉違反單頁應用程式（Single Page Application, SPA）欲達到的效果。</p>
+</blockquote>
+<ol start="2">
+<li><p>在 <code>pages.routes.ts</code> 僅修改第 14 行的聊天室路由。</p>
+  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Routes <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/router'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token constant">PAGES_ROUTES</span><span class="token operator">:</span> Routes <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    redirectTo<span class="token operator">:</span> <span class="token string">'hall'</span><span class="token punctuation">,</span>
+    pathMatch<span class="token operator">:</span> <span class="token string">'full'</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">'hall'</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">loadComponent</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./hall/hall.component'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span>HallComponent<span class="token punctuation">)</span>  
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">'chatroom/:id'</span><span class="token punctuation">,</span> <span class="token comment">// ←</span>
+    <span class="token function-variable function">loadComponent</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./chatroom/chatroom.component'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span>ChatroomComponent<span class="token punctuation">)</span>  
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">'**'</span><span class="token punctuation">,</span>
+    redirectTo<span class="token operator">:</span> <span class="token string">'hall'</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>添加基於 signal 的輸入（ <code>input</code> ） 至 <code>chatroom.component.ts</code> ，並修改 <code>chatroom.component.html</code> 第 3 行以顯示 <code>id</code> 值：</p>
+  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 略</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">ChatroomComponent</span> <span class="token punctuation">&#123;</span>
+  id <span class="token operator">=</span> input<span class="token punctuation">.</span><span class="token generic-function"><span class="token function">required</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">// 略</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token comment">&lt;!-- 略 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>&#123;&#123; id() &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token comment">&lt;!-- 略 --></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<p>參考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.miniasp.com/post/2023/07/24/Angular-16-New-Features-Route-to-Component-Inputs">簡化 Angular 16 路由機制：使用 @Input() 取得路由參數值</a></li>
+</ul>
+<p>如此一來，不管在 <code>http://localhost:4200/hall</code> 或 <code>http://localhost:4200/chatroom</code> ，都能經由點擊畫面按鈕進行切換。</p>
+<img data-src="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/5_navigation_results.png" class="">
+
+<p>下一章，我們會以服務建立並提供更多測試資料，讓應用程式更加豐富。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/" rel="prev" title="Angular 新手村 - 2. 元件">
+                  <i class="fa fa-angle-left"></i> Angular 新手村 - 2. 元件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/" rel="next" title="Angular 新手村 - 4. 服務">
+                  Angular 新手村 - 4. 服務 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js","integrity":"sha256-mm3Re3y7xlvh+yCD+l/Zs1d+PU0AEad93MkWvljfm/s="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="延續上一篇，我們已經在 hall 建立一個聊天室物件 mockChatroom ，並在 hall.component.html 顯示其路由連結，點擊該聊天室則導引到相關頁面。實際上大廳會存在許多聊天室物件，在介紹服務（service）之前，先嘗試在 hall 建立更多測試資料，確保聊天室顯示與連結均正常：  在 src&#x2F;app 下手動新增 models 資料夾並在內部新增檔案 chatroom.m">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 新手村 - 4. 服務">
+<meta property="og:url" content="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="延續上一篇，我們已經在 hall 建立一個聊天室物件 mockChatroom ，並在 hall.component.html 顯示其路由連結，點擊該聊天室則導引到相關頁面。實際上大廳會存在許多聊天室物件，在介紹服務（service）之前，先嘗試在 hall 建立更多測試資料，確保聊天室顯示與連結均正常：  在 src&#x2F;app 下手動新增 models 資料夾並在內部新增檔案 chatroom.m">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/1_chatroom_model.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/2_chatroom_service.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/3_messages.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/4_dependency_injection.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/5_hierarchical_injectors.png">
+<meta property="article:published_time" content="2025-01-06T10:00:00.000Z">
+<meta property="article:modified_time" content="2025-01-06T12:31:48.231Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/1_chatroom_model.png">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/","path":"2025/01/06/Angular-新手村-4-服務/","title":"Angular 新手村 - 4. 服務"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular 新手村 - 4. 服務 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5%EF%BC%88dependency-injection-DI%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">依賴注入（dependency injection, DI）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Angular-%E7%9A%84%E5%85%A7%E5%BB%BA%E6%9C%8D%E5%8B%99"><span class="nav-number">2.</span> <span class="nav-text">Angular 的內建服務</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular 新手村 - 4. 服務 | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular 新手村 - 4. 服務
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-01-06 18:00:00 / Modified: 20:31:48" itemprop="dateCreated datePublished" datetime="2025-01-06T18:00:00+08:00">2025-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>延續上一篇，我們已經在 <code>hall</code> 建立一個聊天室物件 <code>mockChatroom</code> ，並在 <code>hall.component.html</code> 顯示其路由連結，點擊該聊天室則導引到相關頁面。實際上大廳會存在許多聊天室物件，在介紹服務（service）之前，先嘗試在 <code>hall</code> 建立更多測試資料，確保聊天室顯示與連結均正常：</p>
+<ol>
+<li>在 <code>src/app</code> 下手動新增 <code>models</code> 資料夾並在內部新增檔案 <code>chatroom.model.ts</code> ，這個介面後續將會頻繁使用。  <img data-src="/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/1_chatroom_model.png" class="">
+  定義 <code>ChatroomModel</code> 介面需要的屬性與型態：  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">ChatroomModel</span> <span class="token punctuation">&#123;</span>
+  id<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<blockquote>
+<p>建立聊天室物件介面的目的是管理或取得聊天室物件時，能依循我們所規範的結構（編輯器也會在我們錯誤操作物件屬性時提示錯誤）。</p>
+</blockquote>
+<ol start="2">
+<li>在 <code>hall.component.ts</code> 加入多筆測試資料，並將其依序顯示在 <code>hall.component.html</code> 中。  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component<span class="token punctuation">,</span> signal <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> RouterLink <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/router'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ChatroomModel <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'../../models/chatroom.model'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-hall'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>RouterLink<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./hall.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./hall.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">HallComponent</span> <span class="token punctuation">&#123;</span>
+  chatrooms <span class="token operator">=</span> <span class="token generic-function"><span class="token function">signal</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">Array</span><span class="token operator">&lt;</span>ChatroomModel<span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom A'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom B'</span> <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<ul>
+<li>第 3 行將我們所定義的 <code>ChatroomModel</code> 介面引入。</li>
+<li>第 12 ~ 15 行將兩個測試的聊天室物件以陣列的方式，提供給 <code>chatrooms</code> ，在 <code>signal</code> 角括號內的 <code>Array&lt;ChatroomModel&gt;</code> 表示它僅接受滿足 <code>ChatroomModel</code> 這個介面組成的陣列。  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span> <span class="token property">flex-grow</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> start<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span> <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    @for (chatroom of chatrooms(); track chatroom.id) &#123;
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">[routerLink]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>['/chatroom', chatroom.id]<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 2px 0<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 4px<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid blue<span class="token punctuation">;</span> <span class="token property">border-radius</span><span class="token punctuation">:</span> 4px<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+          &#123;&#123; chatroom.name &#125;&#125;
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span>
+    &#125; @empty &#123;
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>No chatrooms<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    &#125;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Create a new one<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>第 3 行的 <code>@for</code> 是一種控制流語法（control flow syntax），用來遍歷陣列並依序取出項目。該行的意思為依序取出在 <code>chatrooms()</code> 內的 <code>chatroom</code> 項目並以 <code>chatroom.id</code> 當作追蹤每個項目的唯一識別子，這是 Angular 用來提升效能的方式。每當陣列中某個項目有變動時，因為有識別子，僅需要更新該物件即可，而非整個陣列。</li>
+<li>第 4 ~ 8 行大括號內則是用來呈現每個 <code>chatroom</code> 項目，我們建立路由與每個路由顯示各自的 <code>chatroom.name</code> ，經由點擊導引到不同的聊天室頁面。</li>
+<li>第 9 ~ 10 行的 <code>@empty</code> 會在 <code>chatrooms()</code> 為空（或 <code>null</code> 或 <code>undefined</code> ）時顯示 No chatrooms 字樣，而不會在此區塊中留白。</li>
+</ul>
+<blockquote>
+<p>控制流語法（control flow syntax）：</p>
+<ul>
+<li>Angular 17 開始提供</li>
+<li>Angular 18 成為內建語法</li>
+<li>使用 <code>ng g @angular/core:control-flow</code> 可將專案內所有已存在的結構指令（structural directive）如 <code>ngIf</code> 與 <code>ngFor</code> 轉換成控制流語法。</li>
+</ul>
+</blockquote>
+<span id="more"></span>
+
+<p>雖然目前大致上完成基本功能，不過我們發現 <code>chatrooms</code> 這個聊天室物件陣列並無法共享給其他元件使用，並且在元件中管理並操作這些資料並不是良好的設計，而是應該有一個專門集中管理這些資料的地方，並提供操作的方式給任何需要使用的元件。將來在佈署應用程式時，服務的另一個重要功能就是用來與後端進行溝通。因此資料獲取、儲存、操作等功能，就是服務提供的優勢。將這些功能由元件中抽離出來，也能讓程式碼更簡潔、易維護。</p>
+<p>使用 Angular CLI 即可建立一個服務，例如想要在既有的 <code>src/app</code> 下新增一個資料夾 <code>services</code> 並在其中建立服務 <code>ChatroomService</code> ，使用 <code>ng generate service services/chatroom</code> 或 <code>ng g s services/chatroom</code> 即可完成檔案建置。接著進行以下步驟：</p>
+<ol>
+<li>把需要共享的聊天室物件陣列搬移至 <code>chatroom.service.ts</code> （這個檔案即為 <code>ChatroomService</code> 服務）。  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Injectable<span class="token punctuation">,</span> signal <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ChatroomModel <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'../models/chatroom.model'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Injectable</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  providedIn<span class="token operator">:</span> <span class="token string">'root'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">ChatroomService</span> <span class="token punctuation">&#123;</span>
+  chatrooms <span class="token operator">=</span> <span class="token generic-function"><span class="token function">signal</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">Array</span><span class="token operator">&lt;</span>ChatroomModel<span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom A'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom B'</span> <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">getChatrooms</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>chatrooms<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token function">addChatroom</span><span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>chatrooms<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>chatrooms <span class="token operator">=></span> <span class="token punctuation">[</span><span class="token operator">...</span>chatrooms<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> chatrooms<span class="token punctuation">.</span>length <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> name <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+  解析上述服務程式碼：</li>
+</ol>
+<ul>
+<li>第 4 ~ 6 行的裝飾子 <code>@Injectable()</code> 代表其為可注入的服務，而內部參數 <code>providedIn: &#39;root&#39;</code> 代表其層級為根注入器（或在 <code>app.config.ts</code> 中將 <code>ChatroomService</code> 加入至 <code>providers</code> 陣列）</li>
+<li>第 8 ~ 11 行僅將原本 <code>hall.component.ts</code> 內的聊天室物件陣列搬移至此</li>
+<li>第 13 ~ 15 行的 <code>getChatrooms</code> 函式用來提供聊天室物件陣列 <code>chatrooms</code></li>
+<li>第 17 ~ 19 行的 <code>addChatroom</code> 函式用來新增聊天室物件至陣列 <code>chatrooms</code></li>
+</ul>
+<ol start="2">
+<li>在 <code>hall</code> 中注入（inject）此服務。  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component<span class="token punctuation">,</span> inject<span class="token punctuation">,</span> Signal <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> RouterLink <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/router'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ChatroomService <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'../../services/chatroom.service'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ChatroomModel <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'../../models/chatroom.model'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-hall'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>RouterLink<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./hall.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./hall.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">HallComponent</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">private</span> chatroomService <span class="token operator">=</span> <span class="token function">inject</span><span class="token punctuation">(</span>ChatroomService<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  chatrooms<span class="token operator">:</span> Signal<span class="token operator">&lt;</span><span class="token builtin">Array</span><span class="token operator">&lt;</span>ChatroomModel<span class="token operator">>></span> <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>chatroomService<span class="token punctuation">.</span><span class="token function">getChatrooms</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">addChatroom</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> chatroomName <span class="token operator">=</span> <span class="token function">prompt</span><span class="token punctuation">(</span><span class="token string">'Enter chatroom name'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>chatroomName<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>chatroomService<span class="token punctuation">.</span><span class="token function">addChatroom</span><span class="token punctuation">(</span>chatroomName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+  解析上述元件程式碼：</li>
+</ol>
+<ul>
+<li>第 13 行將 <code>ChatroomService</code> 服務注入至元件，以便呼叫它的函式</li>
+<li>第 14 行的 <code>chatrooms</code> 改為由已注入的 <code>ChatroomService</code> 服務提供的 <code>getChatrooms()</code> 來獲得</li>
+<li>第 16 ~ 20 行建立測試函式，以簡易的彈出視窗讓使用者輸入聊天室名稱後，呼叫 <code>ChatroomService</code> 服務提供的 <code>addChatroom()</code> 來新增一個聊天室物件</li>
+</ul>
+<blockquote>
+<p><code>inject()</code>：</p>
+<ul>
+<li>Angular 14 開始提供</li>
+<li>用來告訴 Angular 取得並返回 <code>ChatroomService</code> 服務</li>
+<li>在此之前，注入依賴（dependency）唯一的方式是在建構子（constructor）內宣告，例如第 13 行的寫法可以換作 <code>constructor(private chatroomService: ChatroomService) &#123;&#125;</code></li>
+</ul>
+</blockquote>
+<ol start="3">
+<li>將新增按鈕的點擊功能加入至 <code>hall.component.html</code> 。  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span> <span class="token property">flex-grow</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> start<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span> <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    @for(chatroom of chatrooms(); track chatroom.id) &#123;
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">[routerLink]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>['/chatroom', chatroom.id]<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 2px 0<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 4px<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid blue<span class="token punctuation">;</span> <span class="token property">border-radius</span><span class="token punctuation">:</span> 4px<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+          &#123;&#123; chatroom.name &#125;&#125;
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span>
+    &#125; @empty &#123;
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>No chatrooms<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    &#125;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">(click)</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>addChatroom()<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Create a new one<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<ul>
+<li>第 14 行將按鈕加入 <code>click</code> 點擊事件時，觸發呼叫 <code>addChatroom()</code> 函式</li>
+</ul>
+<p>總結如下：</p>
+<ol>
+<li>將 <code>ChatroomService</code> 注入至 <code>HallComponent</code></li>
+<li>在 <code>hall.component.ts</code> 使用 <code>ChatroomService</code> 所提供的 <code>getChatrooms()</code> 與 <code>addChatroom(name: string)</code><br>  a. 使用 <code>getChatrooms()</code> 獲得所有的聊天室陣列，賦值給 signal <code>chatrooms</code> 供 <code>hall.component.html</code> 顯示<br>  b. 建立 <code>addChatroom()</code> 接收來自按鈕觸發並接收使用者賦予的聊天室名稱後，呼叫 <code>addChatroom(name: string)</code> 來新增一個聊天室</li>
+<li>以 <code>@for</code> 列出 <code>chatrooms()</code> 內的所有聊天室，並設定按鈕點擊來觸發 <code>addChatroom()</code></li>
+</ol>
+<img data-src="/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/2_chatroom_service.png" class="">
+
+<p>經由改寫後，雖然經由瀏覽器看到的結果並無變化，但底層的程式架構已變得易維護。元件由服務取得資料並呈現出來，以及接收使用者的動作並傳送至服務；服務則掌管資料的建立與處理，如此一來分工明確、權責劃分清楚，在多人維護的專案下開發效率佳也不容易出錯。</p>
+<p>最後，繼續將 <code>ChatroomService</code> 擴充功能至 <code>chatroom</code> 元件。</p>
+<ol>
+<li>建立 <code>MessageModel</code> 介面，並在 <code>ChatroomModel</code> 中新增 <code>MessageModel</code> 陣列型態的 <code>messages</code> 屬性。<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">MessageModel</span> <span class="token punctuation">&#123;</span>
+  timestamp<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  content<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">ChatroomModel</span> <span class="token punctuation">&#123;</span>
+  id<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  messages<span class="token operator">:</span> MessageModel<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<ul>
+<li><code>MessageModel</code> 介面的組成為<ul>
+<li><code>timestamp</code> 時間戳記：當一筆訊息被建立時，會同時產生時間字串。我們可以視它為訊息的 <code>id</code> （唯一識別碼）</li>
+<li><code>name</code> 發送者名稱：賦予該訊息由哪個使用者發送</li>
+<li><code>content</code> 訊息內容：儲存該訊息的內容字串</li>
+</ul>
+</li>
+<li><code>ChatroomModel</code> 額外加入的 <code>messages</code> 屬性用來儲存該聊天室所有的訊息</li>
+</ul>
+<ol start="2">
+<li>由於 <code>messages</code> 屬性已添加至 <code>ChatroomModel</code> ，因此修改 <code>chatroom.service.ts</code> 內的測試用聊天室物件陣列 <code>chatrooms</code> 並加入聊天室及訊息的相關函式。  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 略</span>
+chatrooms <span class="token operator">=</span> <span class="token generic-function"><span class="token function">signal</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">Array</span><span class="token operator">&lt;</span>ChatroomModel<span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom A'</span><span class="token punctuation">,</span> messages<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span> timestamp<span class="token operator">:</span> <span class="token string">'2021-01-01 00:00:00'</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Alice'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token string">'Hello, World!'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span> timestamp<span class="token operator">:</span> <span class="token string">'2021-01-01 00:00:01'</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Bob'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token string">'Hi, Alice!'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom B'</span><span class="token punctuation">,</span> messages<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">getChatrooms</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>chatrooms<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function">getChatroom</span><span class="token punctuation">(</span>chatroomId<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">chatrooms</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>chatroom <span class="token operator">=></span> chatroom<span class="token punctuation">.</span>id <span class="token operator">===</span> chatroomId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function">addChatroom</span><span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>chatrooms<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>chatrooms <span class="token operator">=></span> <span class="token punctuation">[</span><span class="token operator">...</span>chatrooms<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> chatrooms<span class="token punctuation">.</span>length <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> name<span class="token punctuation">,</span> messages<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function">getMessages</span><span class="token punctuation">(</span>chatroomId<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">chatrooms</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>chatroom <span class="token operator">=></span> chatroom<span class="token punctuation">.</span>id <span class="token operator">===</span> chatroomId<span class="token punctuation">)</span><span class="token operator">?.</span>messages<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function">sendMessage</span><span class="token punctuation">(</span>chatroomId<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>chatrooms<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>chatrooms <span class="token operator">=></span> chatrooms<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>chatroom <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> chatroom<span class="token punctuation">.</span>id <span class="token operator">===</span> chatroomId <span class="token operator">?</span>
+      <span class="token punctuation">&#123;</span> <span class="token operator">...</span>chatroom<span class="token punctuation">,</span> messages<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token operator">...</span>chatroom<span class="token punctuation">.</span>messages<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> timestamp<span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toISOString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> name<span class="token punctuation">,</span> content <span class="token punctuation">&#125;</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span> <span class="token operator">:</span>
+      chatroom<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<ul>
+<li>第 10 ~ 20 行為 <code>chatroom</code> 相關函式<ul>
+<li><code>getChatrooms()</code> 獲得所有的聊天室陣列，賦值給 signal <code>chatrooms</code></li>
+<li><code>getChatroom(chatroomId: number)</code> 接受聊天室的 <code>id</code> ，返回該聊天室物件</li>
+<li><code>addChatroom(name: string)</code> 接受聊天室的 <code>name</code> ，建立聊天室物件（賦予 <code>id</code> ）並添加至 <code>chatrooms</code></li>
+</ul>
+</li>
+<li>第 22 ~ 31 行為 <code>message</code> 相關函式<ul>
+<li><code>getMessages(chatroomId: number)</code> 接受聊天室的 <code>id</code> ，返回該聊天室物件內的訊息陣列</li>
+<li><code>sendMessage(chatroomId: number, name: string, content: string)</code> 接受聊天室的 <code>id</code> 、 <code>name</code> 與 <code>content</code> ，建立訊息物件並添加至該聊天室的 <code>messages</code></li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>建立 <code>message.service.ts</code> 並在其中注入 <code>ChatroomService</code> 以使用其函式。  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> inject<span class="token punctuation">,</span> Injectable <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ChatroomService <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./chatroom.service'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Injectable</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  providedIn<span class="token operator">:</span> <span class="token string">'root'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">MessageService</span> <span class="token punctuation">&#123;</span>
+  chatroomService <span class="token operator">=</span> <span class="token function">inject</span><span class="token punctuation">(</span>ChatroomService<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">getMessages</span><span class="token punctuation">(</span>chatroomId<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>chatroomService<span class="token punctuation">.</span><span class="token function">getMessages</span><span class="token punctuation">(</span>chatroomId<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token function">sendMessage</span><span class="token punctuation">(</span>chatroomId<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>chatroomService<span class="token punctuation">.</span><span class="token function">sendMessage</span><span class="token punctuation">(</span>chatroomId<span class="token punctuation">,</span> name<span class="token punctuation">,</span> content<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<ul>
+<li>第 10 ~ 12 行的 <code>getMessages(chatroomId: number)</code> 用來呼叫 <code>ChatroomService</code> 的函式，獲得該聊天室的訊息陣列</li>
+<li>第 14 ~ 16 行的 <code>sendMessage(chatroomId: number, name: string, content: string)</code> 接受聊天室的 <code>id</code> 、 <code>name</code> 與 <code>content</code> ，用來呼叫 <code>ChatroomService</code> 的函式，添加訊息至該聊天室的 <code>messages</code></li>
+</ul>
+<ol start="4">
+<li>在 <code>chatroom.component.ts</code> 中加入  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 略</span>
+<span class="token keyword">private</span> <span class="token keyword">readonly</span> chatroomService <span class="token operator">=</span> <span class="token function">inject</span><span class="token punctuation">(</span>ChatroomService<span class="token punctuation">)</span><span class="token punctuation">;</span>
+chatroom <span class="token operator">=</span> <span class="token function">computed</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> id <span class="token operator">=</span> <span class="token function">Number</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">id</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>chatroomService<span class="token punctuation">.</span><span class="token function">getChatroom</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">private</span> <span class="token keyword">readonly</span> messageService <span class="token operator">=</span> <span class="token function">inject</span><span class="token punctuation">(</span>MessageService<span class="token punctuation">)</span><span class="token punctuation">;</span>
+messages <span class="token operator">=</span> <span class="token function">computed</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> id <span class="token operator">=</span> <span class="token function">Number</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">id</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>messageService<span class="token punctuation">.</span><span class="token function">getMessages</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<ul>
+<li>第 2 ~ 6 行注入 <code>ChatroomService</code> ，以 signal <code>id</code> 建立聊天室物件 signal <code>chatroom</code></li>
+<li>第 8 ~ 12 行注入 <code>MessageService</code> ，以 signal <code>id</code> 建立聊天室訊息陣列 signal <code>messages</code></li>
+</ul>
+<ol start="5">
+<li>改動主要在於 <code>chatroom.component.html</code> 的訊息顯示部分。  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> space-between<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">font-size</span><span class="token punctuation">:</span> large<span class="token punctuation">;</span> <span class="token property">font-weight</span><span class="token punctuation">:</span> bold<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>&#123;&#123; chatroom()?.name &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">(click)</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>backToHall()<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Back to hall<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  @if (messages().length > 0) &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-grow</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span> <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-messages</span> <span class="token attr-name">[messages]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>messages()<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-messages</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125; @else &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-grow</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span> <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>No messages<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">gap</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">align-items</span><span class="token punctuation">:</span> stretch<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">height</span><span class="token punctuation">:</span> 4rem<span class="token punctuation">;</span> <span class="token property">flex-grow</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-message-input</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-message-input</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>Send<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<ul>
+<li>第 3 行改為顯示聊天室名稱，由 <code>chatroom.component.ts</code> 中的 <code>chatroom()?.name</code> 獲得，此處的 <code>chatroom()</code> 有可能為 <code>undefined</code> 而無法取得 <code>name</code> 屬性，因此使用 <code>?.</code> 避免取值而造成 Uncaught TypeError: Cannot read properties of undefined 錯誤<blockquote>
+<p><code>?.</code> 稱為<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Operators/Optional_chaining">可選串連（optional chaining）運算子</a></p>
+</blockquote>
+</li>
+<li>第 6 ~ 14 行判斷若 <code>messages()</code> 陣列不為空，則顯示 <code>messages</code> 元件，否則顯示 No messages 字樣<ul>
+<li>第 6 行的 <code>@if</code> 是一種控制流語法，以括號內的條件式判斷是否進入其大括號內的區域</li>
+<li>第 8 行的用意是將 <code>messages()</code> 陣列輸入給 <code>messages</code> 元件，並在其中進行排版與樣式的設定</li>
+<li>第 10 行的 <code>@else</code> 也是一種控制流語法，針對 <code>@if</code> 條件式不符的情況進入其大括號內的區域</li>
+</ul>
+</li>
+</ul>
+<ol start="6">
+<li>在 <code>messages.component.ts</code> 以輸入接受上層元件給予的 <code>MessageModel</code> 陣列，並在 <code>messages.component.html</code> 顯示。  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component<span class="token punctuation">,</span> input <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> MessageModel <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'../../../../models/chatroom.model'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> DatePipe <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/common'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-messages'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>DatePipe<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./messages.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./messages.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">MessagesComponent</span> <span class="token punctuation">&#123;</span>
+  messages <span class="token operator">=</span> <span class="token generic-function"><span class="token function">input</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">Array</span><span class="token operator">&lt;</span>MessageModel<span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<ul>
+<li>第 7 行匯入 <code>DatePipe</code> 是為了在 <code>messages.component.html</code> 中轉換訊息的 <code>timestamp</code> 屬性，顯示一致的時間格式</li>
+<li>第 12 行接受父元件的輸入 <code>MessageModel</code> 陣列來建立 signal <code>messages</code> ，以提供 <code>messages.component.html</code> 顯示  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@for (message of messages(); track message.timestamp) &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">width</span><span class="token punctuation">:</span> fit-content<span class="token punctuation">;</span> <span class="token property">margin-bottom</span><span class="token punctuation">:</span> 0.5rem<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 0.5rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span> <span class="token property">gap</span><span class="token punctuation">:</span> 4px<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span> <span class="token property">border-radius</span><span class="token punctuation">:</span> 0.5rem<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>b</span><span class="token punctuation">></span></span>&#123;&#123; message.name &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>b</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>&#123;&#123; message.content &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">font-size</span><span class="token punctuation">:</span> 0.6rem<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>&#123;&#123; message.timestamp | date:'yyyy/MM/dd HH:mm' &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>第 1 行的 <code>@for</code> 是一種控制流語法，使用方式與解說可參考 <code>hall.component.html</code> ，差別在於此處所追蹤的唯一識別碼為訊息的 <code>timestamp</code></li>
+<li>第 5 行的範本插值（template interpolation）中加入管道（pipe），使用 <code>DatePipe</code> 將 <code>timestamp</code> 轉換成滿足 yyyy&#x2F;MM&#x2F;dd HH:mm 格式的時間顯示方式</li>
+</ul>
+<p>最後，我們可以看到在左圖顯示兩個聊天室連結，可以點擊進入不同聊天室。進入聊天室後，若訊息陣列不為空（右圖上）則將每一筆訊息的內容由上而下顯示出來，否則（右圖下）顯示 No messages 字樣：</p>
+<img data-src="/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/3_messages.png" class="">
+
+<h3 id="依賴注入（dependency-injection-DI）"><a href="#依賴注入（dependency-injection-DI）" class="headerlink" title="依賴注入（dependency injection, DI）"></a>依賴注入（dependency injection, DI）</h3><p>上述提到的依賴注入是一個著名的設計模式，讓我們將其拆開分別介紹：</p>
+<ul>
+<li>依賴（dependency）<br>應用程式中的元件需要取得自身以外的資料或功能來使用。</li>
+<li>注入（injection）<br>當元件需要這些功能時，注入器會去 <code>registry</code> 中找尋並返回或建立一個實體，將它注入至元件。</li>
+</ul>
+<p>Angular 的 DI 系統運作大致如下：</p>
+<ol>
+<li>應用程式啟動時，將提供者（provider）註冊到 <code>registry</code> 。</li>
+<li>提供者內容包含的令牌（token）是用來查找依賴（dependency）的標識符，它可以是字串、類別或自定義物件。使用令牌可以讓 DI 系統知道應該提供哪個依賴項實體。</li>
+<li>注入器（injector）是一個服務，當某個元件需要某個依賴時，會以令牌向注入器發出請求，注入器解析令牌並返回相應的依賴項實體。</li>
+</ol>
+<img data-src="/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/4_dependency_injection.png" class="">
+
+<p>經由這個運作機制，針對相同的令牌，注入器永遠都會返回相同的實體，因此服務在 Angular 中以單體模式（singleton）實現，它能保證在元件間互通資料的一致性。</p>
+<blockquote>
+<p>每個元件都有屬於自己的注入器，當某個依賴找不到時，會往父層找直到根注入器，此處即為裝飾子 <code>@Injectable()</code> 內部參數 <code>providedIn: &#39;root&#39;</code> 所處的層級。設定在根注入器的服務，能讓所有的元件都能找到。例如，若直到根注入器仍未能找到 <code>ChatroomService</code> 服務，則會跳出 NullInjectorError: No provider for ChatroomService! 錯誤。</p>
+<img data-src="/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/5_hierarchical_injectors.png" class="">
+</blockquote>
+<h3 id="Angular-的內建服務"><a href="#Angular-的內建服務" class="headerlink" title="Angular 的內建服務"></a>Angular 的內建服務</h3><ul>
+<li>Router<ul>
+<li>在 <code>app.config.ts</code> 將 <code>provideRouter(routes)</code> 加入至 <code>providers</code> 陣列</li>
+<li>由 <code>@angular/router</code> 匯入</li>
+<li>細節請參考 <a href="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1">Angular 新手村 - 3. 路由</a></li>
+</ul>
+</li>
+<li>HttpClient<ul>
+<li>在 <code>app.config.ts</code> 將 <code>provideHttpClient()</code> 加入至 <code>providers</code> 陣列</li>
+<li>由 <code>@angular/common/http</code> 匯入</li>
+<li>讓我們可以使用 RESTful API 的方式發送 HTTP 請求（request）並接收來自後端的資料<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">http <span class="token operator">=</span> <span class="token function">inject</span><span class="token punctuation">(</span>HttpClient<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">ngOnInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>http<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'https://jsonplaceholder.typicode.com/posts'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token builtin">console</span><span class="token punctuation">.</span>log<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+</li>
+<li>Title<ul>
+<li>由 <code>@angular/platform-browser</code> 匯入</li>
+<li>取得或改變頁面的標題（特別是在 SPA 的情況下，針對不同的元件而動態調整）<br><code>inject(Title).setTitle(&#39;聊天室&#39;);</code></li>
+</ul>
+</li>
+<li>Meta<ul>
+<li>由 <code>@angular/platform-browser</code> 匯入</li>
+<li>取得或改變頁面的 “meta” 值<br><code>inject(Meta).addTag(&#123; name: &#39;author&#39;, content: &#39;Kun-Neng&#39; &#125;);</code></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/" rel="prev" title="Angular 新手村 - 3. 路由">
+                  <i class="fa fa-angle-left"></i> Angular 新手村 - 3. 路由
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js","integrity":"sha256-mm3Re3y7xlvh+yCD+l/Zs1d+PU0AEad93MkWvljfm/s="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="延續上一篇，我們完成以 Angular CLI 建立了聊天室專案 chatroom ，並認識一些環境參數與設定選項。 元件（component）本篇首先認識集合呈現與行為的元件，它是由 CLI 所建立最頂層的元件，位於 src&#x2F;app&#x2F; ，基本上由 4 支檔案所組成：  app.component.html 提供網頁元素 app.component.css 提供樣式 app.component.t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 新手村 - 2. 元件">
+<meta property="og:url" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="延續上一篇，我們完成以 Angular CLI 建立了聊天室專案 chatroom ，並認識一些環境參數與設定選項。 元件（component）本篇首先認識集合呈現與行為的元件，它是由 CLI 所建立最頂層的元件，位於 src&#x2F;app&#x2F; ，基本上由 4 支檔案所組成：  app.component.html 提供網頁元素 app.component.css 提供樣式 app.component.t">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/first_screenshot.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/1_design.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/2_layout.png">
+<meta property="og:image" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/ng_g_c.png">
+<meta property="article:published_time" content="2024-12-07T12:25:00.000Z">
+<meta property="article:modified_time" content="2025-01-06T12:31:48.229Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/first_screenshot.png">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/","path":"2024/12/07/Angular-新手村-2-元件/","title":"Angular 新手村 - 2. 元件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular 新手村 - 2. 元件 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%83%E4%BB%B6%EF%BC%88component%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">元件（component）</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular 新手村 - 2. 元件 | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular 新手村 - 2. 元件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-12-07 20:25:00" itemprop="dateCreated datePublished" datetime="2024-12-07T20:25:00+08:00">2024-12-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-01-06 20:31:48" itemprop="dateModified" datetime="2025-01-06T20:31:48+08:00">2025-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>延續上一篇，我們完成以 Angular CLI 建立了聊天室專案 <code>chatroom</code> ，並認識一些環境參數與設定選項。</p>
+<h3 id="元件（component）"><a href="#元件（component）" class="headerlink" title="元件（component）"></a>元件（component）</h3><p>本篇首先認識集合<strong>呈現</strong>與<strong>行為</strong>的元件，它是由 CLI 所建立最頂層的元件，位於 <code>src/app/</code> ，基本上由 4 支檔案所組成：</p>
+<ul>
+<li><code>app.component.html</code> 提供網頁元素</li>
+<li><code>app.component.css</code> 提供樣式</li>
+<li><code>app.component.ts</code> 提供參數與運作功能</li>
+<li><code>app.component.spec.ts</code> 提供單元測試</li>
+</ul>
+<p>對照到一個基本的網頁組成，就不難理解上述檔案的用途。</p>
+<ul>
+<li>HTML （附檔名 .html）</li>
+<li>CSS （附檔名 .css 、 .scss 、 …）</li>
+<li>JavaScript （附檔名 .js）</li>
+</ul>
+<p>讓我們先介紹差異最大的部分： <code>app.component.ts</code></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-root'</span><span class="token punctuation">,</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./app.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./app.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">AppComponent</span> <span class="token punctuation">&#123;</span>
+  title <span class="token operator">=</span> <span class="token string">'chatroom'</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>讓我們來解析這支程式：</p>
+<ul>
+<li>第 1 行由 <code>@angular/core</code> 引入程式所需要的 <code>@Component</code> 裝飾子</li>
+<li>第 3 行在類別（<code>class</code>）前加註 <code>@Component</code> 裝飾子，即告訴 Angular 這個類別被視為元件</li>
+<li>第 4 ～ 6 行為 <code>@Component</code> 裝飾子的內容，稱為此元件的 <code>metadata</code> （元資料或中繼資料）<ul>
+<li><code>selector</code> 參數最重要，它會告訴 Angular 要在網頁中尋找的名稱，每個名稱在專案內都是唯一的。例如，若網頁中包含 <code>&lt;app-root&gt;&lt;/app-root&gt;</code> 區塊， Angular 會找出元件類別並實體化它。</li>
+<li><code>templateUrl</code> 參數用來指示 HTML 檔的路徑。可換成 <code>template</code> 參數，直接接受 HTML 語法</li>
+<li><code>styleUrl</code> 參數用來指示樣式檔（ CSS 或 SCSS ）的路徑。可換成 <code>styles</code> 參數，直接接受樣式語法 </li>
+<li>在早期的版本，可能會看到 <code>standalone</code> 參數，代表此元件是否支援直接由別的元件引入，而不需要 Angular module 。<blockquote>
+<p><code>standalone</code> 歷程：</p>
+<ul>
+<li>Angular 15 提出</li>
+<li>Angular 17 預設加入 <code>standalone: true</code> （在此之前，元件都必須宣告在 Angular module ）</li>
+<li>Angular 19 即使不加 <code>standalone: true</code> 選項，已預設為 <code>standalone</code></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>第 8 ～ 10 行為元件類別的內部資料與函式。</li>
+</ul>
+<p>在以下的 <code>app.component.html</code> 中加入以下語法後，在 <code>ng serve</code> 的運作下，就能在瀏覽器看到所呈現的畫面。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Hello, &#123;&#123; title &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>恭喜！您的應用程式正常運行著！<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>此處的 <code>&#123;&#123; title &#125;&#125;</code> 是為<strong>範本插值（ template interpolation ）</strong>，為 <code>app.component.ts</code> 提供資料給 <code>app.component.html</code> 呈現的方式之一，亦即 <code>&#123;&#123; title &#125;&#125;</code> 會被它本身的值（ <code>chatroom</code> ）替換掉。</p>
+</blockquote>
+<img data-src="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/first_screenshot.png" class="">
+
+<span id="more"></span>
+
+<p>即使已看到初步成果，但好奇的我們仍會想了解整個專案的運作流程。</p>
+<p>首先，回想上一篇所提到的 Angular 設定檔 <code>angular.json</code> ，在 <code>projects.chatroom.architect.build.options</code> 中定義了專案的進入點與其樣式：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token property">"options"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// ...</span>
+  <span class="token property">"index"</span><span class="token operator">:</span> <span class="token string">"src/index.html"</span><span class="token punctuation">,</span>
+  <span class="token property">"browser"</span><span class="token operator">:</span> <span class="token string">"src/main.ts"</span><span class="token punctuation">,</span>
+  <span class="token property">"styles"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"src/styles.css"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token comment">// ...</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>我們回頭看 <code>main.ts</code> 呼叫 <code>bootstrapApplication</code> 函式，並指定 <code>AppComponent</code> 成為應用程式的根元件（root component）。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> bootstrapApplication <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/platform-browser'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> appConfig <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./app/app.config'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> AppComponent <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./app/app.component'</span><span class="token punctuation">;</span>
+
+<span class="token function">bootstrapApplication</span><span class="token punctuation">(</span>AppComponent<span class="token punctuation">,</span> appConfig<span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>再來看最重要的 <code>index.html</code> ，即使 Angular CLI 建立的 <code>index.html</code> 內部並沒有任何 JavaScript 檔，但在 <code>body</code> 中包含了 <code>&lt;app-root&gt;&lt;/app-root&gt;</code> 區塊。因此在 <code>ng serve</code> 時， TypeScript 編譯器會產出 JavaScript 檔，並交由 Angular CLI 打包後加入至 <code>index.html</code> 檔。這些過程 Angular 都會自動處理完成，因此我們可以專注在程式功能的開發。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">doctype</span> <span class="token name">html</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>utf-8<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">></span></span>Chatroom<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>base</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>viewport<span class="token punctuation">"</span></span> <span class="token attr-name">content</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>width=device-width, initial-scale=1<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>icon<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>image/x-icon<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>favicon.ico<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-root</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-root</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>總結上述步驟， Angular 運作流程可以下圖表示：</p>
+<pre class="mermaid">---
+title: 
+---
+flowchart LR
+  subgraph angular[Angular]
+    a("angular.json") --> m("src/main.ts") -- bootstrap --> c("src/app/app.component") -- build --> buildTool
+    subgraph buildTool[Javascript build tool]
+      compiler["TypeScript compiler"] --> vite["Vite"]
+    end
+  end
+
+  buildTool -- package --> browser
+
+  subgraph browser[Browser]
+    index("index.html")
+  end</pre>
+
+<hr>
+<p>回到元件的運作，目前已知能使用範本插值將 <code>app.component.ts</code> 內的資料呈現在 <code>app.component.html</code> 。在 Angular 17 版後可以使用較新的寫法，由 <code>@angular/core</code> 引入 <code>signal()</code> 函式，在 Angular 設定<strong>變更偵測（ change detection ）</strong>為 <code>OnPush</code> 時，讓 Angular 將 signal 視為元件的相依變數，若其值有變化，會自動被標註（mark）進行渲染更新。</p>
+<p><code>app.component.html</code> 與 <code>app.component.ts</code> 分別可以改寫為</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Hello, &#123;&#123; title() &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>恭喜！您的應用程式正常運行著！<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component<span class="token punctuation">,</span> signal <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-root'</span><span class="token punctuation">,</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./app.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./app.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">AppComponent</span> <span class="token punctuation">&#123;</span>
+  title <span class="token operator">=</span> <span class="token function">signal</span><span class="token punctuation">(</span><span class="token string">'chatroom'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p><code>signal()</code> 歷程：</p>
+<ul>
+<li>Angular 16 提出開發者預覽版</li>
+<li>Angular 17 成為穩定版</li>
+</ul>
+</blockquote>
+<p>參考官網：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://angular.dev/guide/signals">Angular Signals</a></li>
+</ul>
+<hr>
+<p>隨著專案未來可能越來越龐大，不可能將所有的功能、樣式都集中在根元件 <code>AppComponent</code> ，因此我們需要設計更多元件以實現不同的商業邏輯（business logic），這個時候就能使用 Angular CLI 的 <code>ng generate component &lt;component-name&gt;</code> 或 <code>ng g c &lt;component-name&gt;</code> 來建立新的元件。</p>
+<p>想定一個聊天室應該會有的使用情境：</p>
+<ol>
+<li>進入大廳（hall），顯示多個聊天室入口</li>
+<li>點選某個聊天室入口進入聊天室視窗（chatroom）</li>
+<li>在聊天室視窗中，有訊息串與輸入框，經由發送（Send）按鈕可將所輸入的訊息加入至訊息串</li>
+<li>在聊天室視窗中，有返回按鈕可回到大廳</li>
+<li>建立新聊天室</li>
+</ol>
+<img data-src="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/1_design.png" class="">
+
+<p>對上述需求進行分析後，我們可以勾勒出基本架構與相關元件：</p>
+<img data-src="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/2_layout.png" class="">
+
+<p>按以下步驟使用 Angular CLI 即可迅速建立所有檔案</p>
+<ol>
+<li>在 <code>src/app/</code> 建立 <code>pages</code> 資料夾，並在內部建立 <code>pages</code> 元件：<br>  <code>ng g c pages</code></li>
+<li>接著在 <code>pages</code> 資料夾內部建立 <code>chatroom</code> 與 <code>hall</code> 兩個資料夾與其元件：<br>  <code>ng g c pages/chatroom</code><br>  <code>ng g c pages/hall</code></li>
+<li>接著在 <code>chatroom</code> 資料夾內部建立 <code>components</code> 資料夾，內部包含 <code>messages</code> 與 <code>message-input</code> 兩個資料夾與其元件：<br>  <code>ng g c pages/chatroom/components/messages</code><br>  <code>ng g c pages/chatroom/components/message-input</code></li>
+</ol>
+<p>最終在 <code>src/app/</code> 成功建立所需元件。</p>
+<img data-src="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/ng_g_c.png" class="">
+
+<p>下一章，我們會介紹如何將以上所建立的元件組合在一起。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/" rel="prev" title="Angular 新手村 - 1. 開發環境與操作指令">
+                  <i class="fa fa-angle-left"></i> Angular 新手村 - 1. 開發環境與操作指令
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/" rel="next" title="Angular 新手村 - 3. 路由">
+                  Angular 新手村 - 3. 路由 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js","integrity":"sha256-mm3Re3y7xlvh+yCD+l/Zs1d+PU0AEad93MkWvljfm/s="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
