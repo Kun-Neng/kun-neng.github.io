@@ -367,11 +367,11 @@ codeblock:
     light: default
     dark: stackoverflow-dark
   prism:
-    light: prism
-    dark: prism # prism-dark
+    light: prism-tomorrow
+    dark: prism-tomorrow
   # Add copy button on codeblock
   copy_button:
-    enable: false
+    enable: true
     # Available values: default | flat | mac
     style:
   # Fold code block
