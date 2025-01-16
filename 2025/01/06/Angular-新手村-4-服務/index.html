@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/4_dependency_injection.png">
 <meta property="og:image" content="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/5_hierarchical_injectors.png">
 <meta property="article:published_time" content="2025-01-06T10:00:00.000Z">
-<meta property="article:modified_time" content="2025-01-10T13:07:14.623Z">
+<meta property="article:modified_time" content="2025-01-16T23:42:10.066Z">
 <meta property="article:author" content="Kun-Neng Hung">
 <meta property="article:tag" content="Angular">
 <meta property="article:tag" content="Web">
@@ -219,7 +219,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-01-10 21:07:14" itemprop="dateModified" datetime="2025-01-10T21:07:14+08:00">2025-01-10</time>
+      <time title="Modified: 2025-01-17 07:42:10" itemprop="dateModified" datetime="2025-01-17T07:42:10+08:00">2025-01-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -550,29 +550,26 @@ messages <span class="token operator">=</span> <span class="token function">comp
 <ol start="6">
 <li>在 <code>messages.component.ts</code> 以輸入接受上層元件給予的 <code>MessageModel</code> 陣列，並在 <code>messages.component.html</code> 顯示。  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component<span class="token punctuation">,</span> input <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> <span class="token punctuation">&#123;</span> MessageModel <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'../../../../models/chatroom.model'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> DatePipe <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/common'</span><span class="token punctuation">;</span>
 
 <span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
   selector<span class="token operator">:</span> <span class="token string">'app-messages'</span><span class="token punctuation">,</span>
-  imports<span class="token operator">:</span> <span class="token punctuation">[</span>DatePipe<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   templateUrl<span class="token operator">:</span> <span class="token string">'./messages.component.html'</span><span class="token punctuation">,</span>
   styleUrl<span class="token operator">:</span> <span class="token string">'./messages.component.css'</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
 <span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">MessagesComponent</span> <span class="token punctuation">&#123;</span>
   messages <span class="token operator">=</span> <span class="token generic-function"><span class="token function">input</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">Array</span><span class="token operator">&lt;</span>MessageModel<span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
 </ol>
 <ul>
-<li>第 7 行匯入 <code>DatePipe</code> 是為了在 <code>messages.component.html</code> 中轉換訊息的 <code>timestamp</code> 屬性，顯示一致的時間格式</li>
-<li>第 12 行接受父元件的輸入 <code>MessageModel</code> 陣列來建立 signal <code>messages</code> ，以提供 <code>messages.component.html</code> 顯示  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@for (message of messages(); track message.timestamp) &#123;
+<li>第 11 行接受父元件的輸入 <code>MessageModel</code> 陣列來建立 signal <code>messages</code> ，以提供 <code>messages.component.html</code> 顯示  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@for (message of messages(); track message.timestamp) &#123;
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">width</span><span class="token punctuation">:</span> fit-content<span class="token punctuation">;</span> <span class="token property">margin-bottom</span><span class="token punctuation">:</span> 0.5rem<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 0.5rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span> <span class="token property">gap</span><span class="token punctuation">:</span> 4px<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span> <span class="token property">border-radius</span><span class="token punctuation">:</span> 0.5rem<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>b</span><span class="token punctuation">></span></span>&#123;&#123; message.name &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>b</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>&#123;&#123; message.content &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">font-size</span><span class="token punctuation">:</span> 0.6rem<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>&#123;&#123; message.timestamp | date:'yyyy/MM/dd HH:mm' &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">font-size</span><span class="token punctuation">:</span> 0.6rem<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>&#123;&#123; message.timestamp &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
 <li>第 1 行的 <code>@for</code> 是一種控制流語法，使用方式與解說可參考 <code>hall.component.html</code> ，差別在於此處所追蹤的唯一識別碼為訊息的 <code>timestamp</code></li>
-<li>第 5 行的範本插值（template interpolation）中加入管道（pipe），使用 <code>DatePipe</code> 將 <code>timestamp</code> 轉換成滿足 yyyy&#x2F;MM&#x2F;dd HH:mm 格式的時間顯示方式</li>
 </ul>
 <p>最後，我們可以看到在左圖顯示兩個聊天室連結，可以點擊進入不同聊天室。進入聊天室後，若訊息陣列不為空（右圖上）則將每一筆訊息的內容由上而下顯示出來，否則（右圖下）顯示 No messages 字樣：</p>
 <img data-src="/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/3_messages.png" class="">
