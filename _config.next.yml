@@ -98,6 +98,7 @@ open_graph:
 menu:
   home: / || fa fa-home
   about: /about/ || fa fa-user
+  tech talks: /tech-talks/ || fa fa-microphone
   side projects: /side-projects/ || fa fa-cube
   tags: /tags/ || fa fa-tags
   categories: /categories/ || fa fa-th
