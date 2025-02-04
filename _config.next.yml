@@ -167,6 +167,7 @@ social:
   #Instagram: https://instagram.com/yourname || fab fa-instagram
   #Skype: skype:yourname?call|chat || fab fa-skype
   LinkedIn: https://www.linkedin.com/in/kunneng || fab fa-linkedin
+  Medium: https://medium.com/@kunneng.hung || fab fa-medium
 
 social_icons:
   enable: true
