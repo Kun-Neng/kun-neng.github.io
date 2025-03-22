@@ -3,6 +3,12 @@ title: Side Projects
 date: 2025-01-17 07:50:16
 ---
 
+* 2025 Google MediaPipe Demo
+  - https://github.com/Kun-Neng/mediapipe-demo
+  - MediaPipe, Google AI Gemma
+* 2025 AI Server
+  - https://github.com/Kun-Neng/ai-server
+  - Google Gemini API, Google Vertex AI
 * 2024 Brick breaker 🎮
   - https://kun-brick-breaker.vercel.app
   - ⚛️, NextJS
