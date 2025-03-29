@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="有時候我們不會想在視圖（view）直接呈現原始資料，而是將它們轉換或格式化等再顯示出來。這些瑣碎、重複的事情就可以由 Angular 提供的管道（pipe）來完成。做法通常是在範本插值（ template interpolation ）中，於原始資料後串接 | 及特定管道即可。 內建管道 async  AsyncPipe 處理並呈現來自 Promise 或 Observable 的非同步資料，當資">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 新手村 - 6. 管道">
+<meta property="og:url" content="https://kun-neng.github.io/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="有時候我們不會想在視圖（view）直接呈現原始資料，而是將它們轉換或格式化等再顯示出來。這些瑣碎、重複的事情就可以由 Angular 提供的管道（pipe）來完成。做法通常是在範本插值（ template interpolation ）中，於原始資料後串接 | 及特定管道即可。 內建管道 async  AsyncPipe 處理並呈現來自 Promise 或 Observable 的非同步資料，當資">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/1_slice_json_pipes.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/2_date_pipe.png">
+<meta property="article:published_time" content="2025-03-29T06:10:00.000Z">
+<meta property="article:modified_time" content="2025-03-29T06:14:58.008Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/1_slice_json_pipes.png">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/","path":"2025/03/29/Angular-新手村-6-管道/","title":"Angular 新手村 - 6. 管道"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular 新手村 - 6. 管道 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tech-talks"><a href="/tech-talks/" rel="section"><i class="fa fa-microphone fa-fw"></i>tech talks</a></li><li class="menu-item menu-item-side-projects"><a href="/side-projects/" rel="section"><i class="fa fa-cube fa-fw"></i>side projects</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A7%E5%BB%BA%E7%AE%A1%E9%81%93"><span class="nav-number">1.</span> <span class="nav-text">內建管道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E8%A3%BD%E5%8C%96%E7%AE%A1%E9%81%93"><span class="nav-number">2.</span> <span class="nav-text">客製化管道</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://medium.com/@kunneng.hung" title="Medium → https:&#x2F;&#x2F;medium.com&#x2F;@kunneng.hung" rel="noopener me" target="_blank"><i class="fab fa-medium fa-fw"></i>Medium</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular 新手村 - 6. 管道 | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular 新手村 - 6. 管道
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-03-29 14:10:00 / Modified: 14:14:58" itemprop="dateCreated datePublished" datetime="2025-03-29T14:10:00+08:00">2025-03-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>有時候我們不會想在視圖（view）直接呈現原始資料，而是將它們轉換或格式化等再顯示出來。這些瑣碎、重複的事情就可以由 Angular 提供的管道（pipe）來完成。做法通常是在範本插值（ template interpolation ）中，於原始資料後串接 <code>|</code> 及特定管道即可。</p>
+<h3 id="內建管道"><a href="#內建管道" class="headerlink" title="內建管道"></a>內建管道</h3><ul>
+<li><p>async</p>
+<ul>
+<li><code>AsyncPipe</code> 處理並呈現來自 <code>Promise</code> 或 <code>Observable</code> 的非同步資料，當資料可用時，它會觸發一個改變偵測（change detection）檢查<blockquote>
+<p>若來源為 <code>Observable</code> ，則當此管道被銷毀時，會反訂閱該來源。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>keyvalue</p>
+<ul>
+<li><code>KeyValuePipe</code> 在 Angular 6.1 被提出，針對 <code>Map</code> 或物件元素進行迭代並取出鍵（key）值（value），其鍵的順序按照以下規則：<ol>
+<li>如果它們都是字串，則按字典順序排列；</li>
+<li>如果它們都是數字，則按數值順序排列；</li>
+<li>如果它們都是布林值（先 <code>false</code> 後 <code>true</code>），則按它們的布林值計算；<br>如果鍵的類型不同，則先將它們轉換為字串，再進行比較。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>uppercase</p>
+<ul>
+<li><code>UpperCasePipe</code> 轉換字串為大寫</li>
+<li>例如， <code>&#123;&#123; 'chatroom name' | uppercase &#125;&#125;</code> 顯示為 <code>CHATROOM NAME</code></li>
+</ul>
+</li>
+<li><p>lowercase</p>
+<ul>
+<li><code>LowerCasePipe</code> 轉換字串為小寫</li>
+<li>例如， <code>&#123;&#123; 'CHATROOM NAME' | lowercase &#125;&#125;</code> 顯示為 <code>chatroom name</code></li>
+</ul>
+</li>
+<li><p>titlecase</p>
+<ul>
+<li>在 Angular 4 被提出， <code>TitleCasePipe</code> 轉換每個字的首字為大寫</li>
+<li>例如， <code>&#123;&#123; 'chatroom name' | titlecase &#125;&#125;</code> 顯示為 <code>Chatroom Name</code></li>
+</ul>
+</li>
+<li><p>json</p>
+<ul>
+<li><code>JsonPipe</code> 使用 <code>JSON.stringify()</code> 來呈現資料，通常使用在開發階段，以快速檢視資料內容。</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<ul>
+<li><p>slide</p>
+<ul>
+<li><code>SlicePipe</code> 用來部分顯示列表中的元素，它接受兩個引數（argument）：起始索引（start index）與可選的結束索引（end index）。要提供引數，必須在管道後串接 <code>:</code> ，再串接第一個引數。若有第二個引數，則再串接 <code>:</code> 及第二個引數。</li>
+<li>例如，第 11 行以 <code>slice:1:3</code> 取出 <code>chatrooms()</code> 陣列中第 1 個與第 2 個元素，並以 <code>json</code> 管道顯示物件內容。<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component<span class="token punctuation">,</span> signal <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> JsonPipe<span class="token punctuation">,</span> SlicePipe <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/common'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ChatroomModel <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'../../models/chatroom.model'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-hall'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>SlicePipe<span class="token punctuation">,</span> JsonPipe<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  template<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+    &lt;div style="height: 100%; display: flex; flex-direction: column;">
+      &lt;div style="margin: 1rem; padding: 1rem; display: flex; flex-direction: column; flex-grow: 1; justify-content: start; border: 1px solid black; overflow-y: auto;">
+        @for (chatroom of chatrooms() | slice:1:3; track chatroom.id) &#123;
+          &lt;div style="margin: 2px 0; padding: 4px; border: 1px solid blue; border-radius: 4px;">
+            &#123;&#123; chatroom | json &#125;&#125;
+          &lt;/div>
+        &#125; @empty &#123;
+          &lt;div>No chatrooms&lt;/div>
+        &#125;
+      &lt;/div>
+    &lt;/div>
+  </span><span class="token template-punctuation string">`</span></span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">HallComponent</span> <span class="token punctuation">&#123;</span>
+  chatrooms <span class="token operator">=</span> <span class="token generic-function"><span class="token function">signal</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">Array</span><span class="token operator">&lt;</span>ChatroomModel<span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom A'</span><span class="token punctuation">,</span> messages<span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">&#123;</span> timestamp<span class="token operator">:</span> <span class="token string">'2021-01-01 00:00:00'</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Alice'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token string">'Hello, World!'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#123;</span> timestamp<span class="token operator">:</span> <span class="token string">'2021-01-01 00:00:01'</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Bob'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token string">'Hi, Alice!'</span> <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom B'</span><span class="token punctuation">,</span> messages<span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">&#123;</span> timestamp<span class="token operator">:</span> <span class="token string">'2022-01-02 00:00:00'</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'David'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token string">'Good afternoon!'</span> <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom C'</span><span class="token punctuation">,</span> messages<span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">&#123;</span> timestamp<span class="token operator">:</span> <span class="token string">'2022-01-01 00:00:00'</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Cindy'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token string">'Good morning!'</span> <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom D'</span><span class="token punctuation">,</span> messages<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom E'</span><span class="token punctuation">,</span> messages<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+由下圖可看出僅呈現第 1 個與第 2 個 <code>ChatroomModel</code> 物件在經過字串化的結果：<img data-src="/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/1_slice_json_pipes.png" class=""></li>
+</ul>
+</li>
+<li><p>date</p>
+<ul>
+<li><code>DatePipe</code> 將時間（ <code>Date</code> 物件或毫秒數值）轉換成想要的字串格式，如 <code>&#39;yyyy/MM/dd&#39;</code> 、 <code>&#39;yy-MM&#39;</code> 或預先定義的符號 <code>&#39;short&#39;</code> 或 <code>&#39;longDate&#39;</code> 等</li>
+<li>例如，在 <a href="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/">Chapter 4 - 服務（service）</a> 的 <code>Messages</code> 元件中加入並使用 <code>DatePipe</code> 將 <code>timestamp</code> 轉換成滿足 yyyy&#x2F;MM&#x2F;dd HH:mm 格式的時間顯示方式：<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 略</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> DatePipe <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/common'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-messages'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>DatePipe<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// ←</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./messages.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./messages.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">MessagesComponent</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 略</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@for (message of messages(); track message.timestamp) &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">width</span><span class="token punctuation">:</span> fit-content<span class="token punctuation">;</span> <span class="token property">margin-bottom</span><span class="token punctuation">:</span> 0.5rem<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 0.5rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span> <span class="token property">gap</span><span class="token punctuation">:</span> 4px<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span> <span class="token property">border-radius</span><span class="token punctuation">:</span> 0.5rem<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>b</span><span class="token punctuation">></span></span>&#123;&#123; message.name &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>b</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>&#123;&#123; message.content &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">font-size</span><span class="token punctuation">:</span> 0.6rem<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>&#123;&#123; message.timestamp | date:'yyyy/MM/dd HH:mm' &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+由下圖可看出原始資料 <code>2021-01-01 00:00:00</code> 被轉換成 <code>2021/01/01 00:00</code> 字串顯示出來：<img data-src="/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/2_date_pipe.png" class=""></li>
+</ul>
+</li>
+<li><p>number</p>
+<ul>
+<li><code>DecimalPipe</code> 它接受一個字串引數（argument），格式為 <code>&#123;integerDigits&#125;.&#123;minFractionDigits&#125;-&#123;maxFractionDigits&#125;</code> ，其中每個部分都是可選的，分別為<ul>
+<li><code>integerDigits</code> ：整數部分需要多少個數字（整數位數）<blockquote>
+<p>如果給定的 <code>integerDigits</code> 多過於整數位數，則會補 <code>0</code></p>
+</blockquote>
+</li>
+<li><code>minFractionDigits</code> ：小數部分至少需要多少個數字</li>
+<li><code>maxFractionDigits</code> ：小數部分最多有幾個數字<blockquote>
+<p>如果小數位數多過於給定的數字，則會四捨五入</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>例如，定義 <code>value = 1111.25</code> 則<ul>
+<li><code>&#123;&#123; value | number &#125;&#125;</code> 顯示為 <code>1,111.25</code></li>
+<li><code>&#123;&#123; value | number:'6.' &#125;&#125;</code> 顯示為 <code>001,111.25</code></li>
+<li><code>&#123;&#123; value | number:'.1-2' &#125;&#125;</code> 顯示為 <code>1,111.25</code></li>
+<li><code>&#123;&#123; value | number:'.1-1' &#125;&#125;</code> 顯示為 <code>1,111.3</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>currency</p>
+<ul>
+<li><code>CurrencyPipe</code> 將金錢數字以給定的貨幣格式顯示，因此必須提供至少一個參數：<ul>
+<li>貨幣的 ISO 代碼，例如 <code>&#39;USD&#39;</code> 、 <code>&#39;EUR&#39;</code> 或 <code>&#39;JPY&#39;</code> 等</li>
+<li>若要在前綴加入金錢符號（ <code>&#39;$&#39;</code> 、 <code>&#39;€&#39;</code> 、 <code>&#39;CA$&#39;</code> 等），可使用符號（ <code>symbol</code> 或 <code>symbol-narrow</code> ）。前者為完整的貨幣符號，後者為簡化的貨幣符號。</li>
+</ul>
+</li>
+<li>例如，定義 <code>amount = 1234.56</code> 則<ul>
+<li><code>&#123;&#123; amount | currency:'USD' &#125;&#125;</code> 顯示為 <code>$1,234.56</code></li>
+<li><code>&#123;&#123; amount | currency:'EUR':'symbol':'1.2-2' &#125;&#125;</code> 顯示為 <code>€1,234.56</code></li>
+<li><code>&#123;&#123; amount | currency:'CAD':'symbol' &#125;&#125;</code> 顯示為 <code>CA$1,234.56</code></li>
+<li><code>&#123;&#123; amount | currency:'CAD':'symbol-narrow' &#125;&#125;</code> 顯示為 <code>$1,234.56</code></li>
+<li><code>&#123;&#123; amount | currency:'JPY':'symbol-narrow' &#125;&#125;</code> 顯示為 <code>¥1,235</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>percent</p>
+<ul>
+<li><code>PercentPipe</code> 將數字以百分比形式顯示</li>
+<li>例如，定義 <code>value = 0.25</code> 則 <code>&#123;&#123; value | percent &#125;&#125;</code> 顯示為 <code>25%</code></li>
+</ul>
+</li>
+</ul>
+<p>除了在範本插值使用外，我們也可以將它加在程式碼中，例如要改變一個數字的格式，可以使用 <code>formatNumber</code> 函式：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component<span class="token punctuation">,</span> computed<span class="token punctuation">,</span> signal <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> formatNumber <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/common'</span><span class="token punctuation">;</span> <span class="token comment">// ←</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-dog'</span><span class="token punctuation">,</span>
+  template<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">&lt;p>&#123;&#123; formattedWeight() &#125;&#125;&lt;/p></span><span class="token template-punctuation string">`</span></span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">DogComponent</span> <span class="token punctuation">&#123;</span>
+  dog <span class="token operator">=</span> <span class="token function">signal</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> name<span class="token operator">:</span> <span class="token string">'Cute Dog'</span><span class="token punctuation">,</span> weight<span class="token operator">:</span> <span class="token number">15</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  formattedWeight <span class="token operator">=</span> <span class="token function">computed</span><span class="token punctuation">(</span>
+    <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">formatNumber</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">dog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>weight<span class="token punctuation">,</span> <span class="token string">'en-US'</span><span class="token punctuation">,</span> <span class="token string">'.2'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="客製化管道"><a href="#客製化管道" class="headerlink" title="客製化管道"></a>客製化管道</h3><p>要客製化一個管道，簡單來說，就是實作 <code>PipeTransform</code> 介面。例如，我們利用管道將足球圓周轉換為大小，可以將判斷式加入至 <code>transform()</code> 方法，並返回結果。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Pipe<span class="token punctuation">,</span> PipeTransform <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Pipe</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  name<span class="token operator">:</span> <span class="token string">'size'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">SizePipe</span> <span class="token keyword">implements</span> <span class="token class-name">PipeTransform</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">transform</span><span class="token punctuation">(</span>value<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> <span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">Array</span><span class="token operator">&lt;</span><span class="token builtin">unknown</span><span class="token operator">></span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">>=</span> <span class="token number">27</span> <span class="token operator">&amp;&amp;</span> value <span class="token operator">&lt;=</span> <span class="token number">28</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token string">'5'</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">>=</span> <span class="token number">25</span> <span class="token operator">&amp;&amp;</span> value <span class="token operator">&lt;</span> <span class="token number">27</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token string">'4'</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">>=</span> <span class="token number">23</span> <span class="token operator">&amp;&amp;</span> value <span class="token operator">&lt;</span> <span class="token number">25</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token string">'3'</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token string">'Other'</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用上，將 <code>SizePipe</code> 匯入後，即可在範本插值使用。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component<span class="token punctuation">,</span> signal <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> SizePipe <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'...'</span><span class="token punctuation">;</span> <span class="token comment">// ←</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-soccer'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>SizePipe<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// ←</span>
+  template<span class="token operator">:</span> <span class="token string">'The soccer size is &#123;&#123; soccerBall().circumference | size &#125;&#125;'</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">SoccerBallComponent</span> <span class="token punctuation">&#123;</span>
+  soccerBall <span class="token operator">=</span> <span class="token function">signal</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+    circumference<span class="token operator">:</span> <span class="token number">26.5</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在網頁上即可見到由客製化的管道轉換後的結果。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/02/09/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-5-%E6%8C%87%E4%BB%A4/" rel="prev" title="Angular 新手村 - 5. 指令">
+                  <i class="fa fa-angle-left"></i> Angular 新手村 - 5. 指令
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js","integrity":"sha256-mm3Re3y7xlvh+yCD+l/Zs1d+PU0AEad93MkWvljfm/s="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

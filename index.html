@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -173,6 +173,135 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/" class="post-title-link" itemprop="url">Angular 新手村 - 6. 管道</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-03-29 14:10:00 / Modified: 14:14:58" itemprop="dateCreated datePublished" datetime="2025-03-29T14:10:00+08:00">2025-03-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>有時候我們不會想在視圖（view）直接呈現原始資料，而是將它們轉換或格式化等再顯示出來。這些瑣碎、重複的事情就可以由 Angular 提供的管道（pipe）來完成。做法通常是在範本插值（ template interpolation ）中，於原始資料後串接 <code>|</code> 及特定管道即可。</p>
+<h3 id="內建管道"><a href="#內建管道" class="headerlink" title="內建管道"></a>內建管道</h3><ul>
+<li><p>async</p>
+<ul>
+<li><code>AsyncPipe</code> 處理並呈現來自 <code>Promise</code> 或 <code>Observable</code> 的非同步資料，當資料可用時，它會觸發一個改變偵測（change detection）檢查<blockquote>
+<p>若來源為 <code>Observable</code> ，則當此管道被銷毀時，會反訂閱該來源。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>keyvalue</p>
+<ul>
+<li><code>KeyValuePipe</code> 在 Angular 6.1 被提出，針對 <code>Map</code> 或物件元素進行迭代並取出鍵（key）值（value），其鍵的順序按照以下規則：<ol>
+<li>如果它們都是字串，則按字典順序排列；</li>
+<li>如果它們都是數字，則按數值順序排列；</li>
+<li>如果它們都是布林值（先 <code>false</code> 後 <code>true</code>），則按它們的布林值計算；<br>如果鍵的類型不同，則先將它們轉換為字串，再進行比較。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>uppercase</p>
+<ul>
+<li><code>UpperCasePipe</code> 轉換字串為大寫</li>
+<li>例如， <code>&#123;&#123; 'chatroom name' | uppercase &#125;&#125;</code> 顯示為 <code>CHATROOM NAME</code></li>
+</ul>
+</li>
+<li><p>lowercase</p>
+<ul>
+<li><code>LowerCasePipe</code> 轉換字串為小寫</li>
+<li>例如， <code>&#123;&#123; 'CHATROOM NAME' | lowercase &#125;&#125;</code> 顯示為 <code>chatroom name</code></li>
+</ul>
+</li>
+<li><p>titlecase</p>
+<ul>
+<li>在 Angular 4 被提出， <code>TitleCasePipe</code> 轉換每個字的首字為大寫</li>
+<li>例如， <code>&#123;&#123; 'chatroom name' | titlecase &#125;&#125;</code> 顯示為 <code>Chatroom Name</code></li>
+</ul>
+</li>
+<li><p>json</p>
+<ul>
+<li><code>JsonPipe</code> 使用 <code>JSON.stringify()</code> 來呈現資料，通常使用在開發階段，以快速檢視資料內容。</li>
+</ul>
+</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/02/09/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-5-%E6%8C%87%E4%BB%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -209,7 +338,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-03-22 21:53:17" itemprop="dateModified" datetime="2025-03-22T21:53:17+08:00">2025-03-22</time>
+      <time title="Modified: 2025-03-29 14:14:58" itemprop="dateModified" datetime="2025-03-29T14:14:58+08:00">2025-03-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -366,7 +495,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-03-22 21:53:17" itemprop="dateModified" datetime="2025-03-22T21:53:17+08:00">2025-03-22</time>
+      <time title="Modified: 2025-03-29 14:14:58" itemprop="dateModified" datetime="2025-03-29T14:14:58+08:00">2025-03-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -516,7 +645,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-03-22 21:53:17" itemprop="dateModified" datetime="2025-03-22T21:53:17+08:00">2025-03-22</time>
+      <time title="Modified: 2025-03-29 14:14:58" itemprop="dateModified" datetime="2025-03-29T14:14:58+08:00">2025-03-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -683,7 +812,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-03-22 21:53:17" itemprop="dateModified" datetime="2025-03-22T21:53:17+08:00">2025-03-22</time>
+      <time title="Modified: 2025-03-29 14:14:58" itemprop="dateModified" datetime="2025-03-29T14:14:58+08:00">2025-03-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -829,7 +958,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-03-22 21:53:17" itemprop="dateModified" datetime="2025-03-22T21:53:17+08:00">2025-03-22</time>
+      <time title="Modified: 2025-03-29 14:14:58" itemprop="dateModified" datetime="2025-03-29T14:14:58+08:00">2025-03-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -955,7 +1084,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-03-22 21:53:17" itemprop="dateModified" datetime="2025-03-22T21:53:17+08:00">2025-03-22</time>
+      <time title="Modified: 2025-03-29 14:14:58" itemprop="dateModified" datetime="2025-03-29T14:14:58+08:00">2025-03-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1052,7 +1181,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-03-22 21:53:17" itemprop="dateModified" datetime="2025-03-22T21:53:17+08:00">2025-03-22</time>
+      <time title="Modified: 2025-03-29 14:14:58" itemprop="dateModified" datetime="2025-03-29T14:14:58+08:00">2025-03-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
