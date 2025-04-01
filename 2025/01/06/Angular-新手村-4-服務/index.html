@@ -15,10 +15,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="延續上一篇，我們已經在 hall 建立一個聊天室物件 mockChatroom ，並在 hall.component.html 顯示其路由連結，點擊該聊天室則導引到相關頁面。實際上大廳會存在許多聊天室物件，在介紹服務（service）之前，先嘗試在 hall 建立更多測試資料，確保聊天室顯示與連結均正常：  在 src&#x2F;app 下手動新增 models 資料夾並在內部新增檔案 chatroom.m">
 <meta property="og:type" content="article">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/4_dependency_injection.png">
 <meta property="og:image" content="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/5_hierarchical_injectors.png">
 <meta property="article:published_time" content="2025-01-06T10:00:00.000Z">
-<meta property="article:modified_time" content="2025-04-01T12:24:05.904Z">
+<meta property="article:modified_time" content="2025-04-01T12:40:48.768Z">
 <meta property="article:author" content="Kun-Neng Hung">
 <meta property="article:tag" content="Angular">
 <meta property="article:tag" content="Web">
@@ -42,6 +42,7 @@
 
 
 <link rel="canonical" href="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/">
+
 
 
 <script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/","path":"2025/01/06/Angular-新手村-4-服務/","title":"Angular 新手村 - 4. 服務"}</script>
@@ -221,7 +222,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-04-01 20:24:05" itemprop="dateModified" datetime="2025-04-01T20:24:05+08:00">2025-04-01</time>
+      <time title="Modified: 2025-04-01 20:40:48" itemprop="dateModified" datetime="2025-04-01T20:40:48+08:00">2025-04-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -679,12 +680,6 @@ messages <span class="token operator">=</span> <span class="token function">comp
   </footer>
 
   
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-  <div class="sidebar-dimmer"></div>
   <div class="back-to-top" role="button" aria-label="Back to top">
     <i class="fa fa-arrow-up fa-lg"></i>
     <span>0%</span>
@@ -699,11 +694,11 @@ messages <span class="token operator">=</span> <span class="token function">comp
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
   
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.min.js","integrity":"sha256-TtLOdUA8mstPoO6sGvHIGx2ceXrrX4KgIItO06XOn8A="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
 

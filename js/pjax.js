@@ -3,7 +3,6 @@
 const pjax = new Pjax({
   selectors: [
     'head title',
-    'meta[property="og:title"]',
     'script[type="application/json"]',
     // Precede .main-inner to prevent placeholder TOC changes asap
     '.post-toc-wrap',
@@ -12,7 +11,7 @@ const pjax = new Pjax({
     '.pjax'
   ],
   switches: {
-    '.post-toc-wrap'(oldWrap, newWrap) {
+    '.post-toc-wrap': function(oldWrap, newWrap) {
       if (newWrap.querySelector('.post-toc')) {
         Pjax.switches.outerHTML.call(this, oldWrap, newWrap);
       } else {
@@ -37,9 +36,9 @@ document.addEventListener('pjax:success', () => {
     NexT.motion.integrator
       .init()
       .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
       // Add sidebar-post-related transition.
       .add(NexT.motion.middleWares.sidebar)
-      .add(NexT.motion.middleWares.postList)
       .bootstrap();
   }
   if (CONFIG.sidebar.display !== 'remove') {
