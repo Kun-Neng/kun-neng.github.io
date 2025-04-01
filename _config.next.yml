@@ -98,6 +98,8 @@ open_graph:
 menu:
   home: / || fa fa-home
   about: /about/ || fa fa-user
+  tech talks: /tech-talks/ || fa fa-microphone
+  side projects: /side-projects/ || fa fa-cube
   tags: /tags/ || fa fa-tags
   categories: /categories/ || fa fa-th
   archives: /archives/ || fa fa-archive
@@ -156,6 +158,7 @@ site_state: true
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
   GitHub: https://github.com/kun-neng || fab fa-github
+  # GitLab: https://gitlab.com/kunneng || fab fa-gitlab
   #E-Mail: mailto:yourname@gmail.com || fa fa-envelope
   #Weibo: https://weibo.com/yourname || fab fa-weibo
   #Twitter: https://twitter.com/yourname || fab fa-twitter
@@ -165,6 +168,7 @@ social:
   #Instagram: https://instagram.com/yourname || fab fa-instagram
   #Skype: skype:yourname?call|chat || fab fa-skype
   LinkedIn: https://www.linkedin.com/in/kunneng || fab fa-linkedin
+  Medium: https://medium.com/@kunneng.hung || fab fa-medium
 
 social_icons:
   enable: true
@@ -367,11 +371,11 @@ codeblock:
     light: default
     dark: stackoverflow-dark
   prism:
-    light: prism
-    dark: prism # prism-dark
+    light: prism-tomorrow
+    dark: prism-tomorrow
   # Add copy button on codeblock
   copy_button:
-    enable: false
+    enable: true
     # Available values: default | flat | mac
     style:
   # Fold code block
