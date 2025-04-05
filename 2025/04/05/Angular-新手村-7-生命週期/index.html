@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="我們能看到 Angular 應用程式的運作畫面，都是由元件組成並呈現，而稍微複雜的系統，勢必會有元件或資訊上的顯示、隱藏、變更等操作。這些都與生命週期（ life cycle ）牽扯不了關係。要打造一個穩定可靠的應用程式，不得不從最基礎的元件來了解其生命週期。 Angular 的生命週期流程大致如下圖所示。每一個方框都代表 Angular 的運行狀態，會呼叫對應的內建函式，稱為鉤子（ hook ）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 新手村 - 7. 生命週期">
+<meta property="og:url" content="https://kun-neng.github.io/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="我們能看到 Angular 應用程式的運作畫面，都是由元件組成並呈現，而稍微複雜的系統，勢必會有元件或資訊上的顯示、隱藏、變更等操作。這些都與生命週期（ life cycle ）牽扯不了關係。要打造一個穩定可靠的應用程式，不得不從最基礎的元件來了解其生命週期。 Angular 的生命週期流程大致如下圖所示。每一個方框都代表 Angular 的運行狀態，會呼叫對應的內建函式，稱為鉤子（ hook ）">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/1_ng-content_result.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/2_ng-content_result.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/3_contentChild_result.png">
+<meta property="article:published_time" content="2025-04-05T13:30:00.000Z">
+<meta property="article:modified_time" content="2025-04-05T13:46:26.070Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/1_ng-content_result.png">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/","path":"2025/04/05/Angular-新手村-7-生命週期/","title":"Angular 新手村 - 7. 生命週期"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular 新手村 - 7. 生命週期 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tech-talks"><a href="/tech-talks/" rel="section"><i class="fa fa-microphone fa-fw"></i>tech talks</a></li><li class="menu-item menu-item-side-projects"><a href="/side-projects/" rel="section"><i class="fa fa-cube fa-fw"></i>side projects</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ngOnInit"><span class="nav-number">1.</span> <span class="nav-text">ngOnInit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ngOnChanges"><span class="nav-number">2.</span> <span class="nav-text">ngOnChanges</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ngOnDestroy"><span class="nav-number">3.</span> <span class="nav-text">ngOnDestroy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ngDoCheck"><span class="nav-number">4.</span> <span class="nav-text">ngDoCheck</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ngAfterViewInit-%E8%88%87-ngAfterViewChecked"><span class="nav-number">5.</span> <span class="nav-text">ngAfterViewInit 與 ngAfterViewChecked</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ngAfterContentInit-%E8%88%87-ngAfterContentChecked"><span class="nav-number">6.</span> <span class="nav-text">ngAfterContentInit 與 ngAfterContentChecked</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://medium.com/@kunneng.hung" title="Medium → https:&#x2F;&#x2F;medium.com&#x2F;@kunneng.hung" rel="noopener me" target="_blank"><i class="fab fa-medium fa-fw"></i>Medium</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular 新手村 - 7. 生命週期 | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular 新手村 - 7. 生命週期
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-04-05 21:30:00 / Modified: 21:46:26" itemprop="dateCreated datePublished" datetime="2025-04-05T21:30:00+08:00">2025-04-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>我們能看到 Angular 應用程式的運作畫面，都是由元件組成並呈現，而稍微複雜的系統，勢必會有元件或資訊上的顯示、隱藏、變更等操作。這些都與<strong>生命週期（ life cycle ）</strong>牽扯不了關係。要打造一個穩定可靠的應用程式，不得不從最基礎的元件來了解其生命週期。</p>
+<p>Angular 的生命週期流程大致如下圖所示。每一個方框都代表 Angular 的運行狀態，會呼叫對應的內建函式，稱為<strong>鉤子（ hook ）</strong>。例如，某個元件首次被觸發顯示時，會依粗箭頭呼叫 <code>ngOnChanges</code> -&gt; <code>ngOnInit</code> -&gt; <code>ngDoCheck</code> -&gt; … 等鉤子。即使在程式中不見得會直接使用到，但 Angular 背後的生命週期仍按照這些鉤子運作。</p>
+<pre class="mermaid">flowchart TD
+  Start(("開始")) ==> ngOnChanges("ngOnChanges")
+  ngOnChanges("ngOnChanges"):::change ==> ngOnInit("ngOnInit")
+  ngOnInit("ngOnInit"):::init ==> ngDoCheck("ngDoCheck")
+  ngDoCheck("ngDoCheck"):::change ==> ngAfterContentInit("ngAfterContentInit")
+  ngAfterContentInit("ngAfterContentInit"):::init ==> ngAfterContentChecked("ngAfterContentChecked")
+  ngAfterContentChecked("ngAfterContentChecked"):::change ==> ngAfterViewInit("ngAfterViewInit"):::init
+  ngAfterViewInit("ngAfterViewInit") ==> ngAfterViewChecked("ngAfterViewChecked")
+  ngAfterViewChecked("ngAfterViewChecked"):::change --> ngOnDestroy("ngOnDestroy"):::destroy
+  ngOnDestroy("ngOnDestroy") --> Stop((("結束")))
+
+  Change(("變更")) -.-> ngOnChanges("ngOnChanges")
+  ngOnChanges("ngOnChanges") -.-> ngDoCheck("ngDoCheck")
+  ngDoCheck("ngDoCheck") -.-> ngAfterContentChecked("ngAfterContentChecked")
+  ngAfterContentChecked("ngAfterContentChecked") -.-> ngAfterViewChecked("ngAfterViewChecked")
+
+  classDef init stroke:#0f0
+  classDef destroy stroke:#f00
+  classDef change stroke:#00f</pre>
+
+<p>由上圖我們可以歸納出幾個重點：</p>
+<ul>
+<li>綠色方框為元件在首次觸發才會呼叫的鉤子</li>
+<li>藍色方框為元件不管在首次觸發，或往後偵測到變更時，都會觸發的鉤子（其中只有 <code>ngOnChanges</code> 是針對 <code>input</code> 的變更才觸發）</li>
+<li>紅色方框為元件結束時才會呼叫的鉤子</li>
+</ul>
+<p>一般常用的鉤子有以下三種：</p>
+<ul>
+<li><code>ngOnChanges</code>: 當一個或多個綁定的 <code>input</code> 值發生改變時，呼叫此鉤子。它會獲得一個 <code>SimpleChange</code> 型別的 map ，其包含各個 <code>input</code> 目前值（ <code>currentValue</code> ）與之前值（ <code>previousValue</code> ）。若沒有任何變更，此鉤子不會被呼叫。</li>
+<li><code>ngOnInit</code>: 首次觸發，在 <code>ngOnChanges</code> 後（若有變更的話）僅呼叫一次，進行初始化行為。它被呼叫時的情況有以下兩種：<ul>
+<li>沒有 <code>input</code> ，會呼叫此鉤子</li>
+<li>有 <code>input</code> ，在第一次的 <code>ngOnChanges</code> 後呼叫此鉤子</li>
+</ul>
+</li>
+<li><code>ngOnDestroy</code>: 當元件結束時才會呼叫的鉤子，對於清理行為（ cleanup ）很有幫助。</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="ngOnInit"><a href="#ngOnInit" class="headerlink" title="ngOnInit"></a><code>ngOnInit</code></h3><p>若要操作鉤子內的行為，建議在元件加入 <code>implements</code> 來實作它，這樣的方式確保能正確取得鉤子進行操作。例如，當在 <code>CarComponent</code> 實作 <code>OnInit</code> (1) ，若程式碼未加入 <code>ngOnInit()</code> 函式 (2) ，則編譯階段就會報錯。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">CarComponent</span> <span class="token keyword">implements</span> <span class="token class-name">OnInit</span> <span class="token punctuation">&#123;</span> <span class="token comment">// ← (1)</span>
+  <span class="token function">ngOnInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token comment">// ← (2)</span>
+    <span class="token comment">// Do something</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="ngOnChanges"><a href="#ngOnChanges" class="headerlink" title="ngOnChanges"></a><code>ngOnChanges</code></h3><p>如果想要每次在 <code>input</code> 值變更時做一些行為，可以使用 <code>OnChanges</code> 鉤子。 <code>ngOnChanges</code> 函式的參數 <code>changes</code> 是一筆記錄，以 <code>input</code> 名稱為鍵（ key ），其值（ value ）為 <code>SimpleChange</code> 物件，包含</p>
+<ul>
+<li><code>currentValue</code> 與 <code>previousValue</code> 分別存放目前值與之前值</li>
+<li><code>isFirstChange()</code> 用來判斷此次變更是否為第一次的變更。</li>
+</ul>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">CarComponent</span> <span class="token keyword">implements</span> <span class="token class-name">OnChanges</span> <span class="token punctuation">&#123;</span>
+  color <span class="token operator">=</span> input<span class="token punctuation">.</span><span class="token generic-function"><span class="token function">required</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">ngOnChanges</span><span class="token punctuation">(</span>changes<span class="token operator">:</span> SimpleChanges<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> carChange <span class="token operator">=</span> changes<span class="token punctuation">[</span><span class="token string">'color'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Color changed from </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>carChange<span class="token punctuation">.</span>previousValue<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string"> to </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>carChange<span class="token punctuation">.</span>currentValue<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Is it the first change? </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>carChange<span class="token punctuation">.</span><span class="token function">isFirstChange</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">My new color is </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">color</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 目前 input 值</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="ngOnDestroy"><a href="#ngOnDestroy" class="headerlink" title="ngOnDestroy"></a><code>ngOnDestroy</code></h3><p><code>ngOnDestroy</code> 鉤子設計用來銷毀元件。假設一個元件 <code>CarComponent</code> 建立時，每秒顯示字串 “Hello” ，當元件結束時就必須取消背景執行的工作，意即停止 <code>setInterval</code> 以避免記憶體洩漏（ memory leak ）問題。否則， JavaScript 會一直將此元件的實體（ instance ）保持在記憶體中，每秒顯示字串，直到永遠。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">CarComponent</span> <span class="token keyword">implements</span> <span class="token class-name">OnDestroy</span> <span class="token punctuation">&#123;</span>
+  color <span class="token operator">=</span> input<span class="token punctuation">.</span><span class="token generic-function"><span class="token function">required</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">private</span> interval<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>interval <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+      <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Hello'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token function">ngOnDestroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span> <span class="token punctuation">&#123;</span>
+    window<span class="token punctuation">.</span><span class="token function">clearInterval</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>interval<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>任何鉤子在 Angular 的生命週期都有其特別的用途，許多時候相同的行為（例如取值）會因為在不同的鉤子而得到不同的結果，這些問題或解法通常都會出現以下鉤子中：</p>
+<h3 id="ngDoCheck"><a href="#ngDoCheck" class="headerlink" title="ngDoCheck"></a><code>ngDoCheck</code></h3><p>雖然 <code>ngOnChanges</code> 與 <code>ngDoCheck</code> 是不管在首次觸發，或往後偵測到變更時，都會觸發的鉤子，差別在於偵測變更的部分。 <code>ngOnChanges</code> 只針對 <code>input</code> 值的變更，精確來說，是對 <code>input</code> 的<strong>參考（ reference ）</strong>變更。倘若 <code>input</code> 值是物件型別或陣列，內部參數值的變化並不會影響到 <code>input</code> 的參考，因此就不會觸發 <code>ngOnChanges</code> 鉤子。這種情況下，我們可以經由 <code>ngDoCheck</code> 鉤子取得任何變更。</p>
+<blockquote>
+<p>因為 <code>ngDoCheck</code> 鉤子不管在任何情況下都會觸發，在如此頻繁的呼叫頻率下，要盡量簡化實作邏輯來避免效能降低。</p>
+</blockquote>
+<h3 id="ngAfterViewInit-與-ngAfterViewChecked"><a href="#ngAfterViewInit-與-ngAfterViewChecked" class="headerlink" title="ngAfterViewInit 與 ngAfterViewChecked"></a><code>ngAfterViewInit</code> 與 <code>ngAfterViewChecked</code></h3><p>有時候我們想要針對範本中元素（element）的各項資訊或進行操作，可以使用<strong>範本參考變數</strong>（ template reference variable ）取得該元素的參考。</p>
+<p>以下是幾種應用的範例：</p>
+<ul>
+<li><p>在範本中取得元素資訊</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">#phone</span> <span class="token attr-name">placeholder</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>phone number<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">(click)</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>callPhone(phone.value)<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Call<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>只要以 <code>#</code> 搭配變數名稱即可賦予元素變數名稱。例如： <code>input</code> 的範本變數名稱為 <code>phone</code> ，接著就可以呼叫 <code>callPhone</code> 函式，並將 <code>phone.value</code> 傳入執行。</p>
+</li>
+<li><p>在範本中操作元素行為</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">#phone</span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">(click)</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>phone.focus()<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Focus<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>賦予元素 <code>phone</code> 變數名稱，並在按鈕加入觸發 <code>phone.focus()</code> 行為。</p>
+</li>
+<li><p>在程式碼中取得元素參考並操作元素行為</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-login'</span><span class="token punctuation">,</span>
+  template<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">&lt;input #loginInput [(ngModel)]="credentials.login" /></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>FormsModule<span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">LoginComponent</span> <span class="token keyword">implements</span> <span class="token class-name">AfterViewInit</span> <span class="token punctuation">&#123;</span>
+  credentials <span class="token operator">=</span> <span class="token punctuation">&#123;</span> login<span class="token operator">:</span> <span class="token string">''</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+  loginInput <span class="token operator">=</span> viewChild<span class="token punctuation">.</span><span class="token generic-function"><span class="token function">required</span><span class="token generic class-name"><span class="token operator">&lt;</span>ElementRef<span class="token operator">&lt;</span>HTMLInputElement<span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token string">'loginInput'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">ngAfterViewInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">loginInput</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>nativeElement<span class="token punctuation">.</span><span class="token function">focus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>解析上述程式碼：</p>
+<ul>
+<li>第 3 行我們替 <code>input</code> 宣告 <code>loginInput</code> 變數並在第 8 行取得此元素</li>
+<li>第 8 行的用意是告訴框架：我們需要從範本中查詢一個變數名稱為 <code>loginInput</code> 的元素，以該元素（型別為 <code>ElementRef&lt;T&gt;</code> ）進行訊號（signal）初始化。這個型別僅擁有一個欄位（field），即為型別為 <code>T</code> 的 <code>nativeElement</code> ，它就是對於此元素的參考。<blockquote>
+<p>相較使用 <code>@ViewChild</code> 裝飾子， <code>viewChild</code> 與 <code>viewChild.required</code> 為基於訊號的方式，它永遠能與範本保持同步最新，若元素被銷毀，此訊號將會被設為 <code>undefined</code></p>
+</blockquote>
+</li>
+<li>第 10 ~ 12 行的 <code>ngAfterViewInit</code> 鉤子會在視圖（view）建立後馬上被呼叫，此時我們能保證該元素已存在並能操作。<blockquote>
+<p>若嘗試在 constructor 取用元素，會報出錯誤訊息 <a target="_blank" rel="noopener" href="https://angular.dev/errors/NG0951">NG0951: Child query result is required but no value is available.</a>；若是在 <code>ngOnInit</code> 鉤子則無法操作元素行為。<br>我們也可以在 <code>ngAfterViewChecked</code> 鉤子操作元素行為，它會在每次變更後的每一次視圖（view）檢查時被呼叫。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<p>如果想要在各個不同的元件使用此功能，可以為它建立指令（directive），避免每個元件都存在重複的程式碼。 </p>
+<h3 id="ngAfterContentInit-與-ngAfterContentChecked"><a href="#ngAfterContentInit-與-ngAfterContentChecked" class="headerlink" title="ngAfterContentInit 與 ngAfterContentChecked"></a><code>ngAfterContentInit</code> 與 <code>ngAfterContentChecked</code></h3><p>Angular 框架提供許多提升元件擴充性的方法，其中一項就是讓元件具有動態內容（content）。例如：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-card'</span><span class="token punctuation">,</span>
+  template<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+  &lt;div style="padding: 8px; outline: 1px solid black; border-radius: 8px;">
+    &lt;div>
+      &lt;h3>
+        &lt;ng-content select=".title">&lt;/ng-content>
+      &lt;/h3>
+      &lt;p>
+        &lt;ng-content select=".content">&lt;/ng-content>
+      &lt;/p>
+    &lt;/div>
+  &lt;/div>
+  </span><span class="token template-punctuation string">`</span></span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">CardComponent</span> <span class="token punctuation">&#123;</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>以上範本具有兩個 <code>ng-content</code> 元素，各自擁有不同的選擇器 <code>title</code> 與 <code>content</code> ，用來接收外部所賦予的內容。將不同的內容投射至 <code>CardComponent</code> 範本，即可呈現不同的結果。</p>
+<p>範例一：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-card</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Happy Birthday<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>May your birthday mark the beginning of a wonderful period of time in your life!<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-card</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<img data-src="/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/1_ng-content_result.png" class="">
+
+<p>範例二：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-card</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>i</span><span class="token punctuation">></span></span>Merry Christmas<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>i</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">align-items</span><span class="token punctuation">:</span> flex-start<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin-top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>assets/christmas_tree.png<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">max-width</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-card</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<img data-src="/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/2_ng-content_result.png" class="">
+
+<p>可以看出 <code>title</code> 與 <code>content</code> 類別的元素，會各自填充在 <code>CardComponent</code> 範本的不同區塊，讓元件具備複用性、一致性與擴充性。</p>
+<p>此時若我們仍想要取用這些投射進來的元素，類似視圖（view）使用 <code>viewChild</code> 是無法取得的，而是需要針對 <code>ng-content</code> 標籤使用 <code>contentChild</code> 或 <code>contentChildren</code> 。</p>
+<p>我們以取得 <code>title</code> 的元素為例，步驟如下：</p>
+<ol>
+<li><p>在投射進去的元素內加上 <code>#title</code> 。</p>
+  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span> <span class="token attr-name">#title</span><span class="token punctuation">></span></span>...<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>取得元素後於 <code>ngAfterContentInit</code> 鉤子進行操作。</p>
+  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-card'</span><span class="token punctuation">,</span>
+  template<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+  &lt;-- 略 -->
+  </span><span class="token template-punctuation string">`</span></span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">CardComponent</span> <span class="token keyword">implements</span> <span class="token class-name">AfterContentInit</span> <span class="token punctuation">&#123;</span>
+  title <span class="token operator">=</span> contentChild<span class="token punctuation">.</span><span class="token generic-function"><span class="token function">required</span><span class="token generic class-name"><span class="token operator">&lt;</span>ElementRef<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token string">'title'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">ngAfterContentInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">title</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>nativeElement<span class="token punctuation">.</span>style<span class="token punctuation">.</span>backgroundColor <span class="token operator">=</span> <span class="token string">'pink'</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>  解析以上程式碼：</p>
+</li>
+</ol>
+<ul>
+<li>第 8 行以 <code>contentChild</code> 取得變數名稱為 <code>title</code> 的元素</li>
+<li>第 11 行改變該元素的背景顏色</li>
+</ul>
+<img data-src="/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/3_contentChild_result.png" class="">
+
+<blockquote>
+<p>同樣地，使用 <code>ngAfterContentInit</code> 鉤子確保內容可以被取得，而 <code>ngAfterContentChecked</code> 鉤子會在每一次內容（content）檢查時被呼叫。</p>
+</blockquote>
+<p>總結比較 <code>viewChild</code> 與 <code>contentChild</code> 的差異：</p>
+<ul>
+<li><code>viewChild</code> 用來取得元件中直接包含的子元素。</li>
+<li><code>contentChild</code> 用來取得存在於父元件的範本中，經由 <code>ng-content</code> 投射至元件中的元素。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/" rel="prev" title="Angular 新手村 - 6. 管道">
+                  <i class="fa fa-angle-left"></i> Angular 新手村 - 6. 管道
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.min.js","integrity":"sha256-TtLOdUA8mstPoO6sGvHIGx2ceXrrX4KgIItO06XOn8A="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

@@ -173,7 +173,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/03/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -191,7 +191,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/03/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/" class="post-title-link" itemprop="url">Angular 新手村 - 7. 生命週期</a>
+          <a href="/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/" class="post-title-link" itemprop="url">Angular 新手村 - 7. 生命週期</a>
         </h2>
 
         <div class="post-meta-container">
@@ -201,15 +201,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
+      
 
-      <time title="Created: 2025-03-30 15:30:00" itemprop="dateCreated datePublished" datetime="2025-03-30T15:30:00+08:00">2025-03-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-04-01 20:40:48" itemprop="dateModified" datetime="2025-04-01T20:40:48+08:00">2025-04-01</time>
+      <time title="Created: 2025-04-05 21:30:00 / Modified: 21:46:26" itemprop="dateCreated datePublished" datetime="2025-04-05T21:30:00+08:00">2025-04-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -256,10 +250,11 @@
 <p>由上圖我們可以歸納出幾個重點：</p>
 <ul>
 <li>綠色方框為元件在首次觸發才會呼叫的鉤子</li>
-<li>藍色方框為元件不管在首次觸發，或往後偵測到變更時，都會觸發的鉤子</li>
+<li>藍色方框為元件不管在首次觸發，或往後偵測到變更時，都會觸發的鉤子（其中只有 <code>ngOnChanges</code> 是針對 <code>input</code> 的變更才觸發）</li>
 <li>紅色方框為元件結束時才會呼叫的鉤子</li>
 </ul>
-<h3 id="一般常用的鉤子"><a href="#一般常用的鉤子" class="headerlink" title="一般常用的鉤子"></a>一般常用的鉤子</h3><ul>
+<p>一般常用的鉤子有以下三種：</p>
+<ul>
 <li><code>ngOnChanges</code>: 當一個或多個綁定的 <code>input</code> 值發生改變時，呼叫此鉤子。它會獲得一個 <code>SimpleChange</code> 型別的 map ，其包含各個 <code>input</code> 目前值（ <code>currentValue</code> ）與之前值（ <code>previousValue</code> ）。若沒有任何變更，此鉤子不會被呼叫。</li>
 <li><code>ngOnInit</code>: 首次觸發，在 <code>ngOnChanges</code> 後（若有變更的話）僅呼叫一次，進行初始化行為。它被呼叫時的情況有以下兩種：<ul>
 <li>沒有 <code>input</code> ，會呼叫此鉤子</li>
@@ -270,7 +265,7 @@
 </ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2025/03/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/#more" rel="contents">
+              <a class="btn" href="/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -337,7 +332,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-04-01 20:40:48" itemprop="dateModified" datetime="2025-04-01T20:40:48+08:00">2025-04-01</time>
+      <time title="Modified: 2025-04-05 21:46:26" itemprop="dateModified" datetime="2025-04-05T21:46:26+08:00">2025-04-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -472,7 +467,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-04-01 20:40:48" itemprop="dateModified" datetime="2025-04-01T20:40:48+08:00">2025-04-01</time>
+      <time title="Modified: 2025-04-05 21:46:26" itemprop="dateModified" datetime="2025-04-05T21:46:26+08:00">2025-04-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -629,7 +624,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-04-01 20:40:48" itemprop="dateModified" datetime="2025-04-01T20:40:48+08:00">2025-04-01</time>
+      <time title="Modified: 2025-04-05 21:46:26" itemprop="dateModified" datetime="2025-04-05T21:46:26+08:00">2025-04-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -779,7 +774,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-04-01 20:40:48" itemprop="dateModified" datetime="2025-04-01T20:40:48+08:00">2025-04-01</time>
+      <time title="Modified: 2025-04-05 21:46:26" itemprop="dateModified" datetime="2025-04-05T21:46:26+08:00">2025-04-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -946,7 +941,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-04-01 20:40:48" itemprop="dateModified" datetime="2025-04-01T20:40:48+08:00">2025-04-01</time>
+      <time title="Modified: 2025-04-05 21:46:26" itemprop="dateModified" datetime="2025-04-05T21:46:26+08:00">2025-04-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1092,7 +1087,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-04-01 20:40:48" itemprop="dateModified" datetime="2025-04-01T20:40:48+08:00">2025-04-01</time>
+      <time title="Modified: 2025-04-05 21:46:26" itemprop="dateModified" datetime="2025-04-05T21:46:26+08:00">2025-04-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1218,7 +1213,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-04-01 20:40:48" itemprop="dateModified" datetime="2025-04-01T20:40:48+08:00">2025-04-01</time>
+      <time title="Modified: 2025-04-05 21:46:26" itemprop="dateModified" datetime="2025-04-05T21:46:26+08:00">2025-04-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1315,7 +1310,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-04-01 20:40:48" itemprop="dateModified" datetime="2025-04-01T20:40:48+08:00">2025-04-01</time>
+      <time title="Modified: 2025-04-05 21:46:26" itemprop="dateModified" datetime="2025-04-05T21:46:26+08:00">2025-04-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
