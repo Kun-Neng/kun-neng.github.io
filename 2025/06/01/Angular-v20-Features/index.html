@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="近年來 Angular 團隊採用以下功能開發的三階段流程，在架構上進行重大變革：  Vision （願景）：提出早期概念版本 Preview （預覽）：收集開發者社群的深入回饋 Stable （穩定版）：根據回饋加以完善，以求最大影響力與穩定性  以下是本次 Angular v20 版本的重要更新： 吉祥物Angular 標誌性的盾牌符號很強大，不過在過去幾個月裡，團隊與 Dart 、 Flutt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular v20 Features">
+<meta property="og:url" content="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="近年來 Angular 團隊採用以下功能開發的三階段流程，在架構上進行重大變革：  Vision （願景）：提出早期概念版本 Preview （預覽）：收集開發者社群的深入回饋 Stable （穩定版）：根據回饋加以完善，以求最大影響力與穩定性  以下是本次 Angular v20 版本的重要更新： 吉祥物Angular 標誌性的盾牌符號很強大，不過在過去幾個月裡，團隊與 Dart 、 Flutt">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/1_Angular_shaped_character.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/2_Anglerfish.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/3_Anglerfish_variation.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/4_Signals_family.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/5_incremental_hydration.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/6_enable_router_graph.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/7_router_visualization.png">
+<meta property="article:published_time" content="2025-06-01T13:50:28.000Z">
+<meta property="article:modified_time" content="2025-06-01T14:22:51.853Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/1_Angular_shaped_character.png">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2025/06/01/Angular-v20-Features/","path":"2025/06/01/Angular-v20-Features/","title":"Angular v20 Features"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular v20 Features | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tech-talks"><a href="/tech-talks/" rel="section"><i class="fa fa-microphone fa-fw"></i>Tech Talks</a></li><li class="menu-item menu-item-side-projects"><a href="/side-projects/" rel="section"><i class="fa fa-cube fa-fw"></i>Side Projects</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%89%E7%A5%A5%E7%89%A9"><span class="nav-number">1.</span> <span class="nav-text">吉祥物</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Signals"><span class="nav-number">2.</span> <span class="nav-text">Signals</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#resource-API"><span class="nav-number">2.1.</span> <span class="nav-text">resource API</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%A6%E9%A9%97%E6%80%A7-httpResource"><span class="nav-number">2.2.</span> <span class="nav-text">實驗性 httpResource</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%A6%E9%A9%97%E6%80%A7-resource"><span class="nav-number">2.3.</span> <span class="nav-text">實驗性 resource</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Signal-Forms"><span class="nav-number">2.4.</span> <span class="nav-text">Signal Forms</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%96%8B%E7%99%BC%E8%80%85%E9%AB%94%E9%A9%97%EF%BC%88-DX-%EF%BC%89%E6%9B%B4%E6%96%B0"><span class="nav-number">3.</span> <span class="nav-text">開發者體驗（ DX ）更新</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Host-bindings"><span class="nav-number">3.1.</span> <span class="nav-text">Host bindings</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8B%95%E6%85%8B%E5%85%83%E4%BB%B6%E5%BB%BA%E7%AB%8B"><span class="nav-number">3.2.</span> <span class="nav-text">動態元件建立</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96-DX-%E6%9B%B4%E6%96%B0"><span class="nav-number">3.3.</span> <span class="nav-text">其他 DX 更新</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E8%83%BD"><span class="nav-number">4.</span> <span class="nav-text">效能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B0%B4%E5%90%88%EF%BC%88-Hydration-%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">水合（ Hydration ）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E7%B4%9A%E5%88%A5%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F%EF%BC%88-Route-Level-Render-Mode-%EF%BC%89%E8%A8%AD%E5%AE%9A-API"><span class="nav-number">4.2.</span> <span class="nav-text">路由級別渲染模式（ Route-Level Render Mode ）設定 API</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Zoneless"><span class="nav-number">4.3.</span> <span class="nav-text">Zoneless</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Chrome-%E9%96%8B%E7%99%BC%E8%80%85%E5%B7%A5%E5%85%B7%E7%9A%84-Angular-%E8%87%AA%E8%A8%82%E8%BF%BD%E8%B9%A4"><span class="nav-number">4.4.</span> <span class="nav-text">Chrome 開發者工具的 Angular 自訂追蹤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E9%8F%88%E8%88%87%E5%9F%BA%E7%A4%8E%E8%A8%AD%E6%96%BD"><span class="nav-number">5.</span> <span class="nav-text">工具鏈與基礎設施</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B8%AC%E8%A9%A6"><span class="nav-number">5.1.</span> <span class="nav-text">測試</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E9%8F%88%E6%9B%B4%E6%96%B0"><span class="nav-number">5.2.</span> <span class="nav-text">工具鏈更新</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%85%A7%E5%AE%B9%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5%EF%BC%88-Auto-Content-Security-Policy-AutoCSP-%EF%BC%89"><span class="nav-number">5.3.</span> <span class="nav-text">生成內容安全策略（ Auto Content Security Policy, AutoCSP ）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AI-%E6%95%B4%E5%90%88"><span class="nav-number">6.</span> <span class="nav-text">AI 整合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-number">7.</span> <span class="nav-text">總結</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E9%80%A3%E7%B5%90"><span class="nav-number">8.</span> <span class="nav-text">參考連結</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://medium.com/@kunneng.hung" title="Medium → https:&#x2F;&#x2F;medium.com&#x2F;@kunneng.hung" rel="noopener me" target="_blank"><i class="fab fa-medium fa-fw"></i>Medium</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular v20 Features | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular v20 Features
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-06-01 21:50:28 / Modified: 22:22:51" itemprop="dateCreated datePublished" datetime="2025-06-01T21:50:28+08:00">2025-06-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>近年來 Angular 團隊採用以下功能開發的三階段流程，在架構上進行重大變革：</p>
+<ol>
+<li>Vision （願景）：提出早期概念版本</li>
+<li>Preview （預覽）：收集開發者社群的深入回饋</li>
+<li>Stable （穩定版）：根據回饋加以完善，以求最大影響力與穩定性</li>
+</ol>
+<p>以下是本次 Angular v20 版本的重要更新：</p>
+<h3 id="吉祥物"><a href="#吉祥物" class="headerlink" title="吉祥物"></a>吉祥物</h3><p>Angular 標誌性的盾牌符號很強大，不過在過去幾個月裡，團隊與 Dart 、 Flutter 和 Firebase 吉祥物背後的創意團隊合作，激盪出一些令人驚豔的概念。以下為 Angular 官方吉祥物的提案，由左至右分別為：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Angular shaped character</th>
+<th align="center">Anglerfish</th>
+<th align="center">Anglerfish variation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><img data-src="/2025/06/01/Angular-v20-Features/1_Angular_shaped_character.png" class=""></td>
+<td align="center"><img data-src="/2025/06/01/Angular-v20-Features/2_Anglerfish.png" class=""></td>
+<td align="center"><img data-src="/2025/06/01/Angular-v20-Features/3_Anglerfish_variation.png" class=""></td>
+</tr>
+</tbody></table>
+<p>投票 <a target="_blank" rel="noopener" href="https://github.com/angular/angular/discussions/61733">RFC - Angular official mascot #61733</a></p>
+<h3 id="Signals"><a href="#Signals" class="headerlink" title="Signals"></a>Signals</h3><p>在 Angular v16 引入響應式的 Signal ，它可以用於管理元件的狀態。</p>
+<p>Signals 家族</p>
+<img data-src="/2025/06/01/Angular-v20-Features/4_Signals_family.png" class="">
+
+<ul>
+<li><h4 id="resource-API"><a href="#resource-API" class="headerlink" title="resource API"></a><code>resource</code> API</h4><p>考量到使用 Signal 處理異步任務（那些完成時間無法預測的任務），團隊被引導出新的 <code>resource</code> API ，一個用於宣告異步依賴的新原語（ primitive ）。使用 <code>resource</code> 可以將狀態、值和其他屬性做為 Signal 來存取，無縫地將它們整合到其他基於 Signal 的邏輯和範本中。</p>
+</li>
+<li><h4 id="實驗性-httpResource"><a href="#實驗性-httpResource" class="headerlink" title="實驗性 httpResource"></a>實驗性 <code>httpResource</code></h4><p>以響應式的方式發出 HTTP 請求來獲取資料，它建構在 <code>HttpClient</code> 上，所以支援所有原本的功能，像是攔截器、模擬及測試。它同時還具備 Signal 的響應式能力。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// products() 會是一個包含 HTTP 回應的 Signal</span>
+<span class="token keyword">const</span> products <span class="token operator">=</span> <span class="token function">httpResource</span><span class="token punctuation">(</span>
+  <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">/api/product/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span><span class="token function">productId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>官方 API <a target="_blank" rel="noopener" href="https://angular.dev/api/common/http/httpResource">httpResource</a></p>
+</li>
+<li><h4 id="實驗性-resource"><a href="#實驗性-resource" class="headerlink" title="實驗性 resource"></a>實驗性 <code>resource</code></h4><p>從 resource 將回應串流回來，對於需要逐步接收回應的場景（如大型語言模型 LLM 的打字機效果）非常有用。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">characters <span class="token operator">=</span> <span class="token function">resource</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  <span class="token function-variable function">stream</span><span class="token operator">:</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> data <span class="token operator">=</span> <span class="token generic-function"><span class="token function">signal</span><span class="token generic class-name"><span class="token operator">&lt;</span>ResourceStreamItem<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+      value<span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">getStreamData</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> data<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>至於 Signal API 家族的其他成員，團隊宣布 <code>linkedSignal</code> 、 <code>effect</code> 、 <code>afterNextRender</code> 、 <code>afterRenderEffect</code> 等更多 API 已升級至穩定版，並準備好在生產環境中使用。</p>
+<p>官方指南 <a target="_blank" rel="noopener" href="https://angular.dev/guide/signals/resource">Async reactivity with resources</a></p>
+</li>
+<li><h4 id="Signal-Forms"><a href="#Signal-Forms" class="headerlink" title="Signal Forms"></a>Signal Forms</h4><p>目前團隊正在開發一個新的、基於 Signal 的表單系統進化版，目標是將備受推崇的範本驅動和響應式表單風格的最佳部分，結合成一個統一的表單系統，從最簡單的登入頁面到最複雜的資料表格，都提供卓越的開發者體驗並具備擴展性。一如既往，向後相容性和互通性是團隊的核心考量。</p>
+</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="開發者體驗（-DX-）更新"><a href="#開發者體驗（-DX-）更新" class="headerlink" title="開發者體驗（ DX ）更新"></a>開發者體驗（ DX ）更新</h3><ul>
+<li><h4 id="Host-bindings"><a href="#Host-bindings" class="headerlink" title="Host bindings"></a>Host bindings</h4><p>Host bindings 允許你在元件和指令中將動態值綁定到你的 host 元素，然而那些表達式沒有經過型別檢查，這可能會導致執行期錯誤。在 Angular 第 20 版中，團隊為 host 屬性以及 <code>@HostBinding</code> 和 <code>@HostListener</code> 裝飾器都支援型別檢查。語言服務（ Language Service ）也更新支援如語法高亮（ syntax highlighting ）、跳轉到定義（ go to definition ）以及在 host bindings 內部進行自動化重命名（ automated renaming ）等功能。若想試用這個新功能，在專案設定中啟用 <code>typeCheckHostBindings</code> 為 <code>true</code> 即可。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  <span class="token operator">...</span>
+  host<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string-property property">'[style.color]'</span><span class="token operator">:</span> <span class="token string">'color'</span> <span class="token comment">// v20 後，若 color 不存在，編譯期會有型別錯誤</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">AppComponent</span> <span class="token punctuation">&#123;</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><h4 id="動態元件建立"><a href="#動態元件建立" class="headerlink" title="動態元件建立"></a>動態元件建立</h4><p>版本更新前，必須以命令式的方式手動套用 input 變更，這不甚理想。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">age <span class="token operator">=</span> <span class="token function">input</span><span class="token punctuation">(</span><span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">ngOnInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>componentRef <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>viewContainerRef<span class="token punctuation">.</span><span class="token function">createComponent</span><span class="token punctuation">(</span>ProfileView<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function">ngOnChanges</span><span class="token punctuation">(</span>changes<span class="token operator">:</span> SimpleChanges<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>changes<span class="token punctuation">.</span>age<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>componentRef<span class="token operator">?.</span><span class="token function">setInput</span><span class="token punctuation">(</span><span class="token string">'userAge'</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">age</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Angular v20 可以使用新的 API ，在建立時宣告 input 和 output 綁定，並讓框架處理其餘部分。新的 API 讓 inputs 和 outputs 經由與在範本中綁定它們時相同的機制。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token function">createComponent</span><span class="token punctuation">(</span>ProfileView<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+  bindings<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token comment">// 綁定 Signal 到 input</span>
+    <span class="token function">inputBinding</span><span class="token punctuation">(</span><span class="token string">'userAge'</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>age<span class="token punctuation">)</span><span class="token punctuation">,</span>
+
+    <span class="token comment">// 綁定到 output</span>
+    <span class="token generic-function"><span class="token function">outputBinding</span><span class="token generic class-name"><span class="token operator">&lt;</span>Result<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token string">'onUserAction'</span><span class="token punctuation">,</span> result <span class="token operator">=></span> <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>新的 API 更允許將指令應用於動態建立的元件，例如，將 <code>ActiveUser</code> 指令套用在 <code>UserInfo</code> 元件。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token function">createComponent</span><span class="token punctuation">(</span>ProfileView<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+  bindings<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token operator">...</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  directives<span class="token operator">:</span> <span class="token punctuation">[</span>
+    ActiveUser<span class="token punctuation">,</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>若需要綁定到指令的 inputs 與 outputs ，只要像在元件中加入綁定一樣，使用相同的新宣告式 API 即可將它們套用至指令。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token function">createComponent</span><span class="token punctuation">(</span>UserInfoComponent<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+  bindings<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token operator">...</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  directives<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+      type<span class="token operator">:</span> HasColor<span class="token punctuation">,</span>
+      bindings<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">inputBinding</span><span class="token punctuation">(</span><span class="token string">'color'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token string">'red'</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>官方 API</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://angular.dev/api/core/createComponent">createComponent</a></li>
+<li><a target="_blank" rel="noopener" href="https://angular.dev/api/core/inputBinding">inputBinding</a></li>
+<li><a target="_blank" rel="noopener" href="https://angular.dev/api/core/outputBinding">outputBinding</a></li>
+</ul>
+</blockquote>
+</li>
+<li><h4 id="其他-DX-更新"><a href="#其他-DX-更新" class="headerlink" title="其他 DX 更新"></a>其他 DX 更新</h4><ul>
+<li>支援 TypeSript 5.8</li>
+<li>支援範本中未標記的範本字串表達式（untagged template literal expressions）</li>
+<li>移除了 Angular Material 對 <code>@angular/animations</code> 的依賴（若未使用動畫）</li>
+<li>預設啟用範本的熱模組替換（HMR）</li>
+<li>新增一個 schematic 用於清理專案中未使用的匯入</li>
+</ul>
+</li>
+</ul>
+<p>這些改進旨在讓開發過程更流暢、更安全（型別檢查）、更高效，並減少最終應用程式的打包體積。</p>
+<h3 id="效能"><a href="#效能" class="headerlink" title="效能"></a>效能</h3><p>隨著這個版本中發布的功能， Angular 將效能做為開發者的預設選項，引入基於 Signal 的響應式模型和伺服器端渲染支援等功能，使交付高效能網頁應用程式比以往更容易。伺服器端渲染（ SSR ）幫助 Angular 開發者交付高效能的應用程式。 SSR 允許在伺服器上渲染包含初始頁面狀態的頁面，並將它們傳送到瀏覽器，以實現更快的初始載入和更好的搜尋引擎優化（ SEO ）。</p>
+<ul>
+<li><h4 id="水合（-Hydration-）"><a href="#水合（-Hydration-）" class="headerlink" title="水合（ Hydration ）"></a>水合（ Hydration ）</h4><p>在 v16 版本中，完整應用程式水合（ full application hydration ）會重複使用伺服器渲染的 DOM 結構，並持久化應用程式狀態，同時傳輸已由伺服器擷取的應用程式資料。如果沒有啟用水合， SSR 應用程式將需要銷毀並重新渲染整個應用程式的 DOM 。增量式水合（ incremental hydration ） 在 v19 版本以開發者預覽的形式登場，其明確目標是幫助開發者交付快速載入的應用程式，因為初始載入對於創造絕佳的終端使用者體驗非常重要。</p>
+<p>憑藉增量式水合的強大功能，開發者可以選擇範本的哪些部分延遲載入和水合，從而減少打包體積和互動時間。增量式水合自 v20 版本起已進入穩定版，這意味著開發者可以放心地享受這個強大新功能帶來的好處。</p>
+<img data-src="/2025/06/01/Angular-v20-Features/5_incremental_hydration.png" class="">
+
+<p>使用步驟：</p>
+<ol>
+<li>加入 provideClientHydration 與 withIncrementalHydration 到應用程式設定。<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token function">bootstrapApplication</span><span class="token punctuation">(</span>App<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+  providers<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token function">provideClientHydration</span><span class="token punctuation">(</span><span class="token function">withIncrementalHydration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>使用帶有 <code>hydrate on</code> 、 <code>hydrate when</code> 或 <code>hydrate never</code> 等，精確指定哪些使用者事件應該觸發 Angular 載入和水合延遲載入的內容，這有助於顯著改善首次互動時間（ Time To Interaction, TTI ）。<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">defer</span></span> <span class="token punctuation">(</span>hydrate on interaction<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token operator">&lt;</span>large<span class="token operator">-</span>component <span class="token operator">/</span><span class="token operator">></span>
+<span class="token punctuation">&#125;</span> <span class="token decorator"><span class="token at operator">@</span><span class="token function">placeholder</span></span> <span class="token punctuation">&#123;</span>
+  <span class="token operator">&lt;</span>div<span class="token operator">></span>Larget component placeholder<span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">></span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<blockquote>
+<p>官方指南 <a target="_blank" rel="noopener" href="https://angular.dev/guide/incremental-hydration">Incremental Hydration</a></p>
+</blockquote>
+</li>
+<li><h4 id="路由級別渲染模式（-Route-Level-Render-Mode-）設定-API"><a href="#路由級別渲染模式（-Route-Level-Render-Mode-）設定-API" class="headerlink" title="路由級別渲染模式（ Route-Level Render Mode ）設定 API"></a>路由級別渲染模式（ Route-Level Render Mode ）設定 API</h4><p>Angular 的路由級別渲染模式設定 API 在 v20 版本中提升至穩定版，讓開發者完整控制應用程式的渲染，例如明確地定義每個路由元件要由伺服器渲染（ SSR ）、靜態生成（ SSG ）或客戶端渲染（ CSR ）。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token punctuation">&#123;</span>
+  path<span class="token operator">:</span> <span class="token string">'profile'</span><span class="token punctuation">,</span>
+  renderMode<span class="token operator">:</span> RenderMode<span class="token punctuation">.</span>Server<span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#123;</span>
+  path<span class="token operator">:</span> <span class="token string">'about'</span><span class="token punctuation">,</span>
+  renderMode<span class="token operator">:</span> RenderMode<span class="token punctuation">.</span>Prerender<span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><h4 id="Zoneless"><a href="#Zoneless" class="headerlink" title="Zoneless"></a>Zoneless</h4><p>在 v20 版本中， Zoneless Angular 由實驗階段進入開發者預覽階段。採用 Zoneless Angular 可以透過消除不必要的變更偵測循環來提高應用程式效能。由於 <code>zone.js</code> 用來修補瀏覽器 API ，它通知 Angular 執行變更偵測來響應任何瀏覽器事件，進而更新應用程式的範本，但也導致許多不必要的檢查。因此 Zoneless 的目標是移除 <code>zone.js</code> ，並結合 Signals 來明確控制何時與如何觸發變更偵測。</p>
+<p>Signals + Zoneless 的優勢：</p>
+<ol>
+<li>提升效能</li>
+<li>改善除錯體驗</li>
+<li>更好的生態系相容性</li>
+<li>更小的 JavaScript 負載</li>
+</ol>
+<p>啟用 Zoneless 步驟：</p>
+<ol>
+<li>升級到 Angular v20 （ <code>ng update</code> ）</li>
+<li>在應用程式設定中加入 <code>provideZonelessChangeDetection</code></li>
+<li>反安裝 ZoneJS （ <code>npm uninstall zone.js</code> ）</li>
+</ol>
+<blockquote>
+<p>官方指南 <a target="_blank" rel="noopener" href="https://angular.dev/guide/zoneless">Angular without ZoneJS (Zoneless)</a></p>
+</blockquote>
+</li>
+<li><h4 id="Chrome-開發者工具的-Angular-自訂追蹤"><a href="#Chrome-開發者工具的-Angular-自訂追蹤" class="headerlink" title="Chrome 開發者工具的 Angular 自訂追蹤"></a>Chrome 開發者工具的 Angular 自訂追蹤</h4><p>由 Angular 團隊與 Chrome DevTools 團隊合作開發，在 Chrome 開發者工具加入 Angular 自訂追蹤（ custom track ），使用新 Angular 追蹤的步驟：</p>
+<ol>
+<li>升級到 Angular v20 （ <code>ng update</code> ）</li>
+<li>升級到 Chrome v136 或更高版本</li>
+<li>在 Chrome 主控台執行 <code>ng.enableProfiling()</code> 來啟用效能數據收集</li>
+</ol>
+<p>在 Chrome DevTools 的 Performance 面板中，會出現一個名為 “Angular” 的自訂軌道，顯示 Angular 特有的效能數據，如變更偵測、元件生命週期等，幫助開發者更容易區分應用程式碼和函式庫程式碼的效能瓶頸。</p>
+</li>
+</ul>
+<h3 id="工具鏈與基礎設施"><a href="#工具鏈與基礎設施" class="headerlink" title="工具鏈與基礎設施"></a>工具鏈與基礎設施</h3><ul>
+<li><h4 id="測試"><a href="#測試" class="headerlink" title="測試"></a>測試</h4><p>隨著 Karma 被棄用， Angular 團隊一直專注於尋找合適的測試替代方案，以滿足三個目標：</p>
+<ul>
+<li>提供清晰的遷移路徑</li>
+<li>擁有強大的社群支援</li>
+<li>改善開發者體驗</li>
+</ul>
+<p>目前提供的實驗性支援：</p>
+<ul>
+<li>Jest （用於 Node 環境測試）</li>
+<li>Web Test Runner （用於瀏覽器環境測試）</li>
+<li>Vitest （ Angular v20 新增的實驗性支援，可同時用於 Node 和瀏覽器環境）</li>
+</ul>
+<p>最終只會選擇一種方案進入穩定版，社群的回饋將是重要參考。</p>
+</li>
+<li><h4 id="工具鏈更新"><a href="#工具鏈更新" class="headerlink" title="工具鏈更新"></a>工具鏈更新</h4><ul>
+<li>Angular DevTools 的路由視覺化（ Router Visualization ）實驗性支援，啟動方式如下：</li>
+</ul>
+<img data-src="/2025/06/01/Angular-v20-Features/6_enable_router_graph.png" class="">
+
+<p>完成後，即可看到執行期的視覺化路由。</p>
+<img data-src="/2025/06/01/Angular-v20-Features/7_router_visualization.png" class="">
+
+<ul>
+<li>Webpack 已從 <code>ng new</code> 移除，意味著簡化建置系統和依賴項，這使得新建立的 Angular 專案的依賴項減少了約 40% 。</li>
+</ul>
+</li>
+<li><h4 id="生成內容安全策略（-Auto-Content-Security-Policy-AutoCSP-）"><a href="#生成內容安全策略（-Auto-Content-Security-Policy-AutoCSP-）" class="headerlink" title="生成內容安全策略（ Auto Content Security Policy, AutoCSP ）"></a>生成內容安全策略（ Auto Content Security Policy, AutoCSP ）</h4><p>Angular 團隊與 Google 安全工程團隊合作，加入在生產建置中使用 AutoCSP 的支援，在 Angular v19 中初步實現，而在 v20 中修復錯誤並使其更加穩定。</p>
+<p>啟用 AutoCSP 的方式：<br>在 <code>angular.json</code> 的 <code>architect.build.options.security</code> 中加入 <code>&quot;autoCsp&quot;: true</code></p>
+<p>啟用後，在生產建置時會自動生成內容安全策略，並包含在應用程式碼中，有助於防禦跨網站指令碼（ cross-site scripting, XSS ）攻擊。如果惡意行為者將內嵌腳本注入應用程式，自動化的 CSP 設定將阻止該腳本執行。</p>
+<p>工具鏈的簡化和安全性的增強，旨在讓開發者更專注於業務邏輯，同時建構出更安全、更輕量的應用程式。</p>
+</li>
+</ul>
+<h3 id="AI-整合"><a href="#AI-整合" class="headerlink" title="AI 整合"></a>AI 整合</h3><p><a target="_blank" rel="noopener" href="https://angular.dev/ai">Build with AI</a> 為 AI 與 Angular 的新家，這個新的資源中心旨在幫助 Angular 開發者充分使用 AI ，其內容包含：</p>
+<ul>
+<li>指引與最佳實踐</li>
+<li>入門專案</li>
+<li>程式碼配方</li>
+<li>引導式教學</li>
+</ul>
+<p>網站提供 Google 的 AI 工具整合，如 Vertex AI 、 Firebase 與 Genkit ，這些知識和模式也適用於其他 AI 解決方案。</p>
+<h3 id="總結"><a href="#總結" class="headerlink" title="總結"></a>總結</h3><p>Angular v20 是一個重要的里程碑，帶來了多方面的提升，包括更成熟的 Signal API 、顯著的效能改進（如增量式水合和 Zoneless 的進展）、更強大的開發者工具（如新的 Chrome DevTools 整合和測試方案），以及對 AI 整合的積極佈局。核心目標始終是讓開發者能夠更輕鬆、更高效地打造出使用者喜愛的高品質應用程式。</p>
+<h3 id="參考連結"><a href="#參考連結" class="headerlink" title="參考連結"></a>參考連結</h3><p>官方 YouTube 影片 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=FcDamOe1qxA">Angular v20 Developer Event 2025</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/05/02/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-8-%E8%A1%A8%E5%96%AE/" rel="prev" title="Angular 新手村 - 8. 表單">
+                  <i class="fa fa-angle-left"></i> Angular 新手村 - 8. 表單
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.min.js","integrity":"sha256-TtLOdUA8mstPoO6sGvHIGx2ceXrrX4KgIItO06XOn8A="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

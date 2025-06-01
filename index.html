@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -173,6 +173,148 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/06/01/Angular-v20-Features/" class="post-title-link" itemprop="url">Angular v20 Features</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-06-01 21:50:28 / Modified: 22:22:51" itemprop="dateCreated datePublished" datetime="2025-06-01T21:50:28+08:00">2025-06-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>近年來 Angular 團隊採用以下功能開發的三階段流程，在架構上進行重大變革：</p>
+<ol>
+<li>Vision （願景）：提出早期概念版本</li>
+<li>Preview （預覽）：收集開發者社群的深入回饋</li>
+<li>Stable （穩定版）：根據回饋加以完善，以求最大影響力與穩定性</li>
+</ol>
+<p>以下是本次 Angular v20 版本的重要更新：</p>
+<h3 id="吉祥物"><a href="#吉祥物" class="headerlink" title="吉祥物"></a>吉祥物</h3><p>Angular 標誌性的盾牌符號很強大，不過在過去幾個月裡，團隊與 Dart 、 Flutter 和 Firebase 吉祥物背後的創意團隊合作，激盪出一些令人驚豔的概念。以下為 Angular 官方吉祥物的提案，由左至右分別為：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Angular shaped character</th>
+<th align="center">Anglerfish</th>
+<th align="center">Anglerfish variation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><img data-src="/2025/06/01/Angular-v20-Features/1_Angular_shaped_character.png" class=""></td>
+<td align="center"><img data-src="/2025/06/01/Angular-v20-Features/2_Anglerfish.png" class=""></td>
+<td align="center"><img data-src="/2025/06/01/Angular-v20-Features/3_Anglerfish_variation.png" class=""></td>
+</tr>
+</tbody></table>
+<p>投票 <a target="_blank" rel="noopener" href="https://github.com/angular/angular/discussions/61733">RFC - Angular official mascot #61733</a></p>
+<h3 id="Signals"><a href="#Signals" class="headerlink" title="Signals"></a>Signals</h3><p>在 Angular v16 引入響應式的 Signal ，它可以用於管理元件的狀態。</p>
+<p>Signals 家族</p>
+<img data-src="/2025/06/01/Angular-v20-Features/4_Signals_family.png" class="">
+
+<ul>
+<li><h4 id="resource-API"><a href="#resource-API" class="headerlink" title="resource API"></a><code>resource</code> API</h4><p>考量到使用 Signal 處理異步任務（那些完成時間無法預測的任務），團隊被引導出新的 <code>resource</code> API ，一個用於宣告異步依賴的新原語（ primitive ）。使用 <code>resource</code> 可以將狀態、值和其他屬性做為 Signal 來存取，無縫地將它們整合到其他基於 Signal 的邏輯和範本中。</p>
+</li>
+<li><h4 id="實驗性-httpResource"><a href="#實驗性-httpResource" class="headerlink" title="實驗性 httpResource"></a>實驗性 <code>httpResource</code></h4><p>以響應式的方式發出 HTTP 請求來獲取資料，它建構在 <code>HttpClient</code> 上，所以支援所有原本的功能，像是攔截器、模擬及測試。它同時還具備 Signal 的響應式能力。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// products() 會是一個包含 HTTP 回應的 Signal</span>
+<span class="token keyword">const</span> products <span class="token operator">=</span> <span class="token function">httpResource</span><span class="token punctuation">(</span>
+  <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">/api/product/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span><span class="token function">productId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>官方 API <a target="_blank" rel="noopener" href="https://angular.dev/api/common/http/httpResource">httpResource</a></p>
+</li>
+<li><h4 id="實驗性-resource"><a href="#實驗性-resource" class="headerlink" title="實驗性 resource"></a>實驗性 <code>resource</code></h4><p>從 resource 將回應串流回來，對於需要逐步接收回應的場景（如大型語言模型 LLM 的打字機效果）非常有用。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">characters <span class="token operator">=</span> <span class="token function">resource</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  <span class="token function-variable function">stream</span><span class="token operator">:</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> data <span class="token operator">=</span> <span class="token generic-function"><span class="token function">signal</span><span class="token generic class-name"><span class="token operator">&lt;</span>ResourceStreamItem<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+      value<span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">getStreamData</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> data<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>至於 Signal API 家族的其他成員，團隊宣布 <code>linkedSignal</code> 、 <code>effect</code> 、 <code>afterNextRender</code> 、 <code>afterRenderEffect</code> 等更多 API 已升級至穩定版，並準備好在生產環境中使用。</p>
+<p>官方指南 <a target="_blank" rel="noopener" href="https://angular.dev/guide/signals/resource">Async reactivity with resources</a></p>
+</li>
+<li><h4 id="Signal-Forms"><a href="#Signal-Forms" class="headerlink" title="Signal Forms"></a>Signal Forms</h4><p>目前團隊正在開發一個新的、基於 Signal 的表單系統進化版，目標是將備受推崇的範本驅動和響應式表單風格的最佳部分，結合成一個統一的表單系統，從最簡單的登入頁面到最複雜的資料表格，都提供卓越的開發者體驗並具備擴展性。一如既往，向後相容性和互通性是團隊的核心考量。</p>
+</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/06/01/Angular-v20-Features/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/05/02/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-8-%E8%A1%A8%E5%96%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -201,9 +343,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2025-05-02 19:45:30 / Modified: 20:36:12" itemprop="dateCreated datePublished" datetime="2025-05-02T19:45:30+08:00">2025-05-02</time>
+      <time title="Created: 2025-05-02 19:45:30" itemprop="dateCreated datePublished" datetime="2025-05-02T19:45:30+08:00">2025-05-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-06-01 22:22:51" itemprop="dateModified" datetime="2025-06-01T22:22:51+08:00">2025-06-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -407,7 +555,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-05-02 20:36:12" itemprop="dateModified" datetime="2025-05-02T20:36:12+08:00">2025-05-02</time>
+      <time title="Modified: 2025-06-01 22:22:51" itemprop="dateModified" datetime="2025-06-01T22:22:51+08:00">2025-06-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -536,7 +684,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-05-02 20:36:12" itemprop="dateModified" datetime="2025-05-02T20:36:12+08:00">2025-05-02</time>
+      <time title="Modified: 2025-06-01 22:22:51" itemprop="dateModified" datetime="2025-06-01T22:22:51+08:00">2025-06-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -671,7 +819,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-05-02 20:36:12" itemprop="dateModified" datetime="2025-05-02T20:36:12+08:00">2025-05-02</time>
+      <time title="Modified: 2025-06-01 22:22:51" itemprop="dateModified" datetime="2025-06-01T22:22:51+08:00">2025-06-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -828,7 +976,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-05-02 20:36:12" itemprop="dateModified" datetime="2025-05-02T20:36:12+08:00">2025-05-02</time>
+      <time title="Modified: 2025-06-01 22:22:51" itemprop="dateModified" datetime="2025-06-01T22:22:51+08:00">2025-06-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -978,7 +1126,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-05-02 20:36:12" itemprop="dateModified" datetime="2025-05-02T20:36:12+08:00">2025-05-02</time>
+      <time title="Modified: 2025-06-01 22:22:51" itemprop="dateModified" datetime="2025-06-01T22:22:51+08:00">2025-06-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1145,7 +1293,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-05-02 20:36:12" itemprop="dateModified" datetime="2025-05-02T20:36:12+08:00">2025-05-02</time>
+      <time title="Modified: 2025-06-01 22:22:51" itemprop="dateModified" datetime="2025-06-01T22:22:51+08:00">2025-06-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1291,7 +1439,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-05-02 20:36:12" itemprop="dateModified" datetime="2025-05-02T20:36:12+08:00">2025-05-02</time>
+      <time title="Modified: 2025-06-01 22:22:51" itemprop="dateModified" datetime="2025-06-01T22:22:51+08:00">2025-06-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1417,7 +1565,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-05-02 20:36:12" itemprop="dateModified" datetime="2025-05-02T20:36:12+08:00">2025-05-02</time>
+      <time title="Modified: 2025-06-01 22:22:51" itemprop="dateModified" datetime="2025-06-01T22:22:51+08:00">2025-06-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1470,102 +1618,9 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2024/03/03/%E8%90%AC%E4%BA%8B%E8%B5%B7%E9%A0%AD%E9%9B%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Kun-Neng Hung">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/03/03/%E8%90%AC%E4%BA%8B%E8%B5%B7%E9%A0%AD%E9%9B%A3/" class="post-title-link" itemprop="url">萬事起頭難</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2024-03-03 16:34:07" itemprop="dateCreated datePublished" datetime="2024-03-03T16:34:07+08:00">2024-03-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-05-02 20:36:12" itemprop="dateModified" datetime="2025-05-02T20:36:12+08:00">2025-05-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%9C%89%E6%84%9F%E8%80%8C%E7%99%BC/" itemprop="url" rel="index"><span itemprop="name">有感而發</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>部落格的第一篇文章就以自我認知與成長為出發點，期待能啟發或幫助在職涯遇到阻礙的讀者。</p>
-<h3 id="踏出舒適圈"><a href="#踏出舒適圈" class="headerlink" title="踏出舒適圈"></a>踏出舒適圈</h3><p>讀博士班期間參加了交大網路福利社、旁聽資工系所課程，才算接觸真正的軟體開發。跨領域從頭堆積這些基礎知識尤其辛苦，畢竟當年網際網路剛蓬勃發展，能獲取的知識都只能來自實體課程或者買本相關的書籍來參考實作。</p>
-<blockquote>
-<p>當時身為助教的我自學網頁程式設計(<code>HTML</code>、<code>JavaScript</code>、<code>CSS</code>)，再拜讀高中同學出版的書籍，在 Google App Engine 架了個教學網站，幫學生把教材變得更淺顯易懂，最後從學生的回饋中獲得滿滿成就感，讓我體會到「施比受更有福」的道理！</p>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/03/03/%E8%90%AC%E4%BA%8B%E8%B5%B7%E9%A0%AD%E9%9B%A3/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
 
 </div>
   </main>
