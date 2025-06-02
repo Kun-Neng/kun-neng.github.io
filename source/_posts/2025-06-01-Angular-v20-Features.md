@@ -179,7 +179,7 @@ Signals 家族
   {% asset_img 5_incremental_hydration.png %}
 
   使用步驟：
-  1. 加入 provideClientHydration 與 withIncrementalHydration 到應用程式設定。
+  1. 加入 `provideClientHydration` 與 `withIncrementalHydration` 到應用程式設定。
   ```typescript
   bootstrapApplication(App, {
     providers: [
