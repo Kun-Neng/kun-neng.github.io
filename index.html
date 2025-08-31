@@ -125,18 +125,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -164,6 +164,137 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/08/31/Angular-Signals-Introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/08/31/Angular-Signals-Introduction/" class="post-title-link" itemprop="url">Angular Signals 演進簡介</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-08-31 10:41:55 / Modified: 14:33:36" itemprop="dateCreated datePublished" datetime="2025-08-31T10:41:55+08:00">2025-08-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/Signal/" itemprop="url" rel="index"><span itemprop="name">Signal</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Angular Signals 是 Angular 框架在開發過程中一項重要的演進，旨在為應用程式的狀態管理提供更優雅、更高效的解決方案。以下是 Signals 在 Angular 各主要版本從提案到正式發佈的演進：</p>
+<table>
+<thead>
+<tr>
+<th>年.月</th>
+<th>版本</th>
+<th>演進說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2022.06</td>
+<td>&nbsp;&nbsp;v14&nbsp;&nbsp;</td>
+<td><strong>RFC (Request for Comments) 提案階段</strong><br>目標是找出能解決 Angular 變更偵測（change detection）痛點的新方案，能夠與 RxJS 等現有工具鏈整合，並減少對 ZoneJS 函式庫的依賴。</td>
+</tr>
+<tr>
+<td>2022.11</td>
+<td>&nbsp;&nbsp;v15&nbsp;&nbsp;</td>
+<td><strong>實驗性階段</strong><br>Angular 內部透過 <a target="_blank" rel="noopener" href="https://github.com/angular/angular/blob/main/packages/core/src/render3/reactivity/signal.ts#L79"><code>createSignal()</code></a> 函數來建立 Signal ，此階段不推薦用於生產環境。<br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/angular-v15-is-now-available-df7be7f2f4c8">Angular v15 is now available!</a></td>
+</tr>
+<tr>
+<td>2023.05</td>
+<td>&nbsp;&nbsp;v16&nbsp;&nbsp;</td>
+<td><strong>Signals 革命性發展的里程碑</strong><br>Signals 被正式發布，不再是實驗性功能，意謂 Signals 已經足夠穩定和成熟，可以安全地在生產環境中使用。<br><br>引入幾個關鍵的 Signals 相關 APIs：<br>1. <code>signal()</code>：用於創建一個 writable Signal ，使用 <code>.set()</code> 來賦值<br>2. <code>computed()</code>：創建一個依賴於其他 Signals ，並且會自動更新的唯讀 Signal （亦即，不可使用 <code>.set()</code> 來賦值）<br>3. <code>effect()</code>：用於在 Signal 的值改變時觸發副作用（side effects），例如更新 DOM 或觸發 API 呼叫<br><br>在 Observable 與 Signal 之間進行轉換：<br>Signal -&gt; Observable：<code>import &#123; toObservable &#125; from &#39;@angular/core/rxjs-interop&#39;;</code><br>Observable -&gt; Signal：<code>import &#123; toSignal &#125; from &#39;@angular/core/rxjs-interop&#39;;</code><br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/angular-v16-is-here-4d7a28ec680d">Angular v16 is here!</a></td>
+</tr>
+<tr>
+<td>2023.11</td>
+<td>&nbsp;&nbsp;v17&nbsp;&nbsp;</td>
+<td><strong>深度整合新功能，成為新功能的核心</strong><br>這個版本中最重要的相關更新是 Signals 引入 <code>@if</code> 、 <code>@for</code> 、 <code>@switch</code> 等內建控制流語法。這些新的語法在內部完全依賴 Signals 進行變更偵測，大大簡化了模板的變更偵測機制，並且不需要依賴 <code>zone.js</code> 也能正常運作，這對於未來實現 Zoneless 的應用程式非常有幫助。<br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/introducing-angular-v17-4d7033312e4b">Introducing Angular v17</a></td>
+</tr>
+<tr>
+<td>2024.05</td>
+<td>&nbsp;&nbsp;v18&nbsp;&nbsp;</td>
+<td><strong>雙向繫結與新 API</strong><br>引入幾個重要的 Signals 相關 APIs ，簡化元件間的資料傳遞：<br>1. <code>input()</code> 讓父元件可以傳遞一個 Signal 的值給子元件<br>2. <code>output()</code> 讓子元件可以發出事件，並在父元件中以 Signal 的方式訂閱這些事件<br>3. <code>model()</code>：結合了 <code>@Input()</code> 和 <code>@Output()</code> 的功能，讓開發者可以用更簡潔的方式實現雙向資料繫結。<br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/angular-v18-is-now-available-e79d5ac0affe">Angular v18 is now available!</a></td>
+</tr>
+<tr>
+<td>2024.11</td>
+<td>&nbsp;&nbsp;v19&nbsp;&nbsp;</td>
+<td><strong>反應式原語（Reactivity Primitives）</strong><br>引入新的 Signals 實驗性 APIs 以取得開發者回饋：<br>1. <code>linkedSignal()</code>：創建一個類似於 <code>computed()</code> ，而且可以依賴於其他狀態的 writable Signal<br>2. <code>resource()</code>：執行非同步操作來取得資源<br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/meet-angular-v19-7b29dfd05b84">Meet Angular v19</a></td>
+</tr>
+<tr>
+<td>2025.05</td>
+<td>&nbsp;&nbsp;v20&nbsp;&nbsp;</td>
+<td><strong>穩定階段</strong><br>引入新的 Signals 實驗性 API：<br><code>httpResource()</code> 使用 <code>HttpClient</code> 取得 HTTP 資源並回傳 <code>HttpResourceRef</code> ，其內容包含 <code>value</code> 屬性的 Signal ，可直接在範本中使用<br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/announcing-angular-v20-b5c9c06cf301">Announcing Angular v20</a></td>
+</tr>
+</tbody></table>
+<p>官網介紹：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://angular.dev/guide/signals">Angular Signals</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -209,7 +340,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-06-02 21:06:05" itemprop="dateModified" datetime="2025-06-02T21:06:05+08:00">2025-06-02</time>
+      <time title="Modified: 2025-08-31 14:33:36" itemprop="dateModified" datetime="2025-08-31T14:33:36+08:00">2025-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -357,7 +488,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-06-02 21:06:05" itemprop="dateModified" datetime="2025-06-02T21:06:05+08:00">2025-06-02</time>
+      <time title="Modified: 2025-08-31 14:33:36" itemprop="dateModified" datetime="2025-08-31T14:33:36+08:00">2025-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -561,7 +692,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-06-02 21:06:05" itemprop="dateModified" datetime="2025-06-02T21:06:05+08:00">2025-06-02</time>
+      <time title="Modified: 2025-08-31 14:33:36" itemprop="dateModified" datetime="2025-08-31T14:33:36+08:00">2025-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -690,7 +821,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-06-02 21:06:05" itemprop="dateModified" datetime="2025-06-02T21:06:05+08:00">2025-06-02</time>
+      <time title="Modified: 2025-08-31 14:33:36" itemprop="dateModified" datetime="2025-08-31T14:33:36+08:00">2025-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -825,7 +956,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-06-02 21:06:05" itemprop="dateModified" datetime="2025-06-02T21:06:05+08:00">2025-06-02</time>
+      <time title="Modified: 2025-08-31 14:33:36" itemprop="dateModified" datetime="2025-08-31T14:33:36+08:00">2025-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -982,7 +1113,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-06-02 21:06:05" itemprop="dateModified" datetime="2025-06-02T21:06:05+08:00">2025-06-02</time>
+      <time title="Modified: 2025-08-31 14:33:36" itemprop="dateModified" datetime="2025-08-31T14:33:36+08:00">2025-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1132,7 +1263,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-06-02 21:06:05" itemprop="dateModified" datetime="2025-06-02T21:06:05+08:00">2025-06-02</time>
+      <time title="Modified: 2025-08-31 14:33:36" itemprop="dateModified" datetime="2025-08-31T14:33:36+08:00">2025-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1299,7 +1430,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-06-02 21:06:05" itemprop="dateModified" datetime="2025-06-02T21:06:05+08:00">2025-06-02</time>
+      <time title="Modified: 2025-08-31 14:33:36" itemprop="dateModified" datetime="2025-08-31T14:33:36+08:00">2025-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1445,7 +1576,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-06-02 21:06:05" itemprop="dateModified" datetime="2025-06-02T21:06:05+08:00">2025-06-02</time>
+      <time title="Modified: 2025-08-31 14:33:36" itemprop="dateModified" datetime="2025-08-31T14:33:36+08:00">2025-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1505,103 +1636,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/11/30/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-1-%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E8%88%87%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2024/03/12/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-0-%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Kun-Neng Hung">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/03/12/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-0-%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/" class="post-title-link" itemprop="url">Angular 新手村 - 0. 基礎知識</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2024-03-13 07:19:16" itemprop="dateCreated datePublished" datetime="2024-03-13T07:19:16+08:00">2024-03-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-06-02 21:06:05" itemprop="dateModified" datetime="2025-06-02T21:06:05+08:00">2025-06-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>現在人們的生活已離不開網頁，<strong>上網</strong>這個行為充斥在各個層面的操作，有很大機會代表<strong>操作網頁</strong>，舉凡收發 E-mail、看 YouTube 影片、讀新聞等可以透過網頁完成。但這些服務並非只仰賴眼前看到的網頁畫面，甚至有更龐大、在幕後運作的系統，處理大量使用者的請求並回應資料。</p>
-<p>基本上，大致歸納上述＂在幕後運作的系統＂就是伺服器，也就是後端；＂網頁畫面＂則是前端。</p>
-<h3 id="前端的網頁架構"><a href="#前端的網頁架構" class="headerlink" title="前端的網頁架構"></a>前端的網頁架構</h3><p>由於早期的網頁架構、功能簡單，沒有太多的畫面渲染需求，因此幾乎可以由一個人包辦前、後端的開發。隨著科技發達、技術演進，現在的網頁能做出任何想的到的畫面，當然架構也隨之龐大、複雜。若沒有<strong>前後端分離</strong>，光靠一個人會很難兼顧系統穩定與畫面流暢。</p>
-<blockquote>
-<p>前後端分離的好處是前、後端可以分別專注在實現自己的業務邏輯，降低耦合，兩者間藉由 HTTP&#x2F;HTTPS 或 WebSocket 進行溝通即可。</p>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/03/12/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-0-%E5%9F%BA%E7%A4%8E%E7%9F%A5%E8%AD%98/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
