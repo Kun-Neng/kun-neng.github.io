@@ -1,5 +1,5 @@
 ---
-title: Angular Signals 演進簡介
+title: Angular Signals 演進說明
 date: 2025-08-31 10:41:55
 tags:
 - Angular
