@@ -20,30 +20,43 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Angular Signals 是 Angular 框架在開發過程中一項重要的演進，旨在為應用程式的狀態管理提供更優雅、更高效的解決方案。以下是 Signals 在 Angular 各主要版本從提案到正式發佈的演進：    年.月 版本 演進說明    2022.06 &nbsp;&nbsp;v14&nbsp;&nbsp; RFC (Request for Comments) 提案階段目標是找出能">
+    <meta name="description" content="在網頁開發中， Node.js 已成為不可或缺的工具。然而，專案之間常常需要不同版本的 Node.js ，例如舊專案需要 14.x ，新專案則可能使用 20.x 。此時，使用 NVM (Node Version Manager) 來管理多版本 Node.js 就變得非常重要。 什麼是 NVM ？NVM 是一個命令列工具，可在主機上安裝多個版本的 Node.js ，解決不同專案間快速切換 Node.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Angular Signals 演進說明">
-<meta property="og:url" content="https://kun-neng.github.io/2025/08/31/Angular-Signals-Introduction/index.html">
+<meta property="og:title" content="NVM 簡介">
+<meta property="og:url" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/index.html">
 <meta property="og:site_name" content="爐邊雜談">
-<meta property="og:description" content="Angular Signals 是 Angular 框架在開發過程中一項重要的演進，旨在為應用程式的狀態管理提供更優雅、更高效的解決方案。以下是 Signals 在 Angular 各主要版本從提案到正式發佈的演進：    年.月 版本 演進說明    2022.06 &nbsp;&nbsp;v14&nbsp;&nbsp; RFC (Request for Comments) 提案階段目標是找出能">
+<meta property="og:description" content="在網頁開發中， Node.js 已成為不可或缺的工具。然而，專案之間常常需要不同版本的 Node.js ，例如舊專案需要 14.x ，新專案則可能使用 20.x 。此時，使用 NVM (Node Version Manager) 來管理多版本 Node.js 就變得非常重要。 什麼是 NVM ？NVM 是一個命令列工具，可在主機上安裝多個版本的 Node.js ，解決不同專案間快速切換 Node.">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2025-08-31T02:41:55.000Z">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/0_uninstall_node.js.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/1_nvm_1.1.12_folder.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/2_nvm_1.1.12_node.js_folder.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/3_0_PowerShell.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/3_1_nvm_list.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/3_2_nvm_install_18.20.2.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/3_3_nvm_list.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/3_4_nvm_use_18.20.2.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/3_5_node.js_version.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/4_1_nvm_install_latest.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/4_2_nvm_list.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/4_3_nvm_use_24.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/4_4_nvm_list&current.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/4_5_node.js_symlink.png">
+<meta property="article:published_time" content="2025-09-07T06:29:27.000Z">
 <meta property="article:modified_time" content="2025-09-07T09:14:46.912Z">
 <meta property="article:author" content="Kun-Neng Hung">
-<meta property="article:tag" content="Angular">
 <meta property="article:tag" content="Web">
-<meta property="article:tag" content="Signal">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2025/09/07/NVM-Introduction/0_uninstall_node.js.png">
 
 
-<link rel="canonical" href="https://kun-neng.github.io/2025/08/31/Angular-Signals-Introduction/">
+<link rel="canonical" href="https://kun-neng.github.io/2025/09/07/NVM-Introduction/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2025/08/31/Angular-Signals-Introduction/","path":"2025/08/31/Angular-Signals-Introduction/","title":"Angular Signals 演進說明"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2025/09/07/NVM-Introduction/","path":"2025/09/07/NVM-Introduction/","title":"NVM 簡介"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Angular Signals 演進說明 | 爐邊雜談</title>
+<title>NVM 簡介 | 爐邊雜談</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
@@ -106,7 +119,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -119,6 +132,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-NVM-%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什麼是 NVM ？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%BC-Windows-%E4%B8%8B%E5%AE%89%E8%A3%9D-NVM"><span class="nav-number">2.</span> <span class="nav-text">於 Windows 下安裝 NVM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NVM-%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">NVM 常用指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%83%85%E5%A2%83"><span class="nav-number">4.</span> <span class="nav-text">使用情境</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -180,7 +194,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
-    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/08/31/Angular-Signals-Introduction/">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/09/07/NVM-Introduction/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -193,12 +207,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Angular Signals 演進說明 | 爐邊雜談">
+      <meta itemprop="name" content="NVM 簡介 | 爐邊雜談">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Angular Signals 演進說明
+          NVM 簡介
         </h1>
 
         <div class="post-meta-container">
@@ -208,28 +222,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
+      
 
-      <time title="Created: 2025-08-31 10:41:55" itemprop="dateCreated datePublished" datetime="2025-08-31T10:41:55+08:00">2025-08-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-07 17:14:46" itemprop="dateModified" datetime="2025-09-07T17:14:46+08:00">2025-09-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Angular/Signal/" itemprop="url" rel="index"><span itemprop="name">Signal</span></a>
-        </span>
+      <time title="Created: 2025-09-07 14:29:27 / Modified: 17:14:46" itemprop="dateCreated datePublished" datetime="2025-09-07T14:29:27+08:00">2025-09-07</time>
     </span>
 
   
@@ -241,55 +236,58 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>Angular Signals 是 Angular 框架在開發過程中一項重要的演進，旨在為應用程式的狀態管理提供更優雅、更高效的解決方案。以下是 Signals 在 Angular 各主要版本從提案到正式發佈的演進：</p>
-<table>
-<thead>
-<tr>
-<th>年.月</th>
-<th>版本</th>
-<th>演進說明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>2022.06</td>
-<td>&nbsp;&nbsp;v14&nbsp;&nbsp;</td>
-<td><strong>RFC (Request for Comments) 提案階段</strong><br>目標是找出能解決 Angular 變更偵測（change detection）痛點的新方案，能夠與 RxJS 等現有工具鏈整合，並減少對 ZoneJS 函式庫的依賴。</td>
-</tr>
-<tr>
-<td>2022.11</td>
-<td>&nbsp;&nbsp;v15&nbsp;&nbsp;</td>
-<td><strong>實驗性階段</strong><br>Angular 內部透過 <a target="_blank" rel="noopener" href="https://github.com/angular/angular/blob/main/packages/core/src/render3/reactivity/signal.ts#L79"><code>createSignal()</code></a> 函數來建立 Signal ，此階段不推薦用於生產環境。<br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/angular-v15-is-now-available-df7be7f2f4c8">Angular v15 is now available!</a></td>
-</tr>
-<tr>
-<td>2023.05</td>
-<td>&nbsp;&nbsp;v16&nbsp;&nbsp;</td>
-<td><strong>Signals 革命性發展的里程碑</strong><br>Signals 被正式發布，不再是實驗性功能，意謂 Signals 已經足夠穩定和成熟，可以安全地在生產環境中使用。<br><br>引入幾個關鍵的 Signals 相關 APIs：<br>1. <code>signal()</code>：用於創建一個 writable Signal ，使用 <code>.set()</code> 來賦值<br>2. <code>computed()</code>：創建一個依賴於其他 Signals ，並且會自動更新的唯讀 Signal （亦即，不可使用 <code>.set()</code> 來賦值）<br>3. <code>effect()</code>：用於在 Signal 的值改變時觸發副作用（side effects），例如更新 DOM 或觸發 API 呼叫<br><br>在 Observable 與 Signal 之間進行轉換：<br>Signal -&gt; Observable：<code>import &#123; toObservable &#125; from &#39;@angular/core/rxjs-interop&#39;;</code><br>Observable -&gt; Signal：<code>import &#123; toSignal &#125; from &#39;@angular/core/rxjs-interop&#39;;</code><br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/angular-v16-is-here-4d7a28ec680d">Angular v16 is here!</a></td>
-</tr>
-<tr>
-<td>2023.11</td>
-<td>&nbsp;&nbsp;v17&nbsp;&nbsp;</td>
-<td><strong>深度整合新功能，成為新功能的核心</strong><br>這個版本中最重要的相關更新是 Signals 引入 <code>@if</code> 、 <code>@for</code> 、 <code>@switch</code> 等內建控制流語法。這些新的語法在內部完全依賴 Signals 進行變更偵測，大大簡化了模板的變更偵測機制，並且不需要依賴 <code>zone.js</code> 也能正常運作，這對於未來實現 Zoneless 的應用程式非常有幫助。<br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/introducing-angular-v17-4d7033312e4b">Introducing Angular v17</a></td>
-</tr>
-<tr>
-<td>2024.05</td>
-<td>&nbsp;&nbsp;v18&nbsp;&nbsp;</td>
-<td><strong>雙向繫結與新 API</strong><br>引入幾個重要的 Signals 相關 APIs ，簡化元件間的資料傳遞：<br>1. <code>input()</code> 讓父元件可以傳遞一個 Signal 的值給子元件<br>2. <code>output()</code> 讓子元件可以發出事件，並在父元件中以 Signal 的方式訂閱這些事件<br>3. <code>model()</code>：結合了 <code>@Input()</code> 和 <code>@Output()</code> 的功能，讓開發者可以用更簡潔的方式實現雙向資料繫結。<br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/angular-v18-is-now-available-e79d5ac0affe">Angular v18 is now available!</a></td>
-</tr>
-<tr>
-<td>2024.11</td>
-<td>&nbsp;&nbsp;v19&nbsp;&nbsp;</td>
-<td><strong>反應式原語（Reactivity Primitives）</strong><br>引入新的 Signals 實驗性 APIs 以取得開發者回饋：<br>1. <code>linkedSignal()</code>：創建一個類似於 <code>computed()</code> ，而且可以依賴於其他狀態的 writable Signal<br>2. <code>resource()</code>：執行非同步操作來取得資源<br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/meet-angular-v19-7b29dfd05b84">Meet Angular v19</a></td>
-</tr>
-<tr>
-<td>2025.05</td>
-<td>&nbsp;&nbsp;v20&nbsp;&nbsp;</td>
-<td><strong>穩定階段</strong><br>引入新的 Signals 實驗性 API：<br><code>httpResource()</code> 使用 <code>HttpClient</code> 取得 HTTP 資源並回傳 <code>HttpResourceRef</code> ，其內容包含 <code>value</code> 屬性的 Signal ，可直接在範本中使用<br><br>參考連結：<a target="_blank" rel="noopener" href="https://blog.angular.dev/announcing-angular-v20-b5c9c06cf301">Announcing Angular v20</a></td>
-</tr>
-</tbody></table>
-<p>官網介紹：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://angular.dev/guide/signals">Angular Signals</a></li>
+    <div class="post-body" itemprop="articleBody"><p>在網頁開發中， Node.js 已成為不可或缺的工具。然而，專案之間常常需要不同版本的 Node.js ，例如舊專案需要 <code>14.x</code> ，新專案則可能使用 <code>20.x</code> 。此時，使用 NVM (Node Version Manager) 來管理多版本 Node.js 就變得非常重要。</p>
+<h3 id="什麼是-NVM-？"><a href="#什麼是-NVM-？" class="headerlink" title="什麼是 NVM ？"></a>什麼是 NVM ？</h3><p>NVM 是一個命令列工具，可在主機上安裝多個版本的 Node.js ，解決不同專案間快速切換 Node.js 版本，同時避免全域安裝 Node.js 帶來的相容性問題。</p>
+<h3 id="於-Windows-下安裝-NVM"><a href="#於-Windows-下安裝-NVM" class="headerlink" title="於 Windows 下安裝 NVM"></a>於 Windows 下安裝 NVM</h3><p>由於 Windows 沒有官方的 NVM ，因此特別介紹使用 nvm-windows 來進行安裝。</p>
+<ol>
+<li><p>下載 <a target="_blank" rel="noopener" href="https://github.com/coreybutler/nvm-windows/releases">nvm-windows 發行檔</a>（建議安裝 <code>1.1.12</code> 版本較穩定）。</p>
+</li>
+<li><p>執行安裝程式並設定安裝目錄。</p>
+</li>
+</ol>
+<blockquote>
+<p>若曾經安裝過 Node.js ，需要先完整移除<br>  <img data-src="/2025/09/07/NVM-Introduction/0_uninstall_node.js.png" class=""></p>
+</blockquote>
+<p>  2.1 NVM 安裝路徑<br>  <img data-src="/2025/09/07/NVM-Introduction/1_nvm_1.1.12_folder.png" class=""></p>
+<p>  2.2 Node.js 設定路徑<br>  <img data-src="/2025/09/07/NVM-Introduction/2_nvm_1.1.12_node.js_folder.png" class=""></p>
+<ol start="3">
+<li>安裝完成後，開啟 PowerShell 檢查版本：<br>  <code>nvm --version</code></li>
+</ol>
+<h3 id="NVM-常用指令"><a href="#NVM-常用指令" class="headerlink" title="NVM 常用指令"></a>NVM 常用指令</h3><ul>
+<li><code>nvm install &lt;version&gt;</code> 安裝指定版本的 Node.js，例如 <code>nvm install 18.20.2</code></li>
+<li><code>nvm install latest</code> 安裝最新的 LTS（長期支援）版本</li>
+<li><code>nvm uninstall &lt;version&gt;</code> 移除某個版本的 Node.js</li>
+<li><code>nvm use &lt;version&gt;</code> 切換至指定版本，例如 <code>nvm use 18</code></li>
+<li><code>nvm current</code> 查看目前使用的 Node.js 版本</li>
+<li><code>nvm list</code> 或 <code>nvm ls</code> 列出已安裝的 Node.js 版本</li>
 </ul>
+<h3 id="使用情境"><a href="#使用情境" class="headerlink" title="使用情境"></a>使用情境</h3><p>使用管理員身份開啟 PowerShell</p>
+<img data-src="/2025/09/07/NVM-Introduction/3_0_PowerShell.png" class="">
+
+<ol>
+<li><p><strong>安裝指定版本的 Node.js</strong><br>  1.1 以 <code>nvm list</code> 確認目前已安裝的版本</p>
+  <img data-src="/2025/09/07/NVM-Introduction/3_1_nvm_list.png" class="">
+<p>  1.2 安裝 Node.js <code>18.20.2</code></p>
+  <img data-src="/2025/09/07/NVM-Introduction/3_2_nvm_install_18.20.2.png" class="">
+<p>  1.3 以 <code>nvm list</code> 確認已安裝該版本的 Node.js</p>
+  <img data-src="/2025/09/07/NVM-Introduction/3_3_nvm_list.png" class="">
+<p>  1.4 以 <code>nvm use</code> 切換至該 Node.js <code>18.20.2</code> 版本</p>
+  <img data-src="/2025/09/07/NVM-Introduction/3_4_nvm_use_18.20.2.png" class="">
+<p>  1.5 以 <code>node -v</code> 或 <code>nvm current</code> 檢查 Node.js 版本</p>
+  <img data-src="/2025/09/07/NVM-Introduction/3_5_node.js_version.png" class="">
+</li>
+<li><p><strong>安裝最新 LTS 版本的 Node.js 並切換至該版本</strong><br>  2.1 以 <code>nvm install latest</code> 安裝最新 LTS 版本</p>
+  <img data-src="/2025/09/07/NVM-Introduction/4_1_nvm_install_latest.png" class="">
+<p>  2.2 以 <code>nvm list</code> 確認已安裝該版本的 Node.js （<code>*</code> 代表目前使用的版本）</p>
+  <img data-src="/2025/09/07/NVM-Introduction/4_2_nvm_list.png" class="">
+<p>  2.3 以 <code>nvm use</code> 切換至該 Node.js <code>24</code> 主版本</p>
+  <img data-src="/2025/09/07/NVM-Introduction/4_3_nvm_use_24.png" class="">
+<p>  2.4 以 <code>nvm list</code> 及 <code>nvm current</code> 確認已切換至指定版本</p>
+  <img data-src="/2025/09/07/NVM-Introduction/4_4_nvm_list&current.png" class=""></li>
+</ol>
+<blockquote>
+<p>由檔案結構可以發現，使用 <code>nvm install &lt;version&gt;</code> 安裝的 Node.js 版本都會存在 NVM 資料夾中，並且設定軟連結（symbolic link）到 Node.js 的執行路徑，藉由＂捷徑＂快速切換 Node.js 版本。<br>  <img data-src="/2025/09/07/NVM-Introduction/4_5_node.js_symlink.png" class=""></p>
+</blockquote>
 
     </div>
 
@@ -299,23 +297,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Angular/" rel="tag"># Angular</a>
               <a href="/tags/Web/" rel="tag"># Web</a>
-              <a href="/tags/Signal/" rel="tag"># Signal</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/06/01/Angular-v20-Features/" rel="prev" title="Angular v20 Features">
-                  <i class="fa fa-angle-left"></i> Angular v20 Features
+                <a href="/2025/08/31/Angular-Signals-Introduction/" rel="prev" title="Angular Signals 演進說明">
+                  <i class="fa fa-angle-left"></i> Angular Signals 演進說明
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/09/07/NVM-Introduction/" rel="next" title="NVM 簡介">
-                  NVM 簡介 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
