@@ -15,7 +15,7 @@ NVM 是一個命令列工具，可在主機上安裝多個版本的 Node.js ，�
 
 由於 Windows 沒有官方的 NVM ，因此特別介紹使用 nvm-windows 來進行安裝。
 
-1. 下載 [nvm-windows 發行檔](https://github.com/coreybutler/nvm-windows/releases)（建議安裝 `1.1.12` 版本較穩定）。
+1. 由 [nvm-windows](https://github.com/coreybutler/nvm-windows/releases) 下載安裝檔 nvm-setup.exe（建議安裝 [`1.1.12`](https://github.com/coreybutler/nvm-windows/releases/tag/1.1.12) 版本較穩定）。
 
 2. 執行安裝程式並設定安裝目錄。
 
