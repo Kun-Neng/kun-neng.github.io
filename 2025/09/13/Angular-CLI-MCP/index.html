@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在 Angular CLI 20.1.0 加入了 MCP 伺服器，協助開發者基於 Angular 提供的官方 API 進行快速、準確地建立應用程式各項功能。   Model Context Protocol (MCP)想像有一個 AI 模型，它要跟外部世界（例如資料庫、 API 、檔案系統、甚至公司內部系統）互動，但不同系統的介面和規則都不一樣。如果要讓 AI 模型連接不同的工具或資料來源，開發者">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular CLI MCP 介紹">
+<meta property="og:url" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="在 Angular CLI 20.1.0 加入了 MCP 伺服器，協助開發者基於 Angular 提供的官方 API 進行快速、準確地建立應用程式各項功能。   Model Context Protocol (MCP)想像有一個 AI 模型，它要跟外部世界（例如資料庫、 API 、檔案系統、甚至公司內部系統）互動，但不同系統的介面和規則都不一樣。如果要讓 AI 模型連接不同的工具或資料來源，開發者">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/1_angular_cli_add_initial_mcp_server.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/2_ng_mcp.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/3_mcp_configurations.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/4_mcp_is_running.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/5_extension.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/6_angular_cli_mcp_tools.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/7_search_documentation.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/8_list_projects.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/9_get_best_practices.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/10_1_prompt.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/10_2_providehttpclient.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/10_3_post_service.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/10_4_post_service.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/11_1_prompt.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/11_2_routes.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/11_3_routes_and_modification.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/11_4_dependency_injection.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/11_5_template_updated.png">
+<meta property="og:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/11_6_template_updated.png">
+<meta property="article:published_time" content="2025-09-13T13:11:07.000Z">
+<meta property="article:modified_time" content="2025-09-14T07:27:49.491Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="MCP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/1_angular_cli_add_initial_mcp_server.png">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/","path":"2025/09/13/Angular-CLI-MCP/","title":"Angular CLI MCP 介紹"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular CLI MCP 介紹 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tech-talks"><a href="/tech-talks/" rel="section"><i class="fa fa-microphone fa-fw"></i>Tech Talks</a></li><li class="menu-item menu-item-side-projects"><a href="/side-projects/" rel="section"><i class="fa fa-cube fa-fw"></i>Side Projects</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Model-Context-Protocol-MCP"><span class="nav-number">1.</span> <span class="nav-text">Model Context Protocol (MCP)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8-Angular-%E4%BD%BF%E7%94%A8-MCP-%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">如何在 Angular 使用 MCP ？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">使用範例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E4%BE%86%E6%BA%90"><span class="nav-number">4.</span> <span class="nav-text">參考來源</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://medium.com/@kunneng.hung" title="Medium → https:&#x2F;&#x2F;medium.com&#x2F;@kunneng.hung" rel="noopener me" target="_blank"><i class="fab fa-medium fa-fw"></i>Medium</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular CLI MCP 介紹 | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular CLI MCP 介紹
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-13 21:11:07" itemprop="dateCreated datePublished" datetime="2025-09-13T21:11:07+08:00">2025-09-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-09-14 15:27:49" itemprop="dateModified" datetime="2025-09-14T15:27:49+08:00">2025-09-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/MCP/" itemprop="url" rel="index"><span itemprop="name">MCP</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在 <a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/releases/tag/20.1.0">Angular CLI 20.1.0</a> 加入了 MCP 伺服器，協助開發者基於 Angular 提供的官方 API 進行快速、準確地建立應用程式各項功能。</p>
+<img data-src="/2025/09/13/Angular-CLI-MCP/1_angular_cli_add_initial_mcp_server.png" class="">
+
+<h3 id="Model-Context-Protocol-MCP"><a href="#Model-Context-Protocol-MCP" class="headerlink" title="Model Context Protocol (MCP)"></a><a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/docs/getting-started/intro">Model Context Protocol (MCP)</a></h3><p>想像有一個 AI 模型，它要跟外部世界（例如資料庫、 API 、檔案系統、甚至公司內部系統）互動，但不同系統的介面和規則都不一樣。如果要讓 AI 模型連接不同的工具或資料來源，開發者常常需要寫一堆客製化程式，像是自己設計 API 、格式轉換、錯誤處理等等，耗時且不易共享。</p>
+<p>MCP 的出現，解決了上述問題，因為 MCP 像一個結合翻譯官與溝通規範的媒介，讓 AI 模型與各種不同來源的資料或工具，用統一的方式來交談。</p>
+<p>它具備以下好處：</p>
+<ul>
+<li>降低整合難度：只要大家都用 MCP ，模型就能更輕鬆地接取不同工具。</li>
+<li>可移植性：一個 MCP 工具可以同時使用在不同的 AI 模型或平台，減少重工。</li>
+<li>安全性：MCP 定義了更明確的存取規範，避免 AI 模型隨便存取敏感資料。</li>
+</ul>
+<h3 id="如何在-Angular-使用-MCP-？"><a href="#如何在-Angular-使用-MCP-？" class="headerlink" title="如何在 Angular 使用 MCP ？"></a>如何在 Angular 使用 MCP ？</h3><ol>
+<li><p>首先建立一個 Angular 20.1.0 版本（或以上）的專案，以專案名稱 <code>angular-cli-mcp</code> 為例：<br><code>npx @angular/cli@20.1.0 new angular-cli-mcp</code></p>
+</li>
+<li><p>使用以下指令來啟動 MCP 伺服器，執行結束會有指引說明如何設定本機環境：<br><code>ng mcp</code></p>
+<img data-src="/2025/09/13/Angular-CLI-MCP/2_ng_mcp.png" class="">
+</li>
+<li><p>在專案根目錄建立 <code>.vscode/mcp.json</code> 檔案（以 VS Code 為例），並加入以下設定：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#123;
+  &quot;servers&quot;: &#123;
+    &quot;angular-cli&quot;: &#123;
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;@angular&#x2F;cli&quot;, &quot;mcp&quot;]
+    &#125;
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>目前提供兩個選項，可加入至 <code>args</code> 參數：</p>
+<ul>
+<li><code>--read-only</code> 僅註冊不會對專案進行改動的工具。編輯器或程式碼代理（ agent ）仍可能執行編輯。預設為 <code>false</code> 。</li>
+<li><code>--local-only</code> 僅註冊不需要網路連線的工具。編輯器或程式碼代理仍可能透過網路傳送資料。預設為 <code>false</code> 。</li>
+</ul>
+</li>
+<li><p>啟動 MCP 伺服器的方式（以下二擇一）</p>
+<ol>
+<li>在 <code>mcp.json</code> 檔案中可看到在 <code>angular-cli</code> MCP 伺服器加入後出現的選項：<img data-src="/2025/09/13/Angular-CLI-MCP/3_mcp_configurations.png" class="">
+點選＂開始＂後即可啟動 MCP 伺服器：<img data-src="/2025/09/13/Angular-CLI-MCP/4_mcp_is_running.png" class=""></li>
+<li>在延伸模組中的 MCP 伺服器選取 <code>angular-cli</code> 後，手動啟動伺服器：<img data-src="/2025/09/13/Angular-CLI-MCP/5_extension.png" class=""></li>
+</ol>
+</li>
+<li><p>在 agent 模式下，以 prompt 進行設定檢查：</p>
+<img data-src="/2025/09/13/Angular-CLI-MCP/6_angular_cli_mcp_tools.png" class="">
+<p>目前 MCP 伺服器提供三個工具：</p>
+<ul>
+<li><code>search_documentation</code> 搜尋在 <a target="_blank" rel="noopener" href="https://angular.dev/">https://angular.dev</a> 的 Angular 官方文件，提供 API 使用說明與開發範例等（下圖僅擷取部分回應內容）。<img data-src="/2025/09/13/Angular-CLI-MCP/7_search_documentation.png" class=""></li>
+<li><code>list_projects</code> 列出 <code>angular.json</code> 檔案內所定義的應用程式（ applications ）和函式庫（ libraries ）。<img data-src="/2025/09/13/Angular-CLI-MCP/8_list_projects.png" class=""></li>
+<li><code>get_best_practices</code> 使用 <code>#angular-cli</code> 提供 Angular 官方完整的最佳實踐指南（下圖僅擷取部分回應內容）。<img data-src="/2025/09/13/Angular-CLI-MCP/9_get_best_practices.png" class=""></li>
+</ul>
+</li>
+</ol>
+<span id="more"></span>
+
+<h3 id="使用範例"><a href="#使用範例" class="headerlink" title="使用範例"></a>使用範例</h3><ul>
+<li><p>在某個資料夾下建立服務，以取得後端 API 資料</p>
+<blockquote>
+<p>資料夾為 <code>posts</code><br>服務名稱為 <code>post</code><br>後端 URL 為 <code>https://jsonplaceholder.typicode.com/posts</code></p>
+</blockquote>
+<p> 在送出 prompt 後，我們可以經由以下的 response 檢查它的思考邏輯是否正確：</p>
+<ol>
+<li>建立資料夾 <code>posts</code> 與服務 <code>post</code> <img data-src="/2025/09/13/Angular-CLI-MCP/10_1_prompt.png" class=""></li>
+<li>由於需要取得後端 API 資料，需要提供 <code>HttpClient</code> <img data-src="/2025/09/13/Angular-CLI-MCP/10_2_providehttpclient.png" class=""></li>
+<li>參考 Angular 官方命名規則，修改服務名稱為 <code>post.service.ts</code> <img data-src="/2025/09/13/Angular-CLI-MCP/10_3_post_service.png" class=""></li>
+<li>顯示 <code>post.service.ts</code> 實作內容 <img data-src="/2025/09/13/Angular-CLI-MCP/10_4_post_service.png" class=""></li>
+</ol>
+</li>
+<li><p>在 <code>posts</code> 資料夾內建立元件，以顯示取得的後端資料</p>
+<blockquote>
+<p>資料夾為 <code>posts</code><br>元件名稱為 <code>posts.component.ts</code></p>
+</blockquote>
+<p> 在送出 prompt 後，我們可以經由以下的 response 檢查它的思考邏輯是否正確：</p>
+<ol>
+<li>任務拆解，並建立 <code>posts</code> 元件 <img data-src="/2025/09/13/Angular-CLI-MCP/11_1_prompt.png" class=""></li>
+<li>設定並更新路由 <img data-src="/2025/09/13/Angular-CLI-MCP/11_2_routes.png" class=""></li>
+<li>在調整路由的過程中，會持續檢查錯誤並修正 <img data-src="/2025/09/13/Angular-CLI-MCP/11_3_routes_and_modification.png" class=""></li>
+<li>在元件注入服務，並修正錯誤 <img data-src="/2025/09/13/Angular-CLI-MCP/11_4_dependency_injection.png" class=""></li>
+<li>更新 <code>posts.component.html</code> 內容，以顯示後端資料 <img data-src="/2025/09/13/Angular-CLI-MCP/11_5_template_updated.png" class=""></li>
+<li>清理 <code>app.component.html</code> 內容，將路由導到 <code>posts</code> 元件 <img data-src="/2025/09/13/Angular-CLI-MCP/11_6_template_updated.png" class=""></li>
+</ol>
+</li>
+</ul>
+<h3 id="參考來源"><a href="#參考來源" class="headerlink" title="參考來源"></a>參考來源</h3><ul>
+<li>官方文件 <a target="_blank" rel="noopener" href="https://angular.dev/ai/mcp">Angular CLI MCP Server setup</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/MCP/" rel="tag"># MCP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/09/07/NVM-Introduction/" rel="prev" title="NVM 簡介">
+                  <i class="fa fa-angle-left"></i> NVM 簡介
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.min.js","integrity":"sha256-TtLOdUA8mstPoO6sGvHIGx2ceXrrX4KgIItO06XOn8A="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

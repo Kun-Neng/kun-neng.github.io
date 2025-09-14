@@ -125,18 +125,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -164,6 +164,150 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/09/13/Angular-CLI-MCP/" class="post-title-link" itemprop="url">Angular CLI MCP 介紹</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-13 21:11:07" itemprop="dateCreated datePublished" datetime="2025-09-13T21:11:07+08:00">2025-09-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-09-14 15:27:49" itemprop="dateModified" datetime="2025-09-14T15:27:49+08:00">2025-09-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/MCP/" itemprop="url" rel="index"><span itemprop="name">MCP</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>在 <a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/releases/tag/20.1.0">Angular CLI 20.1.0</a> 加入了 MCP 伺服器，協助開發者基於 Angular 提供的官方 API 進行快速、準確地建立應用程式各項功能。</p>
+<img data-src="/2025/09/13/Angular-CLI-MCP/1_angular_cli_add_initial_mcp_server.png" class="">
+
+<h3 id="Model-Context-Protocol-MCP"><a href="#Model-Context-Protocol-MCP" class="headerlink" title="Model Context Protocol (MCP)"></a><a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/docs/getting-started/intro">Model Context Protocol (MCP)</a></h3><p>想像有一個 AI 模型，它要跟外部世界（例如資料庫、 API 、檔案系統、甚至公司內部系統）互動，但不同系統的介面和規則都不一樣。如果要讓 AI 模型連接不同的工具或資料來源，開發者常常需要寫一堆客製化程式，像是自己設計 API 、格式轉換、錯誤處理等等，耗時且不易共享。</p>
+<p>MCP 的出現，解決了上述問題，因為 MCP 像一個結合翻譯官與溝通規範的媒介，讓 AI 模型與各種不同來源的資料或工具，用統一的方式來交談。</p>
+<p>它具備以下好處：</p>
+<ul>
+<li>降低整合難度：只要大家都用 MCP ，模型就能更輕鬆地接取不同工具。</li>
+<li>可移植性：一個 MCP 工具可以同時使用在不同的 AI 模型或平台，減少重工。</li>
+<li>安全性：MCP 定義了更明確的存取規範，避免 AI 模型隨便存取敏感資料。</li>
+</ul>
+<h3 id="如何在-Angular-使用-MCP-？"><a href="#如何在-Angular-使用-MCP-？" class="headerlink" title="如何在 Angular 使用 MCP ？"></a>如何在 Angular 使用 MCP ？</h3><ol>
+<li><p>首先建立一個 Angular 20.1.0 版本（或以上）的專案，以專案名稱 <code>angular-cli-mcp</code> 為例：<br><code>npx @angular/cli@20.1.0 new angular-cli-mcp</code></p>
+</li>
+<li><p>使用以下指令來啟動 MCP 伺服器，執行結束會有指引說明如何設定本機環境：<br><code>ng mcp</code></p>
+<img data-src="/2025/09/13/Angular-CLI-MCP/2_ng_mcp.png" class="">
+</li>
+<li><p>在專案根目錄建立 <code>.vscode/mcp.json</code> 檔案（以 VS Code 為例），並加入以下設定：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#123;
+  &quot;servers&quot;: &#123;
+    &quot;angular-cli&quot;: &#123;
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;@angular&#x2F;cli&quot;, &quot;mcp&quot;]
+    &#125;
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>目前提供兩個選項，可加入至 <code>args</code> 參數：</p>
+<ul>
+<li><code>--read-only</code> 僅註冊不會對專案進行改動的工具。編輯器或程式碼代理（ agent ）仍可能執行編輯。預設為 <code>false</code> 。</li>
+<li><code>--local-only</code> 僅註冊不需要網路連線的工具。編輯器或程式碼代理仍可能透過網路傳送資料。預設為 <code>false</code> 。</li>
+</ul>
+</li>
+<li><p>啟動 MCP 伺服器的方式（以下二擇一）</p>
+<ol>
+<li>在 <code>mcp.json</code> 檔案中可看到在 <code>angular-cli</code> MCP 伺服器加入後出現的選項：<img data-src="/2025/09/13/Angular-CLI-MCP/3_mcp_configurations.png" class="">
+點選＂開始＂後即可啟動 MCP 伺服器：<img data-src="/2025/09/13/Angular-CLI-MCP/4_mcp_is_running.png" class=""></li>
+<li>在延伸模組中的 MCP 伺服器選取 <code>angular-cli</code> 後，手動啟動伺服器：<img data-src="/2025/09/13/Angular-CLI-MCP/5_extension.png" class=""></li>
+</ol>
+</li>
+<li><p>在 agent 模式下，以 prompt 進行設定檢查：</p>
+<img data-src="/2025/09/13/Angular-CLI-MCP/6_angular_cli_mcp_tools.png" class="">
+<p>目前 MCP 伺服器提供三個工具：</p>
+<ul>
+<li><code>search_documentation</code> 搜尋在 <a target="_blank" rel="noopener" href="https://angular.dev/">https://angular.dev</a> 的 Angular 官方文件，提供 API 使用說明與開發範例等（下圖僅擷取部分回應內容）。<img data-src="/2025/09/13/Angular-CLI-MCP/7_search_documentation.png" class=""></li>
+<li><code>list_projects</code> 列出 <code>angular.json</code> 檔案內所定義的應用程式（ applications ）和函式庫（ libraries ）。<img data-src="/2025/09/13/Angular-CLI-MCP/8_list_projects.png" class=""></li>
+<li><code>get_best_practices</code> 使用 <code>#angular-cli</code> 提供 Angular 官方完整的最佳實踐指南（下圖僅擷取部分回應內容）。<img data-src="/2025/09/13/Angular-CLI-MCP/9_get_best_practices.png" class=""></li>
+</ul>
+</li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/09/13/Angular-CLI-MCP/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -209,7 +353,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 14:05:09" itemprop="dateModified" datetime="2025-09-14T14:05:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-14 15:27:49" itemprop="dateModified" datetime="2025-09-14T15:27:49+08:00">2025-09-14</time>
     </span>
 
   
@@ -336,7 +480,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 14:05:09" itemprop="dateModified" datetime="2025-09-14T14:05:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-14 15:27:49" itemprop="dateModified" datetime="2025-09-14T15:27:49+08:00">2025-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -473,7 +617,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 14:05:09" itemprop="dateModified" datetime="2025-09-14T14:05:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-14 15:27:49" itemprop="dateModified" datetime="2025-09-14T15:27:49+08:00">2025-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -621,7 +765,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 14:05:09" itemprop="dateModified" datetime="2025-09-14T14:05:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-14 15:27:49" itemprop="dateModified" datetime="2025-09-14T15:27:49+08:00">2025-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -825,7 +969,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 14:05:09" itemprop="dateModified" datetime="2025-09-14T14:05:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-14 15:27:49" itemprop="dateModified" datetime="2025-09-14T15:27:49+08:00">2025-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -954,7 +1098,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 14:05:09" itemprop="dateModified" datetime="2025-09-14T14:05:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-14 15:27:49" itemprop="dateModified" datetime="2025-09-14T15:27:49+08:00">2025-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1089,7 +1233,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 14:05:09" itemprop="dateModified" datetime="2025-09-14T14:05:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-14 15:27:49" itemprop="dateModified" datetime="2025-09-14T15:27:49+08:00">2025-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1246,7 +1390,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 14:05:09" itemprop="dateModified" datetime="2025-09-14T14:05:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-14 15:27:49" itemprop="dateModified" datetime="2025-09-14T15:27:49+08:00">2025-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1396,7 +1540,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 14:05:09" itemprop="dateModified" datetime="2025-09-14T14:05:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-14 15:27:49" itemprop="dateModified" datetime="2025-09-14T15:27:49+08:00">2025-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1497,152 +1641,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Kun-Neng Hung">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/" class="post-title-link" itemprop="url">Angular 新手村 - 2. 元件</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2024-12-07 20:25:00" itemprop="dateCreated datePublished" datetime="2024-12-07T20:25:00+08:00">2024-12-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 14:05:09" itemprop="dateModified" datetime="2025-09-14T14:05:09+08:00">2025-09-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>延續上一篇，我們完成以 Angular CLI 建立了聊天室專案 <code>chatroom</code> ，並認識一些環境參數與設定選項。</p>
-<h3 id="元件（component）"><a href="#元件（component）" class="headerlink" title="元件（component）"></a>元件（component）</h3><p>本篇首先認識集合<strong>呈現</strong>與<strong>行為</strong>的元件，它是由 CLI 所建立最頂層的元件，位於 <code>src/app/</code> ，基本上由 4 支檔案所組成：</p>
-<ul>
-<li><code>app.component.html</code> 提供網頁元素</li>
-<li><code>app.component.css</code> 提供樣式</li>
-<li><code>app.component.ts</code> 提供參數與運作功能</li>
-<li><code>app.component.spec.ts</code> 提供單元測試</li>
-</ul>
-<p>對照到一個基本的網頁組成，就不難理解上述檔案的用途。</p>
-<ul>
-<li>HTML （附檔名 .html）</li>
-<li>CSS （附檔名 .css 、 .scss 、 …）</li>
-<li>JavaScript （附檔名 .js）</li>
-</ul>
-<p>讓我們先介紹差異最大的部分： <code>app.component.ts</code></p>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
-
-<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
-  selector<span class="token operator">:</span> <span class="token string">'app-root'</span><span class="token punctuation">,</span>
-  templateUrl<span class="token operator">:</span> <span class="token string">'./app.component.html'</span><span class="token punctuation">,</span>
-  styleUrl<span class="token operator">:</span> <span class="token string">'./app.component.css'</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">AppComponent</span> <span class="token punctuation">&#123;</span>
-  title <span class="token operator">=</span> <span class="token string">'chatroom'</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>讓我們來解析這支程式：</p>
-<ul>
-<li>第 1 行由 <code>@angular/core</code> 引入程式所需要的 <code>@Component</code> 裝飾子</li>
-<li>第 3 行在類別（<code>class</code>）前加註 <code>@Component</code> 裝飾子，即告訴 Angular 這個類別被視為元件</li>
-<li>第 4 ～ 6 行為 <code>@Component</code> 裝飾子的內容，稱為此元件的 <code>metadata</code> （元資料或中繼資料）<ul>
-<li><code>selector</code> 參數最重要，它會告訴 Angular 要在網頁中尋找的名稱，每個名稱在專案內都是唯一的。例如，若網頁中包含 <code>&lt;app-root&gt;&lt;/app-root&gt;</code> 區塊， Angular 會找出元件類別並實體化它。</li>
-<li><code>templateUrl</code> 參數用來指示 HTML 檔的路徑。可換成 <code>template</code> 參數，直接接受 HTML 語法</li>
-<li><code>styleUrl</code> 參數用來指示樣式檔（ CSS 或 SCSS ）的路徑。可換成 <code>styles</code> 參數，直接接受樣式語法 </li>
-<li>在早期的版本，可能會看到 <code>standalone</code> 參數，代表此元件是否支援直接由別的元件引入，而不需要 Angular module 。<blockquote>
-<p><code>standalone</code> 歷程：</p>
-<ul>
-<li>Angular 15 提出</li>
-<li>Angular 17 預設加入 <code>standalone: true</code> （在此之前，元件都必須宣告在 Angular module ）</li>
-<li>Angular 19 即使不加 <code>standalone: true</code> 選項，已預設為 <code>standalone</code></li>
-</ul>
-</blockquote>
-</li>
-</ul>
-</li>
-<li>第 8 ～ 10 行為元件類別的內部資料與函式。</li>
-</ul>
-<p>在以下的 <code>app.component.html</code> 中加入以下語法後，在 <code>ng serve</code> 的運作下，就能在瀏覽器看到所呈現的畫面。</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Hello, &#123;&#123; title &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>恭喜！您的應用程式正常運行著！<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-<blockquote>
-<p>此處的 <code>&#123;&#123; title &#125;&#125;</code> 是為<strong>範本插值（ template interpolation ）</strong>，為 <code>app.component.ts</code> 提供資料給 <code>app.component.html</code> 呈現的方式之一，亦即 <code>&#123;&#123; title &#125;&#125;</code> 會被它本身的值（ <code>chatroom</code> ）替換掉。</p>
-</blockquote>
-<img data-src="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/first_screenshot.png" class="">
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/12/07/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-2-%E5%85%83%E4%BB%B6/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
