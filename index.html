@@ -218,7 +218,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/09/20/Copilot-instructions-for-Angular/" class="post-title-link" itemprop="url">替 Angular 提供客製化的 Copilot 指令</a>
+          <a href="/2025/09/20/Copilot-instructions-for-Angular/" class="post-title-link" itemprop="url">替 Angular 提供客製化的 Copilot 指示</a>
         </h2>
 
         <div class="post-meta-container">
@@ -236,7 +236,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+      <time title="Modified: 2025-09-21 14:11:47" itemprop="dateModified" datetime="2025-09-21T14:11:47+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -266,8 +266,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>大型語言模型（ large language model, LLM ）已成為近年來開發者投入研究的議題，它已在基礎上改變了＂軟體如何開發＂與＂開發者如何工作＂這兩件事。雖然 LLM 能夠產生程式碼，但為了 Angular 等不斷發展的框架產生程式碼就可能是一個挑戰。指令（ instruction ）和提示（ prompt ）是一種新興的標準，用於生成支援具有特定領域細節的現代程式碼。</p>
-<p>以下指令是用來幫助 LLM 根據 Angular 最佳實踐（<a target="_blank" rel="noopener" href="https://angular.dev/ai/develop-with-ai#custom-prompts-and-system-instructions">由此複製</a> ）生成符合規範的程式碼：</p>
+          <p>大型語言模型（ large language model, LLM ）已成為近年來開發者投入研究的議題，它已在基礎上改變了＂軟體如何開發＂與＂開發者如何工作＂這兩件事。雖然 LLM 能夠產生程式碼，但為了 Angular 等不斷發展的框架產生程式碼就可能是一個挑戰。指示（ instruction ）和提示（ prompt ）是一種新興的標準，用於生成支援具有特定領域細節的現代程式碼。</p>
+<p>以下指示內容是用來幫助 LLM 根據 Angular 最佳實踐（<a target="_blank" rel="noopener" href="https://angular.dev/ai/develop-with-ai#custom-prompts-and-system-instructions">由此複製</a> ）生成符合規範的程式碼：</p>
 <pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">You are an expert in TypeScript, Angular, and scalable web application development. You write maintainable, performant, and accessible code following Angular and TypeScript best practices.
 <span class="token title important"><span class="token punctuation">##</span> TypeScript Best Practices</span>
 <span class="token list punctuation">-</span> Use strict type checking
@@ -304,7 +304,7 @@
 <span class="token list punctuation">-</span> Use the <span class="token code-snippet code keyword">`providedIn: 'root'`</span> option for singleton services
 <span class="token list punctuation">-</span> Use the <span class="token code-snippet code keyword">`inject()`</span> function instead of constructor injection<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h3 id="Copilot-指令介紹"><a href="#Copilot-指令介紹" class="headerlink" title="Copilot 指令介紹"></a>Copilot 指令介紹</h3><p>指令是幫助我們客製化與 LLM 的對話，來配合滿足程式碼的最佳實踐與專案需求。經由撰寫一致配置檔，可以自動將我們偏好的上下文（ context ）、工具和指南套用至每一次的對話，以節省時間並確保回應的一致性，而不需要在每個聊天請求中，手動提供相同的資訊。以 VS Code 為例，有五種主要的方法客製化對話，這些選項可以單獨存在或彼此結合。本篇僅介紹客製化指令的使用方式。</p>
+<h3 id="Copilot-指示介紹"><a href="#Copilot-指示介紹" class="headerlink" title="Copilot 指示介紹"></a>Copilot 指示介紹</h3><p>指示是幫助我們客製化與 LLM 的對話，來配合滿足程式碼的最佳實踐與專案需求。經由撰寫一致配置檔，可以自動將我們偏好的上下文（ context ）、工具和指南套用至每一次的對話，以節省時間並確保回應的一致性，而不需要在每個聊天請求中，手動提供相同的資訊。以 VS Code 為例，有五種主要的方法客製化對話，這些選項可以單獨存在或彼此結合。本篇僅介紹客製化指示的使用方式。</p>
 <table>
 <thead>
 <tr>
@@ -315,7 +315,7 @@
 </tr>
 </thead>
 <tbody><tr>
-<td><strong><a target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/copilot/customization/overview#_custom-instructions">Custom instructions</a><br>客製化指令</strong></td>
+<td><strong><a target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/copilot/customization/overview#_custom-instructions">Custom instructions</a><br>客製化指示</strong></td>
 <td>使用 Markdown 檔案定義在程式碼生成、程式碼審查、訊息提交等常見任務時的規範或指南</td>
 <td>- 想在每次對話都自動套用程式碼風格、訊息提交的格式、專案內部的程式碼審查標準等<br>- 在大型團隊、專案規模大、多人合作的時候特別適用</td>
 <td>👍 針對專案設定 glob pattern （例如只針對某些檔案類型或資料夾），達到一致性<br>👎 初期要耗時寫規範<br>👎 如果規範太多或太嚴格，可能造成 AI 回應速度過慢或回應被限制而不夠靈活</td>
@@ -414,7 +414,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+      <time title="Modified: 2025-09-21 14:11:47" itemprop="dateModified" datetime="2025-09-21T14:11:47+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -562,7 +562,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+      <time title="Modified: 2025-09-21 14:11:47" itemprop="dateModified" datetime="2025-09-21T14:11:47+08:00">2025-09-21</time>
     </span>
 
   
@@ -689,7 +689,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+      <time title="Modified: 2025-09-21 14:11:47" itemprop="dateModified" datetime="2025-09-21T14:11:47+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -826,7 +826,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+      <time title="Modified: 2025-09-21 14:11:47" itemprop="dateModified" datetime="2025-09-21T14:11:47+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -974,7 +974,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+      <time title="Modified: 2025-09-21 14:11:47" itemprop="dateModified" datetime="2025-09-21T14:11:47+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1178,7 +1178,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+      <time title="Modified: 2025-09-21 14:11:47" itemprop="dateModified" datetime="2025-09-21T14:11:47+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1307,7 +1307,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+      <time title="Modified: 2025-09-21 14:11:47" itemprop="dateModified" datetime="2025-09-21T14:11:47+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1442,7 +1442,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+      <time title="Modified: 2025-09-21 14:11:47" itemprop="dateModified" datetime="2025-09-21T14:11:47+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1599,7 +1599,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+      <time title="Modified: 2025-09-21 14:11:47" itemprop="dateModified" datetime="2025-09-21T14:11:47+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
