@@ -3,14 +3,16 @@ title: Angular CLI MCP 介紹
 date: 2025-09-13 21:11:07
 tags:
 - Angular
+- AI
 - MCP
 - Web
 categories:
 - Angular
+- AI
 - MCP
 ---
 
-在 [Angular CLI 20.1.0](https://github.com/angular/angular-cli/releases/tag/20.1.0) 加入了 MCP 伺服器，協助開發者基於 Angular 提供的官方 API 進行快速、準確地建立應用程式各項功能。
+在 [Angular CLI 20.1.0](https://github.com/angular/angular-cli/releases/tag/20.1.0) 加入了 MCP 伺服器，協助開發者基於 Angular 提供的官方 API 進行快速、可靠、準確地建立應用程式各項功能，也確保生成的程式碼會同步 Angular 官方最新的最佳實踐。
 
 {% asset_img 1_angular_cli_add_initial_mcp_server.png %}
 
@@ -103,6 +105,9 @@ MCP 的出現，解決了上述問題，因為 MCP 像一個結合翻譯官與�
    {% asset_img 11_5_template_updated.png %}
    6. 清理 `app.component.html` 內容，將路由導到 `posts` 元件
    {% asset_img 11_6_template_updated.png %}
+
+### 程式碼
+* [GitHub repo](https://github.com/Kun-Neng/angular-cli-mcp)
 
 ### 參考來源
 * 官方文件 [Angular CLI MCP Server setup](https://angular.dev/ai/mcp)
