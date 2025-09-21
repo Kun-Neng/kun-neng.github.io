@@ -152,18 +152,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -191,6 +191,173 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/" class="post-title-link" itemprop="url">Angular 新手村 - 3. 路由</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-12-29 21:10:00" itemprop="dateCreated datePublished" datetime="2024-12-29T21:10:00+08:00">2024-12-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>延續上一篇，我們以 Angular CLI 建立了聊天室專案 <code>chatroom</code> 所有的元件，接下來介紹如何將它們組合在一起。</p>
+<h3 id="路由（Routing）"><a href="#路由（Routing）" class="headerlink" title="路由（Routing）"></a>路由（Routing）</h3><p>若要將元件組合在一起，只需要放置元件的標籤（ <code>tag</code> ）在適合的位置即可，例如：</p>
+<ul>
+<li>把 <code>hall</code> 與 <code>chatroom</code> 元件放置在 <code>pages</code> 元件中，在 <code>pages.component.html</code> 加入元件的 CSS selector<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-hall</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-hall</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-chatroom</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-chatroom</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+同時，加入元件實體至 <code>pages.component.ts</code> 的 <code>metadata</code><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-pages'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>HallComponent<span class="token punctuation">,</span> ChatroomComponent<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// ←</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./pages.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./pages.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>把 <code>messages</code> 與 <code>message-input</code> 元件放置在 <code>chatroom</code> 元件中，在 <code>chatroom.component.html</code> 加入元件的 CSS selector<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-messages</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-messages</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-message-input</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-message-input</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+同時，加入元件實體至 <code>chatroom.component.ts</code> 的 <code>metadata</code><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-chatroom'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>MessagesComponent<span class="token punctuation">,</span> MessageInputComponent<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// ←</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./chatroom.component.html'</span><span class="token punctuation">,</span>
+  styleUrl<span class="token operator">:</span> <span class="token string">'./chatroom.component.css'</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+<p>我們可以看到除了 <code>pages</code> 與 <code>chatroom</code> 以外的元件都顯示各自的初始文字，這是因為在 <code>pages</code> 與 <code>chatroom</code> 的內部元素已其他元件置換掉。</p>
+<img data-src="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/1_components_show.png" class="">
+
+<p>但是，這樣的呈現方式並不是我們想要的畫面。我們想要的是讓使用者能在 <code>hall</code> 與 <code>chatroom</code> 之間切換顯示，這個部分可以使用路由達到這樣的效果。除此之外，使用路由的好處在於：</p>
+<ul>
+<li>套用守衛（guard）根據訂製的規則來限制或允許路由導引</li>
+<li>套用解析器（resolver）來處理或加工路由間傳遞的資料</li>
+<li>在不同的路由共享共通範本（template）</li>
+</ul>
+<p>我們在 <code>hall</code> 與 <code>chatroom</code> 的上一層 <code>pages</code> 資料夾內建立路由檔 <code>pages.routes.ts</code> ，內容如下：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Routes <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/router'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token constant">PAGES_ROUTES</span><span class="token operator">:</span> Routes <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    redirectTo<span class="token operator">:</span> <span class="token string">'hall'</span><span class="token punctuation">,</span>
+    pathMatch<span class="token operator">:</span> <span class="token string">'full'</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">'hall'</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">loadComponent</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./hall/hall.component'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span>HallComponent<span class="token punctuation">)</span>  
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">'chatroom'</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">loadComponent</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./chatroom/chatroom.component'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span>ChatroomComponent<span class="token punctuation">)</span>  
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">'**'</span><span class="token punctuation">,</span>
+    redirectTo<span class="token operator">:</span> <span class="token string">'hall'</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>這個路由檔分成四個由 <code>&#123;</code> 與 <code>&#125;</code> 括起來的路由：</p>
+<ul>
+<li>第一項（4 ~ 8 行）：若沒有給定路徑（空字串），則導到 <code>hall</code> 路徑</li>
+<li>第二項（9 ~ 12 行）：在 <code>hall</code> 路徑下會顯示 <code>HallComponent</code> 內容</li>
+<li>第三項（13 ~ 16 行）：在 <code>chatroom</code> 路徑下會顯示 <code>ChatroomComponent</code> 內容</li>
+<li>第四項（17 ~ 20 行）：給定任何路徑都會導到 <code>hall</code> 路徑</li>
+</ul>
+<blockquote>
+<ol>
+<li><code>path</code> 為網址會驅動而進行導引的路徑。</li>
+<li>這些路由有其順序性（由上而下），若第四項移到第一項，造成給定 <code>chatroom</code> 路徑也會導到 <code>hall</code> 路徑的不預期後果。</li>
+<li>第 11 與 15 行的 <code>loadComponent</code> 提供 Lazy-loading 的效果。</li>
+</ol>
+</blockquote>
+<p>接著在應用程式的路由檔 <code>app.routes.ts</code> 匯入 <code>pages.routes.ts</code>：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">const</span> routes<span class="token operator">:</span> Routes <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    path<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">loadChildren</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./pages/pages.routes'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span><span class="token constant">PAGES_ROUTES</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>雖然我們已建立路由，但當導到某個元件時，它應該在何處顯示，此時就需要在上層元件加入一個特殊的標籤 <code>&lt;router-outlet&gt;</code> ，用來乘載由路由導到的元件。因此元件架構中的 <code>app-hall</code> 與 <code>app-chatroom</code> 可以被 <code>&lt;router-outlet&gt;</code> 取代掉，如下圖所示。</p>
+<img data-src="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/2_router_outlet.png" class="">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -236,7 +403,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -382,7 +549,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -508,7 +675,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -605,7 +772,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">

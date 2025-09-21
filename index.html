@@ -152,18 +152,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -191,6 +191,184 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/09/20/Copilot-instructions-for-Angular/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/09/20/Copilot-instructions-for-Angular/" class="post-title-link" itemprop="url">替 Angular 提供客製化的 Copilot 指令</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-20 20:55:23" itemprop="dateCreated datePublished" datetime="2025-09-20T20:55:23+08:00">2025-09-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/AI/LLM/" itemprop="url" rel="index"><span itemprop="name">LLM</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>大型語言模型（ large language model, LLM ）已成為近年來開發者投入研究的議題，它已在基礎上改變了＂軟體如何開發＂與＂開發者如何工作＂這兩件事。雖然 LLM 能夠產生程式碼，但為了 Angular 等不斷發展的框架產生程式碼就可能是一個挑戰。指令（ instruction ）和提示（ prompt ）是一種新興的標準，用於生成支援具有特定領域細節的現代程式碼。</p>
+<p>以下指令是用來幫助 LLM 根據 Angular 最佳實踐（<a target="_blank" rel="noopener" href="https://angular.dev/ai/develop-with-ai#custom-prompts-and-system-instructions">由此複製</a> ）生成符合規範的程式碼：</p>
+<pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">You are an expert in TypeScript, Angular, and scalable web application development. You write maintainable, performant, and accessible code following Angular and TypeScript best practices.
+<span class="token title important"><span class="token punctuation">##</span> TypeScript Best Practices</span>
+<span class="token list punctuation">-</span> Use strict type checking
+<span class="token list punctuation">-</span> Prefer type inference when the type is obvious
+<span class="token list punctuation">-</span> Avoid the <span class="token code-snippet code keyword">`any`</span> type; use <span class="token code-snippet code keyword">`unknown`</span> when type is uncertain
+<span class="token title important"><span class="token punctuation">##</span> Angular Best Practices</span>
+<span class="token list punctuation">-</span> Always use standalone components over NgModules
+<span class="token list punctuation">-</span> Must NOT set <span class="token code-snippet code keyword">`standalone: true`</span> inside Angular decorators. It's the default.
+<span class="token list punctuation">-</span> Use signals for state management
+<span class="token list punctuation">-</span> Implement lazy loading for feature routes
+<span class="token list punctuation">-</span> Do NOT use the <span class="token code-snippet code keyword">`@HostBinding`</span> and <span class="token code-snippet code keyword">`@HostListener`</span> decorators. Put host bindings inside the <span class="token code-snippet code keyword">`host`</span> object of the <span class="token code-snippet code keyword">`@Component`</span> or <span class="token code-snippet code keyword">`@Directive`</span> decorator instead
+<span class="token list punctuation">-</span> Use <span class="token code-snippet code keyword">`NgOptimizedImage`</span> for all static images.
+  <span class="token list punctuation">-</span> <span class="token code-snippet code keyword">`NgOptimizedImage`</span> does not work for inline base64 images.
+<span class="token title important"><span class="token punctuation">##</span> Components</span>
+<span class="token list punctuation">-</span> Keep components small and focused on a single responsibility
+<span class="token list punctuation">-</span> Use <span class="token code-snippet code keyword">`input()`</span> and <span class="token code-snippet code keyword">`output()`</span> functions instead of decorators
+<span class="token list punctuation">-</span> Use <span class="token code-snippet code keyword">`computed()`</span> for derived state
+<span class="token list punctuation">-</span> Set <span class="token code-snippet code keyword">`changeDetection: ChangeDetectionStrategy.OnPush`</span> in <span class="token code-snippet code keyword">`@Component`</span> decorator
+<span class="token list punctuation">-</span> Prefer inline templates for small components
+<span class="token list punctuation">-</span> Prefer Reactive forms instead of Template-driven ones
+<span class="token list punctuation">-</span> Do NOT use <span class="token code-snippet code keyword">`ngClass`</span>, use <span class="token code-snippet code keyword">`class`</span> bindings instead
+<span class="token list punctuation">-</span> DO NOT use <span class="token code-snippet code keyword">`ngStyle`</span>, use <span class="token code-snippet code keyword">`style`</span> bindings instead
+<span class="token title important"><span class="token punctuation">##</span> State Management</span>
+<span class="token list punctuation">-</span> Use signals for local component state
+<span class="token list punctuation">-</span> Use <span class="token code-snippet code keyword">`computed()`</span> for derived state
+<span class="token list punctuation">-</span> Keep state transformations pure and predictable
+<span class="token list punctuation">-</span> Do NOT use <span class="token code-snippet code keyword">`mutate`</span> on signals, use <span class="token code-snippet code keyword">`update`</span> or <span class="token code-snippet code keyword">`set`</span> instead
+<span class="token title important"><span class="token punctuation">##</span> Templates</span>
+<span class="token list punctuation">-</span> Keep templates simple and avoid complex logic
+<span class="token list punctuation">-</span> Use native control flow (<span class="token code-snippet code keyword">`@if`</span>, <span class="token code-snippet code keyword">`@for`</span>, <span class="token code-snippet code keyword">`@switch`</span>) instead of <span class="token code-snippet code keyword">`*ngIf`</span>, <span class="token code-snippet code keyword">`*ngFor`</span>, <span class="token code-snippet code keyword">`*ngSwitch`</span>
+<span class="token list punctuation">-</span> Use the async pipe to handle observables
+<span class="token title important"><span class="token punctuation">##</span> Services</span>
+<span class="token list punctuation">-</span> Design services around a single responsibility
+<span class="token list punctuation">-</span> Use the <span class="token code-snippet code keyword">`providedIn: 'root'`</span> option for singleton services
+<span class="token list punctuation">-</span> Use the <span class="token code-snippet code keyword">`inject()`</span> function instead of constructor injection<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Copilot-指令介紹"><a href="#Copilot-指令介紹" class="headerlink" title="Copilot 指令介紹"></a>Copilot 指令介紹</h3><p>指令是幫助我們客製化與 LLM 的對話，來配合滿足程式碼的最佳實踐與專案需求。經由撰寫一致配置檔，可以自動將我們偏好的上下文（ context ）、工具和指南套用至每一次的對話，以節省時間並確保回應的一致性，而不需要在每個聊天請求中，手動提供相同的資訊。以 VS Code 為例，有五種主要的方法客製化對話，這些選項可以單獨存在或彼此結合。本篇僅介紹客製化指令的使用方式。</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>說明</th>
+<th>適用情境</th>
+<th>優缺點</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><a target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/copilot/customization/overview#_custom-instructions">Custom instructions</a><br>客製化指令</strong></td>
+<td>使用 Markdown 檔案定義在程式碼生成、程式碼審查、訊息提交等常見任務時的規範或指南</td>
+<td>- 想在每次對話都自動套用程式碼風格、訊息提交的格式、專案內部的程式碼審查標準等<br>- 在大型團隊、專案規模大、多人合作的時候特別適用</td>
+<td>👍 針對專案設定 glob pattern （例如只針對某些檔案類型或資料夾），達到一致性<br>👎 初期要耗時寫規範<br>👎 如果規範太多或太嚴格，可能造成 AI 回應速度過慢或回應被限制而不夠靈活</td>
+</tr>
+<tr>
+<td><strong><a target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/copilot/customization/overview#_prompt-files">Prompt files</a><br>提示檔案</strong></td>
+<td>使用 Markdown 檔案定義可重複使用的（ reusable ）的提示（ prompt ）來處理常見或重複的開發任務</td>
+<td>- 利用共享提示，讓大家對某些任務的預期結果一致<br>- 有許多重複性工作或標準化流程時，例如專案中常常要搭建新元件、寫某種格式的文件、生成測試案例等任務</td>
+<td>👍 可複用，節省時間，且容易維護重複任務的品質一致性<br>👎 初期要耗時設計模板<br>👎 若提示定義不夠清楚或文件沒維護好，可能導致輸出結果不穩定</td>
+</tr>
+<tr>
+<td><strong><a target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/copilot/customization/overview#_chat-modes">Chat modes</a><br>聊天模式</strong></td>
+<td>使用 Markdown 檔案建立特定角色或任務助理，例如資料庫管理、前端開發、規劃研究等，在這個模式可以定義範疇與能力、哪一些工具可以被存取、首選的語言模型等</td>
+<td>針對專案不同階段（設計階段、測試階段、維護階段）切換不同風格與需求，或者以不同人員（前端、後端、安全審查等）進行此模式，預期 AI 會有不同的回應偏好和工具權限</td>
+<td>👍 能夠更精細控制 AI 在不同情境中的行為與工具使用，提高專業任務中的效率與精準度<br>👎 設定的複雜度較高，需要維護多個模式與文件。若模式切換頻繁，在管理上較麻煩</td>
+</tr>
+<tr>
+<td><strong><a target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/copilot/customization/overview#_language-models">Language models</a><br>語言模型選擇</strong></td>
+<td>在不同任務間切換模型，選擇最適合的模型來處理特定需求（例如：開發速度快，但能力中等或者進行複雜推理與視覺處理等），允許自帶 API key 存取不同模型或在本地佈署模型</td>
+<td>- 當任務強度、性能或需求精確度不一樣時很有用（例如：簡單重構時希望響應快，而進行架構設計或安全審查時希望使用更強大的模型）<br>- 適合有成本考量或想控制資源時使用</td>
+<td>👍 靈活根據任務調整模型，以節省時間或資源；若有客製化模型或引入雲端模型，更具拓展的可能性<br>👎 模型間切換可能導致風格、輸出一致性有差異<br>👎 較好的模型通常成本較高，而本地部署或 API key 的管理需注意安全性與版本控制</td>
+</tr>
+<tr>
+<td><strong><a target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/copilot/customization/overview#_mcp-and-tools">Model Context Protocol (MCP) 與工具整合</a></strong></td>
+<td>使用 MCP 連接外部服務或專用工具，讓對話不只在程式碼內部操作，也能查詢資料庫、呼叫 API 、取得即時資訊或執行其它開發工具</td>
+<td>當專案需要外部資源或工具整合，例如進行跨工具或跨領域的任務時非常有用</td>
+<td>👍 能整合更多上下文與資源，提高回應的實用性與全面性<br>👍 把 workflow 串起來，不用跳出 VS Code<br>👎 安全與權限需注意（例如存取外部服務憑證與 API key 等）<br>👎 工具整合、維護成本高，可能有相依性或工具不穩定問題</td>
+</tr>
+</tbody></table>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/09/20/Copilot-instructions-for-Angular/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -236,7 +414,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -248,7 +426,11 @@
         </span>
           , 
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Angular/MCP/" itemprop="url" rel="index"><span itemprop="name">MCP</span></a>
+          <a href="/categories/Angular/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/AI/MCP/" itemprop="url" rel="index"><span itemprop="name">MCP</span></a>
         </span>
     </span>
 
@@ -262,7 +444,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>在 <a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/releases/tag/20.1.0">Angular CLI 20.1.0</a> 加入了 MCP 伺服器，協助開發者基於 Angular 提供的官方 API 進行快速、準確地建立應用程式各項功能。</p>
+          <p>在 <a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/releases/tag/20.1.0">Angular CLI 20.1.0</a> 加入了 MCP 伺服器，協助開發者基於 Angular 提供的官方 API 進行快速、可靠、準確地建立應用程式各項功能，也確保生成的程式碼會同步 Angular 官方最新的最佳實踐。</p>
 <img data-src="/2025/09/13/Angular-CLI-MCP/1_angular_cli_add_initial_mcp_server.png" class="">
 
 <h3 id="Model-Context-Protocol-MCP"><a href="#Model-Context-Protocol-MCP" class="headerlink" title="Model Context Protocol (MCP)"></a><a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/docs/getting-started/intro">Model Context Protocol (MCP)</a></h3><p>想像有一個 AI 模型，它要跟外部世界（例如資料庫、 API 、檔案系統、甚至公司內部系統）互動，但不同系統的介面和規則都不一樣。如果要讓 AI 模型連接不同的工具或資料來源，開發者常常需要寫一堆客製化程式，像是自己設計 API 、格式轉換、錯誤處理等等，耗時且不易共享。</p>
@@ -380,7 +562,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
 
   
@@ -507,7 +689,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -644,7 +826,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -792,7 +974,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -996,7 +1178,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1125,7 +1307,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1260,7 +1442,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1417,7 +1599,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
+      <time title="Modified: 2025-09-21 11:32:05" itemprop="dateModified" datetime="2025-09-21T11:32:05+08:00">2025-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1501,173 +1683,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Kun-Neng Hung">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/" class="post-title-link" itemprop="url">Angular 新手村 - 3. 路由</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2024-12-29 21:10:00" itemprop="dateCreated datePublished" datetime="2024-12-29T21:10:00+08:00">2024-12-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-14 17:27:09" itemprop="dateModified" datetime="2025-09-14T17:27:09+08:00">2025-09-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>延續上一篇，我們以 Angular CLI 建立了聊天室專案 <code>chatroom</code> 所有的元件，接下來介紹如何將它們組合在一起。</p>
-<h3 id="路由（Routing）"><a href="#路由（Routing）" class="headerlink" title="路由（Routing）"></a>路由（Routing）</h3><p>若要將元件組合在一起，只需要放置元件的標籤（ <code>tag</code> ）在適合的位置即可，例如：</p>
-<ul>
-<li>把 <code>hall</code> 與 <code>chatroom</code> 元件放置在 <code>pages</code> 元件中，在 <code>pages.component.html</code> 加入元件的 CSS selector<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-hall</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-hall</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-chatroom</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-chatroom</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-同時，加入元件實體至 <code>pages.component.ts</code> 的 <code>metadata</code><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
-  selector<span class="token operator">:</span> <span class="token string">'app-pages'</span><span class="token punctuation">,</span>
-  imports<span class="token operator">:</span> <span class="token punctuation">[</span>HallComponent<span class="token punctuation">,</span> ChatroomComponent<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// ←</span>
-  templateUrl<span class="token operator">:</span> <span class="token string">'./pages.component.html'</span><span class="token punctuation">,</span>
-  styleUrl<span class="token operator">:</span> <span class="token string">'./pages.component.css'</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
-<li>把 <code>messages</code> 與 <code>message-input</code> 元件放置在 <code>chatroom</code> 元件中，在 <code>chatroom.component.html</code> 加入元件的 CSS selector<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-messages</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-messages</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-message-input</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-message-input</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-同時，加入元件實體至 <code>chatroom.component.ts</code> 的 <code>metadata</code><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
-  selector<span class="token operator">:</span> <span class="token string">'app-chatroom'</span><span class="token punctuation">,</span>
-  imports<span class="token operator">:</span> <span class="token punctuation">[</span>MessagesComponent<span class="token punctuation">,</span> MessageInputComponent<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// ←</span>
-  templateUrl<span class="token operator">:</span> <span class="token string">'./chatroom.component.html'</span><span class="token punctuation">,</span>
-  styleUrl<span class="token operator">:</span> <span class="token string">'./chatroom.component.css'</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
-</ul>
-<p>我們可以看到除了 <code>pages</code> 與 <code>chatroom</code> 以外的元件都顯示各自的初始文字，這是因為在 <code>pages</code> 與 <code>chatroom</code> 的內部元素已其他元件置換掉。</p>
-<img data-src="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/1_components_show.png" class="">
-
-<p>但是，這樣的呈現方式並不是我們想要的畫面。我們想要的是讓使用者能在 <code>hall</code> 與 <code>chatroom</code> 之間切換顯示，這個部分可以使用路由達到這樣的效果。除此之外，使用路由的好處在於：</p>
-<ul>
-<li>套用守衛（guard）根據訂製的規則來限制或允許路由導引</li>
-<li>套用解析器（resolver）來處理或加工路由間傳遞的資料</li>
-<li>在不同的路由共享共通範本（template）</li>
-</ul>
-<p>我們在 <code>hall</code> 與 <code>chatroom</code> 的上一層 <code>pages</code> 資料夾內建立路由檔 <code>pages.routes.ts</code> ，內容如下：</p>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Routes <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/router'</span><span class="token punctuation">;</span>
-
-<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token constant">PAGES_ROUTES</span><span class="token operator">:</span> Routes <span class="token operator">=</span> <span class="token punctuation">[</span>
-  <span class="token punctuation">&#123;</span>
-    path<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
-    redirectTo<span class="token operator">:</span> <span class="token string">'hall'</span><span class="token punctuation">,</span>
-    pathMatch<span class="token operator">:</span> <span class="token string">'full'</span>
-  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
-  <span class="token punctuation">&#123;</span>
-    path<span class="token operator">:</span> <span class="token string">'hall'</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">loadComponent</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./hall/hall.component'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span>HallComponent<span class="token punctuation">)</span>  
-  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
-  <span class="token punctuation">&#123;</span>
-    path<span class="token operator">:</span> <span class="token string">'chatroom'</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">loadComponent</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./chatroom/chatroom.component'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span>ChatroomComponent<span class="token punctuation">)</span>  
-  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
-  <span class="token punctuation">&#123;</span>
-    path<span class="token operator">:</span> <span class="token string">'**'</span><span class="token punctuation">,</span>
-    redirectTo<span class="token operator">:</span> <span class="token string">'hall'</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>這個路由檔分成四個由 <code>&#123;</code> 與 <code>&#125;</code> 括起來的路由：</p>
-<ul>
-<li>第一項（4 ~ 8 行）：若沒有給定路徑（空字串），則導到 <code>hall</code> 路徑</li>
-<li>第二項（9 ~ 12 行）：在 <code>hall</code> 路徑下會顯示 <code>HallComponent</code> 內容</li>
-<li>第三項（13 ~ 16 行）：在 <code>chatroom</code> 路徑下會顯示 <code>ChatroomComponent</code> 內容</li>
-<li>第四項（17 ~ 20 行）：給定任何路徑都會導到 <code>hall</code> 路徑</li>
-</ul>
-<blockquote>
-<ol>
-<li><code>path</code> 為網址會驅動而進行導引的路徑。</li>
-<li>這些路由有其順序性（由上而下），若第四項移到第一項，造成給定 <code>chatroom</code> 路徑也會導到 <code>hall</code> 路徑的不預期後果。</li>
-<li>第 11 與 15 行的 <code>loadComponent</code> 提供 Lazy-loading 的效果。</li>
-</ol>
-</blockquote>
-<p>接著在應用程式的路由檔 <code>app.routes.ts</code> 匯入 <code>pages.routes.ts</code>：</p>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">const</span> routes<span class="token operator">:</span> Routes <span class="token operator">=</span> <span class="token punctuation">[</span>
-  <span class="token punctuation">&#123;</span>
-    path<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">loadChildren</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./pages/pages.routes'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span><span class="token constant">PAGES_ROUTES</span><span class="token punctuation">)</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>雖然我們已建立路由，但當導到某個元件時，它應該在何處顯示，此時就需要在上層元件加入一個特殊的標籤 <code>&lt;router-outlet&gt;</code> ，用來乘載由路由導到的元件。因此元件架構中的 <code>app-hall</code> 與 <code>app-chatroom</code> 可以被 <code>&lt;router-outlet&gt;</code> 取代掉，如下圖所示。</p>
-<img data-src="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/2_router_outlet.png" class="">
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/12/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-3-%E8%B7%AF%E7%94%B1/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
