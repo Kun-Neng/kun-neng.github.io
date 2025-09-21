@@ -120,8 +120,8 @@ VS Code 可支援多個基於 Markdown 的指示文件，並會將其組合在�
 
 使用指示雖然可以幫助我們產生符合規範的程式碼，但是在技術快速更迭的時代，這些依據過時規範而產出的程式碼或 APIs 可能會不敷使用，甚至開發者需要花更多時間來除錯或重構某些很簡單的問題。若想要生成符合最新規範的程式碼，可以選擇使用 MCP (Model Context Protocol) 的方式來進行，細節可參考 [Angular CLI MCP 介紹](https://kun-neng.github.io/2025/09/13/Angular-CLI-MCP/)。
 
-### 程式碼
-* [GitHub repo](https://github.com/Kun-Neng/angular-cli-mcp)
+### 更多 Copilot 指示範例
+* [Custom Instructions in awesome-copilot](https://github.com/github/awesome-copilot/blob/main/README.instructions.md)
 
-### 參考來源
-* 官方文件 [LLM prompts and AI IDE setup](https://angular.dev/ai/develop-with-ai)
+### 參考資料
+* Angular 官網 [LLM prompts and AI IDE setup](https://angular.dev/ai/develop-with-ai)

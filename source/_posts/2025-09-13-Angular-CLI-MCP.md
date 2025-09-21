@@ -109,5 +109,6 @@ MCP 的出現，解決了上述問題，因為 MCP 像一個結合翻譯官與�
 ### 程式碼
 * [GitHub repo](https://github.com/Kun-Neng/angular-cli-mcp)
 
-### 參考來源
-* 官方文件 [Angular CLI MCP Server setup](https://angular.dev/ai/mcp)
+### 參考資料
+* Angular 官網 [Angular CLI MCP Server setup](https://angular.dev/ai/mcp)
+* [Announcing Awesome Copilot MCP Server](https://developer.microsoft.com/blog/announcing-awesome-copilot-mcp-server)
