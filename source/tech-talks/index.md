@@ -5,6 +5,7 @@ date: 2025-02-04 21:51:14
 
 GDG events
 * 2025
+  - 1101 **DevFest Taoyuan**: 如何以 Angular AI 工具來提升網頁開發效率與品質 [📝](https://www.slideshare.net/slideshow/20251101-devfest-2025-angular-ai/284002085) [📌](https://gdg.community.dev/events/details/google-gdg-taoyuan-presents-devfest-taoyuan-2025/)
   - 0422 **Build with AI (GDG on Campus National Yang-Ming Chiao Tung University)**: 從零開始的 Angular 網頁應用程式 Part II: Service & Routing & Form [📌](https://gdg.community.dev/events/details/google-gdg-on-campus-national-yang-ming-chiao-tung-university-hsinchu-city-taiwan-presents-angular-x-gemini-xi-lie-ke-cheng-di-er-tang-jin-jie-ying-yong-build-with-ai/)
   - 0415 **Build with AI (GDG on Campus National Yang-Ming Chiao Tung University)**: 從零開始的 Angular 網頁應用程式 Part I: Introduction & Component [📌](https://gdg.community.dev/events/details/google-gdg-on-campus-national-yang-ming-chiao-tung-university-hsinchu-city-taiwan-presents-angular-x-gemini-xi-lie-ke-cheng-di-yi-tang-ji-chu-ru-men-build-with-ai-tian-wan-biao-dan-cai-suan-bao-ming-cheng-gong-wo/)
   - 0322 **Build with AI**: 以 MediaPipe 建構裝置端 LLM [📝](https://www.slideshare.net/slideshow/20250322-build-with-ai-mediapipe-llm/277049002) [📌](https://gdg.community.dev/e/myhjzd/)
