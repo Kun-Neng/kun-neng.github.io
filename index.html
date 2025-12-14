@@ -152,18 +152,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -191,6 +191,237 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/12/13/Building-a-rich-text-editor-with-quill-in-angular/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/12/13/Building-a-rich-text-editor-with-quill-in-angular/" class="post-title-link" itemprop="url">在 Angular 以 Quill 打造富文字編輯器</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-12-13 15:55:21" itemprop="dateCreated datePublished" datetime="2025-12-13T15:55:21+08:00">2025-12-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-12-14 21:06:06" itemprop="dateModified" datetime="2025-12-14T21:06:06+08:00">2025-12-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/Quill/" itemprop="url" rel="index"><span itemprop="name">Quill</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/Quill/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在現代 Web 開發中，富文字編輯器（ Rich Text Editor ）已成為聊天系統、部落格平台、知識庫編輯器、後台管理系統的基本要素。 Quill 是一款輕量、模組化、可擴充的開源富文字編輯器，對於 Angular 的開發者來說，有兩個套件能讓整合變得簡單：</p>
+<ul>
+<li><code>ngx-quill</code> 提供編輯功能</li>
+<li><code>quill-view-html</code> 僅渲染 HTML ，來顯示富文字內容</li>
+</ul>
+<p>本篇文章將從基礎開始，說明如何在 Angular 專案中安裝、設定並運用 Quill 、 <code>ngx-quill</code> 與 <code>quill-view-html</code> 。</p>
+<h3 id="什麼是-Quill？"><a href="#什麼是-Quill？" class="headerlink" title="什麼是 Quill？"></a>什麼是 Quill？</h3><p><a target="_blank" rel="noopener" href="https://quilljs.com/">Quill</a> 是一款輕量、模組化、可擴充的開源富文字編輯器，有以下核心功能：</p>
+<ul>
+<li>客製化主題<ul>
+<li>snow</li>
+<li>bubble</li>
+</ul>
+</li>
+<li>toolbar<ul>
+<li>文字樣式（粗體、斜體、底線、顏色等）與字型大小</li>
+<li>程式碼區塊（程式碼語法高亮顯示）</li>
+<li>多媒體嵌入（插入圖片、影片和連結）</li>
+<li>清單與對齊（有序清單、無序清單及多種文字對齊方式）</li>
+<li>支援各種擴充（ mention 與 tag 等）</li>
+</ul>
+</li>
+</ul>
+<h3 id="在-Angular-中使用-Quill-編輯器"><a href="#在-Angular-中使用-Quill-編輯器" class="headerlink" title="在 Angular 中使用 Quill 編輯器"></a>在 Angular 中使用 Quill 編輯器</h3><ol>
+<li>安裝套件</li>
+</ol>
+<p>使用 <code>npm</code> 或 <code>yarn</code> 安裝 <code>quill</code> 及 <a target="_blank" rel="noopener" href="https://github.com/KillerCodeMonkey/ngx-quill"><code>ngx-quill</code></a> 套件</p>
+<p><code>npm install quill ngx-quill</code></p>
+<blockquote>
+<p>此處以安裝 <code>quill@^2.0.3</code> 與 <code>ngx-quill@^22.1.2</code> 版本為例</p>
+</blockquote>
+<ol start="2">
+<li>引入模組（若有 <code>AppModule</code> ）</li>
+</ol>
+<p>在 Angular 模組中匯入 <code>QuillModule</code></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> QuillModule <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'ngx-quill'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">NgModule</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>
+    QuillModule<span class="token punctuation">.</span><span class="token function">forRoot</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="3">
+<li>加入樣式</li>
+</ol>
+<p>在 <code>angular.json</code> 中引入 Quill 的樣式檔，視需要選定 snow 或 bubble 主題樣式：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token property">"styles"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+  <span class="token string">"node_modules/quill/dist/quill.snow.css"</span><span class="token punctuation">,</span>
+  <span class="token string">"src/styles.css"</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>或者在全域 SCSS 檔加入</p>
+<p><code>@import &#39;node_modules/quill/dist/quill.snow.css&#39;;</code></p>
+<ol start="4">
+<li>加入 toolbar</li>
+</ol>
+<p>在 <code>main.ts</code> 中提供 toolbar 選項</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> provideQuillConfig <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'ngx-quill/config'</span><span class="token punctuation">;</span>
+
+<span class="token function">bootstrapApplication</span><span class="token punctuation">(</span>App<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+  providers<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token function">provideQuillConfig</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+      modules<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        toolbar<span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">[</span><span class="token string">'bold'</span><span class="token punctuation">,</span> <span class="token string">'italic'</span><span class="token punctuation">,</span> <span class="token string">'underline'</span><span class="token punctuation">,</span> <span class="token string">'strike'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>                         <span class="token comment">// 文字樣式</span>
+          <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'header'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>                         <span class="token comment">// 字型大小</span>
+          <span class="token punctuation">[</span><span class="token string">'blockquote'</span><span class="token punctuation">,</span> <span class="token string">'code-block'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>                                      <span class="token comment">// 引用與程式碼區塊</span>
+          <span class="token punctuation">[</span><span class="token string">'link'</span><span class="token punctuation">,</span> <span class="token string">'image'</span><span class="token punctuation">,</span> <span class="token string">'video'</span><span class="token punctuation">,</span> <span class="token string">'formula'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>                             <span class="token comment">// 多媒體嵌入</span>
+          <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'list'</span><span class="token operator">:</span> <span class="token string">'ordered'</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> <span class="token string-property property">'list'</span><span class="token operator">:</span> <span class="token string">'bullet'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> <span class="token string-property property">'list'</span><span class="token operator">:</span> <span class="token string">'check'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// 清單與對齊</span>
+          <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'script'</span><span class="token operator">:</span> <span class="token string">'sub'</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> <span class="token string-property property">'script'</span><span class="token operator">:</span> <span class="token string">'super'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>                       <span class="token comment">// 上標／下標</span>
+          <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'indent'</span><span class="token operator">:</span> <span class="token string">'-1'</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> <span class="token string-property property">'indent'</span><span class="token operator">:</span> <span class="token string">'+1'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>                           <span class="token comment">// 減少縮排／縮排</span>
+          <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'direction'</span><span class="token operator">:</span> <span class="token string">'rtl'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>                                          <span class="token comment">// 文字排列方向</span>
+        <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<img data-src="/2025/12/13/Building-a-rich-text-editor-with-quill-in-angular/1_quill_toolbar.png" class="">
+
+<ol start="4">
+<li>建立元件</li>
+</ol>
+<p>在元件中使用 <code>quill-editor</code> 標籤開始編輯，視需求可選擇使用範本驅動表單或響應式表單（如何使用表單可參考<a href="https://kun-neng.github.io/2025/05/02/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-8-%E8%A1%A8%E5%96%AE">Angular 新手村 - 8. 表單</a>）。</p>
+<ul>
+<li><p>範本驅動表單</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>quill-editor</span> <span class="token attr-name">[(ngModel)]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>quill-editor</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>響應式表單<br><code>editor-form.component.html</code></p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">[formGroup]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form<span class="token punctuation">"</span></span> <span class="token attr-name">(ngSubmit)</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>onSubmit()<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>quill-editor</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>w-full<span class="token punctuation">"</span></span> <span class="token attr-name">formControlName</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>editor<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>quill-editor</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span> <span class="token attr-name">[disabled]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form.invalid<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Submit<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>editor-form.component.ts</code></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ChangeDetectionStrategy<span class="token punctuation">,</span> Component<span class="token punctuation">,</span> inject<span class="token punctuation">,</span> OnInit <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> FormBuilder<span class="token punctuation">,</span> FormControl<span class="token punctuation">,</span> ReactiveFormsModule<span class="token punctuation">,</span> Validators <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/forms'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> QuillEditorComponent <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'ngx-quill'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> debounceTime<span class="token punctuation">,</span> distinctUntilChanged <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'rxjs'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-editor-form'</span><span class="token punctuation">,</span>
+  standalone<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>ReactiveFormsModule<span class="token punctuation">,</span> QuillEditorComponent<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./editor-form.component.html'</span><span class="token punctuation">,</span>
+  changeDetection<span class="token operator">:</span> ChangeDetectionStrategy<span class="token punctuation">.</span>OnPush<span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">EditorFormComponent</span> <span class="token keyword">implements</span> <span class="token class-name">OnInit</span> <span class="token punctuation">&#123;</span>
+  fb <span class="token operator">=</span> <span class="token function">inject</span><span class="token punctuation">(</span>FormBuilder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  form <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>fb<span class="token punctuation">.</span><span class="token function">group</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+    editor<span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">FormControl</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">,</span> Validators<span class="token punctuation">.</span>required<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">ngOnInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>form<span class="token punctuation">.</span>controls<span class="token punctuation">.</span>editor<span class="token punctuation">.</span>valueChanges<span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>
+      <span class="token function">debounceTime</span><span class="token punctuation">(</span><span class="token number">400</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token function">distinctUntilChanged</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>value <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+      <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Quill Editor Content:'</span><span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token function">onSubmit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>form<span class="token punctuation">.</span>valid<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Form Submitted!'</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>form<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Form is invalid.'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/12/13/Building-a-rich-text-editor-with-quill-in-angular/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -236,7 +467,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-11-02 13:14:42" itemprop="dateModified" datetime="2025-11-02T13:14:42+08:00">2025-11-02</time>
+      <time title="Modified: 2025-12-14 21:06:06" itemprop="dateModified" datetime="2025-12-14T21:06:06+08:00">2025-12-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -414,7 +645,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-11-02 13:14:42" itemprop="dateModified" datetime="2025-11-02T13:14:42+08:00">2025-11-02</time>
+      <time title="Modified: 2025-12-14 21:06:06" itemprop="dateModified" datetime="2025-12-14T21:06:06+08:00">2025-12-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -562,7 +793,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-11-02 13:14:42" itemprop="dateModified" datetime="2025-11-02T13:14:42+08:00">2025-11-02</time>
+      <time title="Modified: 2025-12-14 21:06:06" itemprop="dateModified" datetime="2025-12-14T21:06:06+08:00">2025-12-14</time>
     </span>
 
   
@@ -689,7 +920,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-11-02 13:14:42" itemprop="dateModified" datetime="2025-11-02T13:14:42+08:00">2025-11-02</time>
+      <time title="Modified: 2025-12-14 21:06:06" itemprop="dateModified" datetime="2025-12-14T21:06:06+08:00">2025-12-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -826,7 +1057,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-11-02 13:14:42" itemprop="dateModified" datetime="2025-11-02T13:14:42+08:00">2025-11-02</time>
+      <time title="Modified: 2025-12-14 21:06:06" itemprop="dateModified" datetime="2025-12-14T21:06:06+08:00">2025-12-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -974,7 +1205,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-11-02 13:14:42" itemprop="dateModified" datetime="2025-11-02T13:14:42+08:00">2025-11-02</time>
+      <time title="Modified: 2025-12-14 21:06:06" itemprop="dateModified" datetime="2025-12-14T21:06:06+08:00">2025-12-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1178,7 +1409,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-11-02 13:14:42" itemprop="dateModified" datetime="2025-11-02T13:14:42+08:00">2025-11-02</time>
+      <time title="Modified: 2025-12-14 21:06:06" itemprop="dateModified" datetime="2025-12-14T21:06:06+08:00">2025-12-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1307,7 +1538,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-11-02 13:14:42" itemprop="dateModified" datetime="2025-11-02T13:14:42+08:00">2025-11-02</time>
+      <time title="Modified: 2025-12-14 21:06:06" itemprop="dateModified" datetime="2025-12-14T21:06:06+08:00">2025-12-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1442,7 +1673,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-11-02 13:14:42" itemprop="dateModified" datetime="2025-11-02T13:14:42+08:00">2025-11-02</time>
+      <time title="Modified: 2025-12-14 21:06:06" itemprop="dateModified" datetime="2025-12-14T21:06:06+08:00">2025-12-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1533,156 +1764,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2025/02/09/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-5-%E6%8C%87%E4%BB%A4/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Kun-Neng Hung">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/" class="post-title-link" itemprop="url">Angular 新手村 - 4. 服務</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-01-06 18:00:00" itemprop="dateCreated datePublished" datetime="2025-01-06T18:00:00+08:00">2025-01-06</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-11-02 13:14:42" itemprop="dateModified" datetime="2025-11-02T13:14:42+08:00">2025-11-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>延續上一篇，我們已經在 <code>hall</code> 建立一個聊天室物件 <code>mockChatroom</code> ，並在 <code>hall.component.html</code> 顯示其路由連結，點擊該聊天室則導引到相關頁面。實際上大廳會存在許多聊天室物件，在介紹服務（service）之前，先嘗試在 <code>hall</code> 建立更多測試資料，確保聊天室顯示與連結均正常：</p>
-<ol>
-<li>在 <code>src/app</code> 下手動新增 <code>models</code> 資料夾並在內部新增檔案 <code>chatroom.model.ts</code> ，這個介面後續將會頻繁使用。  <img data-src="/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/1_chatroom_model.png" class="">
-  定義 <code>ChatroomModel</code> 介面需要的屬性與型態：  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">ChatroomModel</span> <span class="token punctuation">&#123;</span>
-  id<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
-  name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
-</ol>
-<blockquote>
-<p>建立聊天室物件介面的目的是管理或取得聊天室物件時，能依循我們所規範的結構（編輯器也會在我們錯誤操作物件屬性時提示錯誤）。</p>
-</blockquote>
-<ol start="2">
-<li>在 <code>hall.component.ts</code> 加入多筆測試資料，並將其依序顯示在 <code>hall.component.html</code> 中。  <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component<span class="token punctuation">,</span> signal <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> RouterLink <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/router'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ChatroomModel <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'../../models/chatroom.model'</span><span class="token punctuation">;</span>
-
-<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
-  selector<span class="token operator">:</span> <span class="token string">'app-hall'</span><span class="token punctuation">,</span>
-  imports<span class="token operator">:</span> <span class="token punctuation">[</span>RouterLink<span class="token punctuation">]</span><span class="token punctuation">,</span>
-  templateUrl<span class="token operator">:</span> <span class="token string">'./hall.component.html'</span><span class="token punctuation">,</span>
-  styleUrl<span class="token operator">:</span> <span class="token string">'./hall.component.css'</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">HallComponent</span> <span class="token punctuation">&#123;</span>
-  chatrooms <span class="token operator">=</span> <span class="token generic-function"><span class="token function">signal</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">Array</span><span class="token operator">&lt;</span>ChatroomModel<span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span>
-    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom A'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
-    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Chatroom B'</span> <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
-</ol>
-<ul>
-<li>第 3 行將我們所定義的 <code>ChatroomModel</code> 介面引入。</li>
-<li>第 12 ~ 15 行將兩個測試的聊天室物件以陣列的方式，提供給 <code>chatrooms</code> ，在 <code>signal</code> 角括號內的 <code>Array&lt;ChatroomModel&gt;</code> 表示它僅接受滿足 <code>ChatroomModel</code> 這個介面組成的陣列。  <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span> <span class="token property">flex-grow</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> start<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid black<span class="token punctuation">;</span> <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
-    @for (chatroom of chatrooms(); track chatroom.id) &#123;
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">[routerLink]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>['/chatroom', chatroom.id]<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 2px 0<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 4px<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid blue<span class="token punctuation">;</span> <span class="token property">border-radius</span><span class="token punctuation">:</span> 4px<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
-          &#123;&#123; chatroom.name &#125;&#125;
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span>
-    &#125; @empty &#123;
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>No chatrooms<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
-    &#125;
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Create a new one<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
-<li>第 3 行的 <code>@for</code> 是一種控制流語法（control flow syntax），用來遍歷陣列並依序取出項目。該行的意思為依序取出在 <code>chatrooms()</code> 內的 <code>chatroom</code> 項目並以 <code>chatroom.id</code> 當作追蹤每個項目的唯一識別子，這是 Angular 用來提升效能的方式。每當陣列中某個項目有變動時，因為有識別子，僅需要更新該物件即可，而非整個陣列。</li>
-<li>第 4 ~ 8 行大括號內則是用來呈現每個 <code>chatroom</code> 項目，我們建立路由與每個路由顯示各自的 <code>chatroom.name</code> ，經由點擊導引到不同的聊天室頁面。</li>
-<li>第 9 ~ 10 行的 <code>@empty</code> 會在 <code>chatrooms()</code> 為空（或 <code>null</code> 或 <code>undefined</code> ）時顯示 No chatrooms 字樣，而不會在此區塊中留白。</li>
-</ul>
-<blockquote>
-<p>控制流語法（control flow syntax）：</p>
-<ul>
-<li>Angular 17 開始提供</li>
-<li>Angular 18 成為內建語法</li>
-<li>使用 <code>ng g @angular/core:control-flow</code> 可將專案內所有已存在的<strong>結構型指令（structural directive）</strong>如 <code>ngIf</code> 與 <code>ngFor</code> 轉換成控制流語法。</li>
-</ul>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/01/06/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-4-%E6%9C%8D%E5%8B%99/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
