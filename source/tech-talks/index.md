@@ -4,6 +4,8 @@ date: 2025-02-04 21:51:14
 ---
 
 GDG events
+* 2026
+  - 0326 **Build with AI (GDG on Campus National Central University)**: Angular 開發者之路：產業趨勢 × Vibe Coding Workshop [📌](https://gdg.community.dev/events/details/google-gdg-on-campus-national-central-university-taoyuan-city-taiwan-presents-angular-kai-fa-zhe-zhi-lu-chan-ye-qu-shi-x-vibe-coding-workshop/)
 * 2025
   - 1101 **DevFest Taoyuan**: 如何以 Angular AI 工具來提升網頁開發效率與品質 [📝](https://www.slideshare.net/slideshow/20251101-devfest-2025-angular-ai/284002085) [📌](https://gdg.community.dev/events/details/google-gdg-taoyuan-presents-devfest-taoyuan-2025/)
   - 0422 **Build with AI (GDG on Campus National Yang-Ming Chiao Tung University)**: 從零開始的 Angular 網頁應用程式 Part II: Service & Routing & Form [📌](https://gdg.community.dev/events/details/google-gdg-on-campus-national-yang-ming-chiao-tung-university-hsinchu-city-taiwan-presents-angular-x-gemini-xi-lie-ke-cheng-di-er-tang-jin-jie-ying-yong-build-with-ai/)
