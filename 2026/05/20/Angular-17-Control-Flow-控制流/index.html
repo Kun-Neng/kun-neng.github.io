@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":true,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Angular v17 引入了新的 Control Flow （控制流）語法，徹底改變了我們在範本中處理條件判斷和迴圈的方式。讓我們深入探討這個強大功能的語法和優點。 介紹傳統上， Angular 使用 *ngIf、*ngFor 和 *ngSwitch 等結構型指令。雖然這些指令功能完善，但新的 Control Flow 語法提供了更簡潔、更易讀（接近 JavaScript 邏輯）的替代方案來處理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 17 - Control Flow 控制流">
+<meta property="og:url" content="https://kun-neng.github.io/2026/05/20/Angular-17-Control-Flow-%E6%8E%A7%E5%88%B6%E6%B5%81/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="Angular v17 引入了新的 Control Flow （控制流）語法，徹底改變了我們在範本中處理條件判斷和迴圈的方式。讓我們深入探討這個強大功能的語法和優點。 介紹傳統上， Angular 使用 *ngIf、*ngFor 和 *ngSwitch 等結構型指令。雖然這些指令功能完善，但新的 Control Flow 語法提供了更簡潔、更易讀（接近 JavaScript 邏輯）的替代方案來處理">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2026-05-20T10:33:57.000Z">
+<meta property="article:modified_time" content="2026-05-20T13:04:14.095Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="Control Flow">
+<meta property="article:tag" content="範本語法">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2026/05/20/Angular-17-Control-Flow-%E6%8E%A7%E5%88%B6%E6%B5%81/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2026/05/20/Angular-17-Control-Flow-%E6%8E%A7%E5%88%B6%E6%B5%81/","path":"2026/05/20/Angular-17-Control-Flow-控制流/","title":"Angular 17 - Control Flow 控制流"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular 17 - Control Flow 控制流 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tech-talks"><a href="/tech-talks/" rel="section"><i class="fa fa-microphone fa-fw"></i>Tech Talks</a></li><li class="menu-item menu-item-side-projects"><a href="/side-projects/" rel="section"><i class="fa fa-cube fa-fw"></i>Side Projects</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8B%E7%B4%B9"><span class="nav-number">1.</span> <span class="nav-text">介紹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Control-Flow-%E8%AA%9E%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">Control Flow 語法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A2%9D%E4%BB%B6%E5%88%A4%E6%96%B7-if"><span class="nav-number">2.1.</span> <span class="nav-text">1. 條件判斷 @if</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%88%A5%E5%90%8D%EF%BC%88Alias%EF%BC%89"><span class="nav-number">2.1.1.</span> <span class="nav-text">使用別名（Alias）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%88%97%E8%A1%A8%E8%BF%AD%E4%BB%A3-for"><span class="nav-number">2.2.</span> <span class="nav-text">2. 列表迭代 @for</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%B1%E5%90%AB%E8%AE%8A%E6%95%B8%EF%BC%88Implicit-Variables%EF%BC%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">隱含變數（Implicit Variables）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%A4%9A%E9%87%8D%E9%81%B8%E6%93%87-switch"><span class="nav-number">2.3.</span> <span class="nav-text">3. 多重選擇 @switch</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E6%A2%9D%E4%BB%B6%E6%AF%94%E5%B0%8D"><span class="nav-number">2.3.1.</span> <span class="nav-text">多條件比對</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%BB%B6%E9%81%B2%E8%BC%89%E5%85%A5-defer"><span class="nav-number">2.4.</span> <span class="nav-text">4. 延遲載入 @defer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%84%AA%E9%BB%9E"><span class="nav-number">3.</span> <span class="nav-text">優點</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%A6%E9%9A%9B%E7%AF%84%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">實際範例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B6%E5%88%97%E8%A1%A8"><span class="nav-number">4.1.</span> <span class="nav-text">用戶列表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%81%B7%E7%A7%BB%E5%B7%A5%E5%85%B7"><span class="nav-number">5.</span> <span class="nav-text">遷移工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%80%8F%E8%A6%BD%E5%99%A8%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="nav-number">6.</span> <span class="nav-text">瀏覽器兼容性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">7.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E9%97%9C%E8%B3%87%E6%BA%90"><span class="nav-number">8.</span> <span class="nav-text">相關資源</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://medium.com/@kunneng.hung" title="Medium → https:&#x2F;&#x2F;medium.com&#x2F;@kunneng.hung" rel="noopener me" target="_blank"><i class="fab fa-medium fa-fw"></i>Medium</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2026/05/20/Angular-17-Control-Flow-%E6%8E%A7%E5%88%B6%E6%B5%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular 17 - Control Flow 控制流 | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular 17 - Control Flow 控制流
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2026-05-20 18:33:57 / Modified: 21:04:14" itemprop="dateCreated datePublished" datetime="2026-05-20T18:33:57+08:00">2026-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Angular v17 引入了新的 Control Flow （控制流）語法，徹底改變了我們在範本中處理條件判斷和迴圈的方式。讓我們深入探討這個強大功能的語法和優點。</p>
+<h2 id="介紹"><a href="#介紹" class="headerlink" title="介紹"></a>介紹</h2><p>傳統上， Angular 使用 <code>*ngIf</code>、<code>*ngFor</code> 和 <code>*ngSwitch</code> 等結構型指令。雖然這些指令功能完善，但新的 Control Flow 語法提供了更簡潔、更易讀（接近 JavaScript 邏輯）的替代方案來處理範本中的條件渲染與列表迭代，並帶來了性能改進。語法於 Angular v17 引入，並在 v18 成為推薦的開發方式，用以取代傳統的結構型指令。</p>
+<h2 id="Control-Flow-語法"><a href="#Control-Flow-語法" class="headerlink" title="Control Flow 語法"></a>Control Flow 語法</h2><p>以下的＂傳統方式＂代表有別於使用 Control Flow 的語法。</p>
+<h3 id="1-條件判斷-if"><a href="#1-條件判斷-if" class="headerlink" title="1. 條件判斷 @if"></a>1. 條件判斷 <code>@if</code></h3><p><code>@if</code> 用於根據條件顯示或隱藏 HTML 片段。它支援 <code>@else if</code> 與 <code>@else</code> 擴充邏輯。</p>
+<ul>
+<li><p>傳統方式</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ng-container</span> <span class="token attr-name">*ngIf</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>isVisible; else hidden<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>可見的內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ng-container</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ng-template</span> <span class="token attr-name">#hidden</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>隱藏的內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ng-template</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><code>@if</code> 語法</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@if (isVisible) &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>可見的內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&#125; @else &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>隱藏的內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><code>@if</code> 語法（多個條件）</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@if (user.role === 'admin') &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span><span class="token punctuation">></span></span>管理員面板<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+&#125; @else if (user.role === 'editor') &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span><span class="token punctuation">></span></span>編輯內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+&#125; @else &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span><span class="token punctuation">></span></span>查看內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+<h4 id="使用別名（Alias）"><a href="#使用別名（Alias）" class="headerlink" title="使用別名（Alias）"></a>使用別名（Alias）</h4><p>可以使用 <code>as</code> 語法將判斷條件的結果存入局部變數，以複用該變數。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@if (items().length; as itemCount) &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>&#123;&#123; itemCount &#125;&#125; items to come<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- displays "2 items to come" --></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="2-列表迭代-for"><a href="#2-列表迭代-for" class="headerlink" title="2. 列表迭代 @for"></a>2. 列表迭代 <code>@for</code></h3><p><code>@for</code> 用於渲染集合中的每個項目，並需要加入 <code>track</code> （追蹤項目的唯一識別碼） ，有助於 Angular 追蹤項目變動以優化效能。</p>
+<ul>
+<li><p>傳統方式</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">*ngFor</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>let item of items; trackBy: trackItemId; let i = index; let isLast = last<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    &#123;&#123; i &#125;&#125;: &#123;&#123; item.name &#125;&#125; &#123;&#123; isLast ? '(最後一個)' : '' &#125;&#125;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token function">trackItemId</span><span class="token punctuation">(</span>index<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> item<span class="token operator">:</span> Item<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> item<span class="token punctuation">.</span>id<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><code>@for</code> 語法</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>
+  @for (item of items; track item.id; let i = $index; let isLast = $last) &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>&#123;&#123; i &#125;&#125;: &#123;&#123; item.name &#125;&#125; &#123;&#123; isLast ? '(最後一個)' : '' &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  &#125;
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><code>@for</code> 語法（空列表處理，當集合為空 、 <code>null</code> 或 <code>undefined</code> 時，會顯示該區塊的內容）</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@for (item of items; track item.id) &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>&#123;&#123; item.name &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+&#125; @empty &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>沒有項目<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+<h4 id="隱含變數（Implicit-Variables）"><a href="#隱含變數（Implicit-Variables）" class="headerlink" title="隱含變數（Implicit Variables）"></a>隱含變數（Implicit Variables）</h4><ul>
+<li><code>$index</code>：目前項目的索引（從 <code>0</code> 開始）。</li>
+<li><code>$first</code>：是否為第一個項目。</li>
+<li><code>$last</code>：是否為最後一個項目。</li>
+<li><code>$even</code>：索引是否為偶數。</li>
+<li><code>$odd</code>：索引是否為奇數。</li>
+</ul>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>
+  @for (item of items(); track item.id) &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">[class.grey]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>$even<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>&#123;&#123; item.name &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  &#125;
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>如果資料沒有唯一識別碼，也可以選擇使用 <code>track $index</code>（追蹤索引），但使用唯一識別碼始終是效能最佳的做法。因為當資料陣列發生變動（例如：新增、刪除、排序或過濾）時，使用唯一識別碼和 <code>$index</code> 會帶來截然不同的底層操作結果：</p>
+<ul>
+<li>使用唯一識別碼（如 <code>track item.id</code> ）<ul>
+<li>精準更新： Angular 能精準對應資料模型與 DOM 節點</li>
+<li>效能極佳：當陣列順序改變或從中間刪除項目時， Angular 會移動對應的 DOM 元素，而不會銷毀並重新創建它們。</li>
+<li>狀態保留：DOM 節點（例如 <code>&lt;input&gt;</code> 輸入框的焦點、未送出的文字、展開的下拉選單）會跟著資料一起移動，保持原有狀態。</li>
+</ul>
+</li>
+<li>使用 <code>$index</code> （如 <code>track $index</code> ）<ul>
+<li>依賴位置而非內容： Angular 只依賴＂第幾個位置＂來識別 DOM 。</li>
+<li>效能低落與畫面重繪：當刪除陣列的第一筆資料時， Angular 看到的是＂索引 0 的資料變了＂，它會強迫銷毀索引 0 的 DOM 、創建新的 DOM ，並更新後續所有的 DOM 節點。</li>
+<li>狀態丟失：因為舊的 DOM 被銷毀並創建了新的 DOM 元素，使用者在畫面上輸入到一半的資料或焦點會全部遺失。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<span id="more"></span>
+
+<h3 id="3-多重選擇-switch"><a href="#3-多重選擇-switch" class="headerlink" title="3. 多重選擇 @switch"></a>3. 多重選擇 <code>@switch</code></h3><p><code>@switch</code> 根據表達式的值，在不同的範本之間切換。</p>
+<ul>
+<li><p>傳統方式</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ng-container</span> <span class="token attr-name">[ngSwitch]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>status<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">*ngSwitchCase</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">'</span>success'<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>成功!<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">*ngSwitchCase</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">'</span>error'<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>錯誤!<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">*ngSwitchCase</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">'</span>loading'<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>載入中...<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">*ngSwitchDefault</span><span class="token punctuation">></span></span>未知狀態<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ng-container</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><code>@switch</code> 語法</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@switch (status) &#123;
+  @case ('success') &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>成功！<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+  @case ('error') &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>錯誤！<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+  @case ('loading') &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>載入中...<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+  @default &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>未知狀態<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+<h4 id="多條件比對"><a href="#多條件比對" class="headerlink" title="多條件比對"></a>多條件比對</h4><p>Angular 21.1 （Release Date 2026-01-12）開始支援在單個 <code>@case</code> 中設定多個比對值。</p>
+<p>在 21.1 之前的版本，必須為每個值寫一個 <code>@case</code> ：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@switch (role) &#123;
+  @case ('admin') &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>擁有完整權限<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+  @case ('manager') &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>擁有完整權限<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+  @default &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>一般使用者<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在 21.1 之後的版本，只需要將多個比對值以逗號分隔，集中在同一個 <code>@case</code> 內即可：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@switch (role) &#123;
+  @case ('admin', 'manager') &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>擁有完整權限<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+  @default &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>一般使用者<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="4-延遲載入-defer"><a href="#4-延遲載入-defer" class="headerlink" title="4. 延遲載入 @defer"></a>4. 延遲載入 <code>@defer</code></h3><p>雖然 <code>@defer</code> 常用於效能優化，但它也是控制流的一環。它允許延遲載入頁面的特定區域（及其相關組件），直到滿足特定觸發條件（如以下的 <code>on hover</code> ）。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@defer (on hover) &#123;
+  <span class="token comment">&lt;!-- 真正重量級的元件 --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-car-panel</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-car-panel</span><span class="token punctuation">></span></span>
+&#125; @loading (minimum 1000ms) &#123;
+  <span class="token comment">&lt;!-- 骨架屏載入中效果 --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-loading</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-loading</span><span class="token punctuation">></span></span>
+&#125; @placeholder &#123;
+  <span class="token comment">&lt;!-- 在內容載入前顯示的佔位符 --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-placeholder</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-placeholder</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>註： <code>@placeholder</code> 區塊通常用於顯示骨架屏（ghost elements），避免載入時畫面跳動或出現空白，直到實際內容載入完成。使用 <code>minimum 1000ms</code> 確保骨架屏至少顯示 1 秒，避免網路太快時的顯示閃爍，提升視覺平滑度。</p>
+<h2 id="優點"><a href="#優點" class="headerlink" title="優點"></a>優點</h2><ol>
+<li><p><strong>更好的可讀性</strong><br>新語法看起來像原生的控制流程，與 JavaScript 中的 <code>if/else</code> 和 <code>for</code> 迴圈相似，降低了學習曲線。</p>
+</li>
+<li><p><strong>性能改進</strong></p>
+</li>
+</ol>
+<ul>
+<li>強制加入 <code>track</code> ，以增進效能（ <code>trackBy</code> 為選擇性，不設定時容易導致效能損耗）</li>
+<li>減少了不必要的變更偵測</li>
+<li>更小的打包體積（為編譯器內建，不需要導入額外模組 <code>CommonModule</code> 或特定的指令如 <code>NgIf</code> ）</li>
+</ul>
+<ol start="3">
+<li><strong>更少的模板複雜度</strong></li>
+</ol>
+<ul>
+<li>無需 <code>ng-container</code> 與 <code>ng-template</code> 標籤</li>
+<li>無需 <code>let</code> 變數綁定的複雜語法</li>
+<li>程式碼結構更清晰</li>
+</ul>
+<ol start="4">
+<li><strong>更強大的表達能力</strong></li>
+</ol>
+<ul>
+<li><code>track</code> 函數優化了列表渲染</li>
+<li>內置的 <code>@empty</code> 塊簡化了空狀態處理</li>
+<li>更靈活的條件鏈式處理</li>
+</ul>
+<ol start="5">
+<li><strong>改進的開發體驗</strong></li>
+</ol>
+<ul>
+<li>IDE 的自動補全支援更好</li>
+<li>類型檢查更準確</li>
+<li>錯誤報告更清晰</li>
+</ul>
+<h2 id="實際範例"><a href="#實際範例" class="headerlink" title="實際範例"></a>實際範例</h2><h3 id="用戶列表"><a href="#用戶列表" class="headerlink" title="用戶列表"></a>用戶列表</h3><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>user-list<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  @if (users.length > 0) &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>用戶列表 (&#123;&#123; users.length &#125;&#125; 個)<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+    @for (user of users; track user.id; let idx = $index) &#123;
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>user-card<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>user-number<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>&#123;&#123; idx + 1 &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h3</span><span class="token punctuation">></span></span>&#123;&#123; user.name &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h3</span><span class="token punctuation">></span></span>
+
+        @switch (user.status) &#123;
+          @case ('active') &#123;
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>badge badge-success<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>活躍<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+          &#125;
+          @case ('inactive') &#123;
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>badge badge-warning<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>非活躍<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+          &#125;
+          @case ('blocked') &#123;
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>badge badge-danger<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>已封禁<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+          &#125;
+        &#125;
+
+        @if (user.isAdmin) &#123;
+          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>admin-badge<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>管理員<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+        &#125;
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    &#125;
+  &#125; @else if (isLoading()) &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>loading<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>載入中...<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125; @else &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>empty-state<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>沒有用戶<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">User</span> <span class="token punctuation">&#123;</span>
+  id<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  status<span class="token operator">:</span> <span class="token string">'active'</span> <span class="token operator">|</span> <span class="token string">'inactive'</span> <span class="token operator">|</span> <span class="token string">'blocked'</span><span class="token punctuation">;</span>
+  isAdmin<span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-user-list'</span><span class="token punctuation">,</span>
+  templateUrl<span class="token operator">:</span> <span class="token string">'./user-list.component.html'</span><span class="token punctuation">,</span>
+  styleUrls<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'./user-list.component.css'</span><span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">UserListComponent</span> <span class="token punctuation">&#123;</span>
+  users<span class="token operator">:</span> User<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'張三'</span><span class="token punctuation">,</span> status<span class="token operator">:</span> <span class="token string">'active'</span><span class="token punctuation">,</span> isAdmin<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'李四'</span><span class="token punctuation">,</span> status<span class="token operator">:</span> <span class="token string">'active'</span><span class="token punctuation">,</span> isAdmin<span class="token operator">:</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span> id<span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'王五'</span><span class="token punctuation">,</span> status<span class="token operator">:</span> <span class="token string">'inactive'</span><span class="token punctuation">,</span> isAdmin<span class="token operator">:</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+  isLoading <span class="token operator">=</span> <span class="token function">signal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="遷移工具"><a href="#遷移工具" class="headerlink" title="遷移工具"></a><a target="_blank" rel="noopener" href="https://angular.dev/reference/migrations/control-flow">遷移工具</a></h2><p>針對現存的結構型指令，想要遷移至 Control Flow 語法，可使用</p>
+<ul>
+<li>Angular CLI<br><code>ng g @angular/core:control-flow</code></li>
+<li>Nx CLI<br><code>yarn nx g @angular/core:control-flow</code></li>
+</ul>
+<h2 id="瀏覽器兼容性"><a href="#瀏覽器兼容性" class="headerlink" title="瀏覽器兼容性"></a>瀏覽器兼容性</h2><p>Control Flow 語法在 Angular v17+ 中可用，並支援所有現代瀏覽器。如果需要支援舊版本，可以繼續使用傳統的結構型指令。</p>
+<p>可以在 ESLint 配置（ <code>.eslintrc.json</code> 或 <code>eslintrc.js</code> ）中添加 <code>@angular-eslint</code> 規則來強制使用新的 Control Flow 語法，而不是舊的結構型指令（ <code>*ngIf</code> 、 <code>*ngFor</code> 、 <code>*ngSwitch</code> ）：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"rules"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"@angular-eslint/prefer-control-flow"</span><span class="token operator">:</span> <span class="token string">"warn"</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>eslint.config.js</code> 或 <code>eslint.config.mjs</code></p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">[</span>
+  <span class="token comment">// ...</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">files</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'**/*.html'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token comment">// 載入 Angular template plugin</span>
+    <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token string-property property">'@angular-eslint/template'</span><span class="token operator">:</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'@angular-eslint/eslint-plugin-template'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 強制使用 Control Flow</span>
+      <span class="token string-property property">'@angular-eslint/template/prefer-control-flow'</span><span class="token operator">:</span> <span class="token string">'error'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>Angular 17 的 Control Flow 語法代表了框架現代化的一個重要步驟。它不僅提供了更簡潔、更易讀的程式碼，還帶來了性能改進和更好的開發體驗。</p>
+<h2 id="相關資源"><a href="#相關資源" class="headerlink" title="相關資源"></a>相關資源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://angular.dev/guide/templates/control-flow">Angular Control Flow 新版官方文件</a></li>
+<li><a target="_blank" rel="noopener" href="https://v17.angular.io/guide/control_flow">Angular Control Flow 舊版官方文件</a></li>
+<li>效能探討<ul>
+<li><a target="_blank" rel="noopener" href="https://javascript.plainenglish.io/unlocking-performance-a-guide-to-angular-17s-new-control-flow-68432c265dde">Unlocking Performance: A Guide to Angular 17’s New Control Flow</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@himanshusaraswat/a-developers-guide-to-control-flow-in-angular-d220edf57c59">A Developer’s Guide To Control Flow In Angular</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>如果您有任何問題或想要了解更多細節，歡迎留言討論！</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/Control-Flow/" rel="tag"># Control Flow</a>
+              <a href="/tags/%E7%AF%84%E6%9C%AC%E8%AA%9E%E6%B3%95/" rel="tag"># 範本語法</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/12/28/Introduction-to-the-Google-Antigravity/" rel="prev" title="Introduction to the Google Antigravity">
+                  <i class="fa fa-angle-left"></i> Introduction to the Google Antigravity
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.min.js","integrity":"sha256-TtLOdUA8mstPoO6sGvHIGx2ceXrrX4KgIItO06XOn8A="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

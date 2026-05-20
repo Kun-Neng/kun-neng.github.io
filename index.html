@@ -152,7 +152,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -163,7 +163,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -191,6 +191,182 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2026/05/20/Angular-17-Control-Flow-%E6%8E%A7%E5%88%B6%E6%B5%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/05/20/Angular-17-Control-Flow-%E6%8E%A7%E5%88%B6%E6%B5%81/" class="post-title-link" itemprop="url">Angular 17 - Control Flow 控制流</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2026-05-20 18:33:57 / Modified: 21:04:14" itemprop="dateCreated datePublished" datetime="2026-05-20T18:33:57+08:00">2026-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Angular v17 引入了新的 Control Flow （控制流）語法，徹底改變了我們在範本中處理條件判斷和迴圈的方式。讓我們深入探討這個強大功能的語法和優點。</p>
+<h2 id="介紹"><a href="#介紹" class="headerlink" title="介紹"></a>介紹</h2><p>傳統上， Angular 使用 <code>*ngIf</code>、<code>*ngFor</code> 和 <code>*ngSwitch</code> 等結構型指令。雖然這些指令功能完善，但新的 Control Flow 語法提供了更簡潔、更易讀（接近 JavaScript 邏輯）的替代方案來處理範本中的條件渲染與列表迭代，並帶來了性能改進。語法於 Angular v17 引入，並在 v18 成為推薦的開發方式，用以取代傳統的結構型指令。</p>
+<h2 id="Control-Flow-語法"><a href="#Control-Flow-語法" class="headerlink" title="Control Flow 語法"></a>Control Flow 語法</h2><p>以下的＂傳統方式＂代表有別於使用 Control Flow 的語法。</p>
+<h3 id="1-條件判斷-if"><a href="#1-條件判斷-if" class="headerlink" title="1. 條件判斷 @if"></a>1. 條件判斷 <code>@if</code></h3><p><code>@if</code> 用於根據條件顯示或隱藏 HTML 片段。它支援 <code>@else if</code> 與 <code>@else</code> 擴充邏輯。</p>
+<ul>
+<li><p>傳統方式</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ng-container</span> <span class="token attr-name">*ngIf</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>isVisible; else hidden<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>可見的內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ng-container</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ng-template</span> <span class="token attr-name">#hidden</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>隱藏的內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ng-template</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><code>@if</code> 語法</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@if (isVisible) &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>可見的內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&#125; @else &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>隱藏的內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><code>@if</code> 語法（多個條件）</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@if (user.role === 'admin') &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span><span class="token punctuation">></span></span>管理員面板<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+&#125; @else if (user.role === 'editor') &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span><span class="token punctuation">></span></span>編輯內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+&#125; @else &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span><span class="token punctuation">></span></span>查看內容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+<h4 id="使用別名（Alias）"><a href="#使用別名（Alias）" class="headerlink" title="使用別名（Alias）"></a>使用別名（Alias）</h4><p>可以使用 <code>as</code> 語法將判斷條件的結果存入局部變數，以複用該變數。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@if (items().length; as itemCount) &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>&#123;&#123; itemCount &#125;&#125; items to come<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- displays "2 items to come" --></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="2-列表迭代-for"><a href="#2-列表迭代-for" class="headerlink" title="2. 列表迭代 @for"></a>2. 列表迭代 <code>@for</code></h3><p><code>@for</code> 用於渲染集合中的每個項目，並需要加入 <code>track</code> （追蹤項目的唯一識別碼） ，有助於 Angular 追蹤項目變動以優化效能。</p>
+<ul>
+<li><p>傳統方式</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">*ngFor</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>let item of items; trackBy: trackItemId; let i = index; let isLast = last<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    &#123;&#123; i &#125;&#125;: &#123;&#123; item.name &#125;&#125; &#123;&#123; isLast ? '(最後一個)' : '' &#125;&#125;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token function">trackItemId</span><span class="token punctuation">(</span>index<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> item<span class="token operator">:</span> Item<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> item<span class="token punctuation">.</span>id<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><code>@for</code> 語法</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>
+  @for (item of items; track item.id; let i = $index; let isLast = $last) &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>&#123;&#123; i &#125;&#125;: &#123;&#123; item.name &#125;&#125; &#123;&#123; isLast ? '(最後一個)' : '' &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  &#125;
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><code>@for</code> 語法（空列表處理，當集合為空 、 <code>null</code> 或 <code>undefined</code> 時，會顯示該區塊的內容）</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@for (item of items; track item.id) &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>&#123;&#123; item.name &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+&#125; @empty &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>沒有項目<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+<h4 id="隱含變數（Implicit-Variables）"><a href="#隱含變數（Implicit-Variables）" class="headerlink" title="隱含變數（Implicit Variables）"></a>隱含變數（Implicit Variables）</h4><ul>
+<li><code>$index</code>：目前項目的索引（從 <code>0</code> 開始）。</li>
+<li><code>$first</code>：是否為第一個項目。</li>
+<li><code>$last</code>：是否為最後一個項目。</li>
+<li><code>$even</code>：索引是否為偶數。</li>
+<li><code>$odd</code>：索引是否為奇數。</li>
+</ul>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>
+  @for (item of items(); track item.id) &#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">[class.grey]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>$even<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>&#123;&#123; item.name &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  &#125;
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>如果資料沒有唯一識別碼，也可以選擇使用 <code>track $index</code>（追蹤索引），但使用唯一識別碼始終是效能最佳的做法。因為當資料陣列發生變動（例如：新增、刪除、排序或過濾）時，使用唯一識別碼和 <code>$index</code> 會帶來截然不同的底層操作結果：</p>
+<ul>
+<li>使用唯一識別碼（如 <code>track item.id</code> ）<ul>
+<li>精準更新： Angular 能精準對應資料模型與 DOM 節點</li>
+<li>效能極佳：當陣列順序改變或從中間刪除項目時， Angular 會移動對應的 DOM 元素，而不會銷毀並重新創建它們。</li>
+<li>狀態保留：DOM 節點（例如 <code>&lt;input&gt;</code> 輸入框的焦點、未送出的文字、展開的下拉選單）會跟著資料一起移動，保持原有狀態。</li>
+</ul>
+</li>
+<li>使用 <code>$index</code> （如 <code>track $index</code> ）<ul>
+<li>依賴位置而非內容： Angular 只依賴＂第幾個位置＂來識別 DOM 。</li>
+<li>效能低落與畫面重繪：當刪除陣列的第一筆資料時， Angular 看到的是＂索引 0 的資料變了＂，它會強迫銷毀索引 0 的 DOM 、創建新的 DOM ，並更新後續所有的 DOM 節點。</li>
+<li>狀態丟失：因為舊的 DOM 被銷毀並創建了新的 DOM 元素，使用者在畫面上輸入到一半的資料或焦點會全部遺失。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/05/20/Angular-17-Control-Flow-%E6%8E%A7%E5%88%B6%E6%B5%81/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -236,7 +412,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-28 09:21:28" itemprop="dateModified" datetime="2026-03-28T09:21:28+08:00">2026-03-28</time>
+      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -410,7 +586,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-28 09:21:28" itemprop="dateModified" datetime="2026-03-28T09:21:28+08:00">2026-03-28</time>
+      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -641,7 +817,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-28 09:21:28" itemprop="dateModified" datetime="2026-03-28T09:21:28+08:00">2026-03-28</time>
+      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -819,7 +995,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-28 09:21:28" itemprop="dateModified" datetime="2026-03-28T09:21:28+08:00">2026-03-28</time>
+      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -967,7 +1143,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-28 09:21:28" itemprop="dateModified" datetime="2026-03-28T09:21:28+08:00">2026-03-28</time>
+      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
     </span>
 
   
@@ -1094,7 +1270,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-28 09:21:28" itemprop="dateModified" datetime="2026-03-28T09:21:28+08:00">2026-03-28</time>
+      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1231,7 +1407,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-28 09:21:28" itemprop="dateModified" datetime="2026-03-28T09:21:28+08:00">2026-03-28</time>
+      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1379,7 +1555,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-28 09:21:28" itemprop="dateModified" datetime="2026-03-28T09:21:28+08:00">2026-03-28</time>
+      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1583,7 +1759,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-28 09:21:28" itemprop="dateModified" datetime="2026-03-28T09:21:28+08:00">2026-03-28</time>
+      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1646,141 +1822,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2025/04/05/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-7-%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Kun-Neng Hung">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/" class="post-title-link" itemprop="url">Angular 新手村 - 6. 管道</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-03-29 14:10:00" itemprop="dateCreated datePublished" datetime="2025-03-29T14:10:00+08:00">2025-03-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-28 09:21:28" itemprop="dateModified" datetime="2026-03-28T09:21:28+08:00">2026-03-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>有時候我們不會想在視圖（view）直接呈現原始資料，而是將它們轉換或格式化等再顯示出來。這些瑣碎、重複的事情就可以由 Angular 提供的管道（pipe）來完成。做法通常是在範本插值（ template interpolation ）中，於原始資料後串接 <code>|</code> 及特定管道即可。</p>
-<h3 id="內建管道"><a href="#內建管道" class="headerlink" title="內建管道"></a>內建管道</h3><ul>
-<li><p>async</p>
-<ul>
-<li><code>AsyncPipe</code> 處理並呈現來自 <code>Promise</code> 或 <code>Observable</code> 的非同步資料，當資料可用時，它會觸發一個改變偵測（change detection）檢查<blockquote>
-<p>若來源為 <code>Observable</code> ，則當此管道被銷毀時，會反訂閱該來源。</p>
-</blockquote>
-</li>
-</ul>
-</li>
-<li><p>keyvalue</p>
-<ul>
-<li><code>KeyValuePipe</code> 在 Angular 6.1 被提出，針對 <code>Map</code> 或物件元素進行迭代並取出鍵（key）值（value），其鍵的順序按照以下規則：<ol>
-<li>如果它們都是字串，則按字典順序排列；</li>
-<li>如果它們都是數字，則按數值順序排列；</li>
-<li>如果它們都是布林值（先 <code>false</code> 後 <code>true</code>），則按它們的布林值計算；<br>如果鍵的類型不同，則先將它們轉換為字串，再進行比較。</li>
-</ol>
-</li>
-</ul>
-</li>
-<li><p>uppercase</p>
-<ul>
-<li><code>UpperCasePipe</code> 轉換字串為大寫</li>
-<li>例如， <code>&#123;&#123; 'chatroom name' | uppercase &#125;&#125;</code> 顯示為 <code>CHATROOM NAME</code></li>
-</ul>
-</li>
-<li><p>lowercase</p>
-<ul>
-<li><code>LowerCasePipe</code> 轉換字串為小寫</li>
-<li>例如， <code>&#123;&#123; 'CHATROOM NAME' | lowercase &#125;&#125;</code> 顯示為 <code>chatroom name</code></li>
-</ul>
-</li>
-<li><p>titlecase</p>
-<ul>
-<li>在 Angular 4 被提出， <code>TitleCasePipe</code> 轉換每個字的首字為大寫</li>
-<li>例如， <code>&#123;&#123; 'chatroom name' | titlecase &#125;&#125;</code> 顯示為 <code>Chatroom Name</code></li>
-</ul>
-</li>
-<li><p>json</p>
-<ul>
-<li><code>JsonPipe</code> 使用 <code>JSON.stringify()</code> 來呈現資料，通常使用在開發階段，以快速檢視資料內容。</li>
-</ul>
-</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/03/29/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-6-%E7%AE%A1%E9%81%93/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
