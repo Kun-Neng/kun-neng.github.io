@@ -228,9 +228,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2026-05-20 18:33:57 / Modified: 21:04:14" itemprop="dateCreated datePublished" datetime="2026-05-20T18:33:57+08:00">2026-05-20</time>
+      <time title="Created: 2026-05-20 18:33:57" itemprop="dateCreated datePublished" datetime="2026-05-20T18:33:57+08:00">2026-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-05-22 06:19:04" itemprop="dateModified" datetime="2026-05-22T06:19:04+08:00">2026-05-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -287,6 +293,16 @@
   <span class="token comment">&lt;!-- displays "2 items to come" --></span>
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
+<p>可以搭配 <code>async</code> 管道來訂閱 Observable 並指派區域變數，這種寫法會自動處理訂閱與退訂，且只會在資料發出且不為 <code>null</code> 或 <code>undefined</code> 時渲染區塊。透過 <code>; as</code> 指派的變數在區塊內皆有型別推斷，不需要再額外使用安全導航運算子（ safe navigation operator ） <code>?.</code> 。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">@if (user$ | async; as user) &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>哈囉，&#123;&#123; user.name &#125;&#125;！<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&#125; @else &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>尚未登入或載入中...<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>如果是獨立元件（ Standalone Component ），記得在 <code>@Component</code> 的 <code>imports</code> 陣列內加入 <code>AsyncPipe</code> 。</p>
+</blockquote>
 <h3 id="2-列表迭代-for"><a href="#2-列表迭代-for" class="headerlink" title="2. 列表迭代 @for"></a>2. 列表迭代 <code>@for</code></h3><p><code>@for</code> 用於渲染集合中的每個項目，並需要加入 <code>track</code> （追蹤項目的唯一識別碼） ，有助於 Angular 追蹤項目變動以優化效能。</p>
 <ul>
 <li><p>傳統方式</p>
@@ -337,7 +353,7 @@
 </li>
 <li>使用 <code>$index</code> （如 <code>track $index</code> ）<ul>
 <li>依賴位置而非內容： Angular 只依賴＂第幾個位置＂來識別 DOM 。</li>
-<li>效能低落與畫面重繪：當刪除陣列的第一筆資料時， Angular 看到的是＂索引 0 的資料變了＂，它會強迫銷毀索引 0 的 DOM 、創建新的 DOM ，並更新後續所有的 DOM 節點。</li>
+<li>效能低落與畫面重繪：當刪除陣列的第一筆資料時，導致後續所有資料的索引都減 1 ，Angular 認為所有索引對應的資料都改變了，並更新後續所有的 DOM 節點。</li>
 <li>狀態丟失：因為舊的 DOM 被銷毀並創建了新的 DOM 元素，使用者在畫面上輸入到一半的資料或焦點會全部遺失。</li>
 </ul>
 </li>
@@ -412,7 +428,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
+      <time title="Modified: 2026-05-22 06:19:04" itemprop="dateModified" datetime="2026-05-22T06:19:04+08:00">2026-05-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -586,7 +602,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
+      <time title="Modified: 2026-05-22 06:19:04" itemprop="dateModified" datetime="2026-05-22T06:19:04+08:00">2026-05-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -817,7 +833,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
+      <time title="Modified: 2026-05-22 06:19:04" itemprop="dateModified" datetime="2026-05-22T06:19:04+08:00">2026-05-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -995,7 +1011,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
+      <time title="Modified: 2026-05-22 06:19:04" itemprop="dateModified" datetime="2026-05-22T06:19:04+08:00">2026-05-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1143,7 +1159,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
+      <time title="Modified: 2026-05-22 06:19:04" itemprop="dateModified" datetime="2026-05-22T06:19:04+08:00">2026-05-22</time>
     </span>
 
   
@@ -1270,7 +1286,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
+      <time title="Modified: 2026-05-22 06:19:04" itemprop="dateModified" datetime="2026-05-22T06:19:04+08:00">2026-05-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1407,7 +1423,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
+      <time title="Modified: 2026-05-22 06:19:04" itemprop="dateModified" datetime="2026-05-22T06:19:04+08:00">2026-05-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1555,7 +1571,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
+      <time title="Modified: 2026-05-22 06:19:04" itemprop="dateModified" datetime="2026-05-22T06:19:04+08:00">2026-05-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1759,7 +1775,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-05-20 21:04:14" itemprop="dateModified" datetime="2026-05-20T21:04:14+08:00">2026-05-20</time>
+      <time title="Modified: 2026-05-22 06:19:04" itemprop="dateModified" datetime="2026-05-22T06:19:04+08:00">2026-05-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
