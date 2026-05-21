@@ -60,6 +60,18 @@ Angular v17 引入了新的 Control Flow （控制流）語法，徹底改變了
 }
 ```
 
+可以搭配 `async` 管道來訂閱 Observable 並指派區域變數，這種寫法會自動處理訂閱與退訂，且只會在資料發出且不為 `null` 或 `undefined` 時渲染區塊。透過 `; as` 指派的變數在區塊內皆有型別推斷，不需要再額外使用安全導航運算子（ safe navigation operator ） `?.` 。
+
+```html
+@if (user$ | async; as user) {
+  <div>哈囉，{{ user.name }}！</div>
+} @else {
+  <div>尚未登入或載入中...</div>
+}
+```
+
+> 如果是獨立元件（ Standalone Component ），記得在 `@Component` 的 `imports` 陣列內加入 `AsyncPipe` 。
+
 ### 2. 列表迭代 `@for`
 
 `@for` 用於渲染集合中的每個項目，並需要加入 `track` （追蹤項目的唯一識別碼） ，有助於 Angular 追蹤項目變動以優化效能。
@@ -119,7 +131,7 @@ trackItemId(index: number, item: Item) {
 >   - 狀態保留：DOM 節點（例如 `<input>` 輸入框的焦點、未送出的文字、展開的下拉選單）會跟著資料一起移動，保持原有狀態。
 > - 使用 `$index` （如 `track $index` ）
 >   - 依賴位置而非內容： Angular 只依賴＂第幾個位置＂來識別 DOM 。
->   - 效能低落與畫面重繪：當刪除陣列的第一筆資料時， Angular 看到的是＂索引 0 的資料變了＂，它會強迫銷毀索引 0 的 DOM 、創建新的 DOM ，並更新後續所有的 DOM 節點。
+>   - 效能低落與畫面重繪：當刪除陣列的第一筆資料時，導致後續所有資料的索引都減 1 ，Angular 認為所有索引對應的資料都改變了，並更新後續所有的 DOM 節點。
 >   - 狀態丟失：因為舊的 DOM 被銷毀並創建了新的 DOM 元素，使用者在畫面上輸入到一半的資料或焦點會全部遺失。
 
 <!-- more -->
