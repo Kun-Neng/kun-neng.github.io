@@ -2887,3 +2887,7 @@ header.header {
 .search-popup .search-result-container {
   overflow-x: hidden;
 }
+.img-left img {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
