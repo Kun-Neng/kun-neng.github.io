@@ -152,7 +152,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -163,7 +163,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -191,6 +191,185 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/" class="post-title-link" itemprop="url">Angular WebMCP - 讓 AI 代理程式直接操作你的網頁</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-09-03 20:21:26" itemprop="dateCreated datePublished" datetime="2026-09-03T20:21:26+08:00">2026-09-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-09-06 11:01:05" itemprop="dateModified" datetime="2026-09-06T11:01:05+08:00">2026-09-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>當 AI 瀏覽器代理程式（ agent ）要幫使用者填表單、查訂單時，傳統做法是對畫面截圖，再用視覺模型猜測哪個矩形是輸入欄位、哪個按鈕能送出——這種方式既不精準也不穩定。WebMCP（ Web Model Context Protocol ）提供了另一條路：讓網頁主動向瀏覽器內的 AI 代理程式宣告<strong>這個網站能做什麼</strong>，並以結構化的工具（ tool ）暴露操作介面。本文整理 WebMCP 的概念與規格現況，說明如何在 Angular 專案中以官方的實驗性 API 與手動整合 <code>document.modelContext</code> 兩種方式實作工具，最後串接 Gemini API ，實際用自然語言下 prompt 驗證代理程式能不能正確呼叫這些工具。</p>
+<h2 id="什麼是-WebMCP"><a href="#什麼是-WebMCP" class="headerlink" title="什麼是 WebMCP"></a>什麼是 WebMCP</h2><p>WebMCP 是由 <a target="_blank" rel="noopener" href="https://www.w3.org/community/webmachinelearning/">W3C Web Machine Learning Community Group</a> 主導的網頁標準草案。核心概念可以理解為：網站本身變成一個 MCP Server，只是傳輸層不是 HTTP + JSON-RPC，而是瀏覽器的 JavaScript 環境本身。頁面可以註冊具名的函式工具，並為每個工具定義輸入結構，供同一瀏覽器內運作的 AI 代理程式（側邊欄助理、內建瀏覽器代理或擴充功能）直接呼叫，由於工具的定義方式與 Model Context Protocol （ MCP ） 十分相似而得名，差別只在於傳輸層換成了瀏覽器的 JavaScript heap 。</p>
+<p><strong>主要優點：</strong></p>
+<ul>
+<li>精準：AI 助手可以直接透過結構化工具與應用程式互動（例如直接建立使用者），不需要依賴複雜的 DOM UI 操作或猜測。</li>
+<li>免部署：工具在客戶端執行，自動繼承使用者已登入的 session 與應用程式狀態，不需要額外部署伺服器，也不用分享 API key 。</li>
+</ul>
+<p><strong>常見應用場景：</strong></p>
+<ul>
+<li>複雜表單填寫：區分＂全名＂欄位或＂姓＂＂名＂分開的欄位，比瀏覽器自動填入更精準。</li>
+<li>難以視覺辨識的介面：如日曆選擇器這類對人類直覺、但對視覺模型較困難的元件。</li>
+<li>開發者除錯工具：在設定頁建立診斷工具，讓代理程式觸發原本藏在多層選單裡的修正動作。</li>
+<li>電商／訂單查詢：讓代理程式直接查詢訂單狀態、物流進度等結構化資料。</li>
+<li>UI 元件庫整合：把清單分頁、篩選等操作包成工具，取代逐一點擊 UI 元件。</li>
+</ul>
+<h2 id="規格現況與限制"><a href="#規格現況與限制" class="headerlink" title="規格現況與限制"></a>規格現況與限制</h2><ul>
+<li><p>在 Chrome（149+）提供實驗性原生支援，需要在 <code>chrome://flags/#enable-webmcp-testing</code> 開啟才能使用（參考下圖步驟，在設為 <code>Enabled</code> 後重新啟動瀏覽器即可）；其他瀏覽器則需依賴 polyfill（如 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@mcp-b/webmcp-polyfill"><code>@mcp-b/webmcp-polyfill</code></a> ）。<a target="_blank" rel="noopener" href="https://github.com/webmachinelearning/webmcp">Microsoft 是規格共同作者之一</a> ， Edge 未來支援機會較高，但尚無正式時程。</p>
+<img data-src="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/1_enable_webmcp_testing.png" class="">
+</li>
+<li><p>WebMCP 目前仍是早期草案（ Chrome 官方直到 <a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/ai/webmcp?hl=zh-tw">2026 年 5 月才發布開發者文件</a> 正式介紹）， API 仍可能變動，其中一項正在進行的是 API 掛載位置從 <code>navigator.modelContext</code> 轉往 <code>document.modelContext</code> ，因此會在 DevTools 出現以下錯誤：</p>
+<img data-src="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/2_deprecated_navigator_modelContext.png" class="">
+</li>
+<li><p>工具邏輯執行於瀏覽器 JavaScript 環境中，無法在沒有瀏覽器的伺服器端場景直接使用。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://webmachinelearning.github.io/webmcp/#permissions-policy">規格</a>透過 Permissions Policy 定義了一個名為 <code>tools</code> 的功能，預設允許清單只有 <code>&#39;self&#39;</code>，也就是說跨來源的 iframe 預設無法註冊或存取工具；子頁面若要跨來源使用，父層需要在 <code>&lt;iframe&gt;</code> 上明確加上 <code>allow</code> 屬性委派權限，例如：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token comment">&lt;!-- 允許所有來源的子頁面使用 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>iframe</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://other-origin.com<span class="token punctuation">"</span></span> <span class="token attr-name">allow</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>tools *<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>iframe</span><span class="token punctuation">></span></span>
+
+<span class="token comment">&lt;!-- 只允許特定來源的子頁面使用 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>iframe</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://trusted-origin.com<span class="token punctuation">"</span></span> <span class="token attr-name">allow</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>tools https://trusted-origin.com<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>iframe</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+<h2 id="Angular-官方實驗性支援"><a href="#Angular-官方實驗性支援" class="headerlink" title="Angular 官方實驗性支援"></a>Angular 官方實驗性支援</h2><p>Angular 目前提供的 WebMCP 支援是實驗性質（ Experimental ）， API 隨時可能變動，但已經涵蓋應用程式、路由、服務與 Signal Form 等不同層級的整合方式。</p>
+<blockquote>
+<ul>
+<li>新建 Angular 22 版本的專案，可以使用 <code>npx @angular/cli@22 new &lt;專案名稱&gt;</code></li>
+<li>需要注意 Angular 22 有 Node.js 最低版本支援（ <code>v22.22.3</code> or <code>v24.15.0</code> or <code>v26.0.0</code> ），可以使用 nvm 套件協助升級（使用方式可參考 <a href="https://kun-neng.github.io/2025/09/07/NVM-Introduction/">NVM 簡介</a>）。</li>
+</ul>
+</blockquote>
+<h2 id="工具安裝"><a href="#工具安裝" class="headerlink" title="工具安裝"></a>工具安裝</h2><p>Google 官方針對 WebMCP 提供的擴充套件為 <a target="_blank" rel="noopener" href="https://chromewebstore.google.com/detail/webmcp-model-context-tool/gbpdfapgefenggkahomfgkhfehlcenpd">WebMCP - Model Context Tool Inspector</a>，由 GoogleChromeLabs 團隊開發，其原始碼託管於 GitHub 的 <a target="_blank" rel="noopener" href="https://github.com/GoogleChromeLabs/webmcp-tools">webmcp-tools</a> 專案中。</p>
+<img data-src="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/3_Model_Context_Tool_Inspector.png" class="">
+
+<p>安裝完畢後，可以自擴充功能點開操作畫面，看起來什麼都沒有，是因為網頁跟它還沒有建立連線，也沒有註冊任何工具。它主要分兩個部分，上半部會顯示可使用的工具，下半部可以與網頁進行互動。</p>
+<img data-src="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/4_Model_Context_Tool_Inspector.png" class="">
+
+<h3 id="應用程式層級"><a href="#應用程式層級" class="headerlink" title="應用程式層級"></a>應用程式層級</h3><p>在應用程式配置中使用 <code>provideExperimentalWebMcpTools</code> 註冊。工具的 <code>execute</code> 回呼函數會在依賴注入環境（ Injection Context ）中執行，代表你可以直接注入其他服務。</p>
+<blockquote>
+<p>在 Angular 22 以前的版本，匯入 <code>provideExperimentalWebMcpTools</code> 時 IDE 會報錯：</p>
+<img data-src="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/5_provideExperimentalWebMcpTools_error.png" class="">
+</blockquote>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Service<span class="token punctuation">,</span> inject<span class="token punctuation">,</span> provideExperimentalWebMcpTools <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> bootstrapApplication <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/platform-browser'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> AppRoot <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./app-root'</span><span class="token punctuation">;</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Service</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">class</span> <span class="token class-name">Greeter</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token string">'Hello agent!'</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function">bootstrapApplication</span><span class="token punctuation">(</span>AppRoot<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+  providers<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token function">provideExperimentalWebMcpTools</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+      <span class="token punctuation">&#123;</span>
+        name<span class="token operator">:</span> <span class="token string">'greet'</span><span class="token punctuation">,</span>
+        description<span class="token operator">:</span> <span class="token string">'Greets the agent.'</span><span class="token punctuation">,</span>
+        inputSchema<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+          type<span class="token operator">:</span> <span class="token string">'object'</span><span class="token punctuation">,</span>
+          properties<span class="token operator">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token function-variable function">execute</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+          <span class="token keyword">const</span> greeter <span class="token operator">=</span> <span class="token function">inject</span><span class="token punctuation">(</span>Greeter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token keyword">return</span> <span class="token punctuation">&#123;</span>
+            content<span class="token operator">:</span> <span class="token punctuation">[</span>
+              <span class="token punctuation">&#123;</span>
+                type<span class="token operator">:</span> <span class="token string">'text'</span><span class="token punctuation">,</span>
+                text<span class="token operator">:</span> greeter<span class="token punctuation">.</span><span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+              <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">]</span>
+          <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>網頁啟動後，打開 <code>WebMCP - Model Context Tool Inspector</code> 擴充工具可看到已經有工具存在，而 <code>description</code> 、 <code>inputSchema</code> 和 <code>name</code> 會顯示在上半部的 WebTools 列表中。經由點擊＂Execute Tool＂會執行該工具提供的功能並回傳特定內容：</p>
+<img data-src="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/6_execute_tool.png" class="">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -228,9 +407,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2026-08-29 10:36:55 / Modified: 21:50:42" itemprop="dateCreated datePublished" datetime="2026-08-29T10:36:55+08:00">2026-08-29</time>
+      <time title="Created: 2026-08-29 10:36:55" itemprop="dateCreated datePublished" datetime="2026-08-29T10:36:55+08:00">2026-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-09-06 11:01:05" itemprop="dateModified" datetime="2026-09-06T11:01:05+08:00">2026-09-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -374,7 +559,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-08-29 21:50:42" itemprop="dateModified" datetime="2026-08-29T21:50:42+08:00">2026-08-29</time>
+      <time title="Modified: 2026-09-06 11:01:05" itemprop="dateModified" datetime="2026-09-06T11:01:05+08:00">2026-09-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -566,7 +751,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-08-29 21:50:42" itemprop="dateModified" datetime="2026-08-29T21:50:42+08:00">2026-08-29</time>
+      <time title="Modified: 2026-09-06 11:01:05" itemprop="dateModified" datetime="2026-09-06T11:01:05+08:00">2026-09-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -740,7 +925,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-08-29 21:50:42" itemprop="dateModified" datetime="2026-08-29T21:50:42+08:00">2026-08-29</time>
+      <time title="Modified: 2026-09-06 11:01:05" itemprop="dateModified" datetime="2026-09-06T11:01:05+08:00">2026-09-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -971,7 +1156,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-08-29 21:50:42" itemprop="dateModified" datetime="2026-08-29T21:50:42+08:00">2026-08-29</time>
+      <time title="Modified: 2026-09-06 11:01:05" itemprop="dateModified" datetime="2026-09-06T11:01:05+08:00">2026-09-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1149,7 +1334,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-08-29 21:50:42" itemprop="dateModified" datetime="2026-08-29T21:50:42+08:00">2026-08-29</time>
+      <time title="Modified: 2026-09-06 11:01:05" itemprop="dateModified" datetime="2026-09-06T11:01:05+08:00">2026-09-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1297,7 +1482,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-08-29 21:50:42" itemprop="dateModified" datetime="2026-08-29T21:50:42+08:00">2026-08-29</time>
+      <time title="Modified: 2026-09-06 11:01:05" itemprop="dateModified" datetime="2026-09-06T11:01:05+08:00">2026-09-06</time>
     </span>
 
   
@@ -1424,7 +1609,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-08-29 21:50:42" itemprop="dateModified" datetime="2026-08-29T21:50:42+08:00">2026-08-29</time>
+      <time title="Modified: 2026-09-06 11:01:05" itemprop="dateModified" datetime="2026-09-06T11:01:05+08:00">2026-09-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1561,7 +1746,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-08-29 21:50:42" itemprop="dateModified" datetime="2026-08-29T21:50:42+08:00">2026-08-29</time>
+      <time title="Modified: 2026-09-06 11:01:05" itemprop="dateModified" datetime="2026-09-06T11:01:05+08:00">2026-09-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1643,210 +1828,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2025/06/01/Angular-v20-Features/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/05/02/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-8-%E8%A1%A8%E5%96%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Kun-Neng Hung">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/05/02/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-8-%E8%A1%A8%E5%96%AE/" class="post-title-link" itemprop="url">Angular 新手村 - 8. 表單</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-05-02 19:45:30" itemprop="dateCreated datePublished" datetime="2025-05-02T19:45:30+08:00">2025-05-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-08-29 21:50:42" itemprop="dateModified" datetime="2026-08-29T21:50:42+08:00">2026-08-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>表單（ form ）是經常使用在網頁的元素，我們可以用它來驗證使用者的輸入，包含欄位是否已填、符合某種規則之類。 Angular 提供很有用的表單操作模組，可以協助打造具有響應式的表單。例如，我們想要在進入聊天室之前，讓使用者進行註冊或登入後，符合某些條件才能進入聊天室。</p>
-<p>在實作之前，我們介紹 Angular 的 <code>FormControl</code> ，它是表單的最小單元，舉凡 <code>input</code> 或 <code>select</code> 皆可視為一個 <code>FormControl</code> 。</p>
-<p><code>FormControl</code> 封裝了表單的狀態與內容值，例如</p>
-<ul>
-<li><code>touched</code>: 使用者曾經進入過 &lt;- 相反 -&gt; <code>untouched</code>: 使用者未曾進入過</li>
-<li><code>valid</code>: 滿足表單規則且通過驗證 &lt;- 相反 -&gt; <code>invalid</code>: 未滿足表單規則或未通過驗證</li>
-<li><code>pristine</code>: 使用者未曾改變過值 &lt;- 相反 -&gt; <code>dirty</code>: 使用者改變過值</li>
-<li><code>value</code>: 內容值</li>
-<li><code>errors</code>: 表單錯誤資訊的物件</li>
-<li><code>statusChanges</code>: 當狀態改變時，一個 Observable 被觸發</li>
-<li><code>valueChanges</code>: 當內容值改變時，一個 Observable 被觸發</li>
-</ul>
-<p><code>FormGroup</code> 可以容納一個或數個 <code>FormControl</code> ，它也存在類似 <code>FormControl</code> 的狀態與內容值，因此我們可以用它管理內部所有的 <code>FormControl</code> 。</p>
-<h3 id="範本驅動表單-Template-driven-forms"><a href="#範本驅動表單-Template-driven-forms" class="headerlink" title="範本驅動表單 Template-driven forms"></a>範本驅動表單 Template-driven forms</h3><ul>
-<li>以範本內的指令建立並操作物件模型</li>
-<li>適用於範本內僅有基本表單需求與邏輯</li>
-<li>可以很直覺地將物件內容顯示在範本</li>
-</ul>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>Sign up<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">#registerForm</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>ngForm<span class="token punctuation">"</span></span> <span class="token attr-name">(ngSubmit)</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>register()<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>fieldset</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>account<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Account<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>email<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>account<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>account<span class="token punctuation">"</span></span> <span class="token attr-name">[(ngModel)]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>user.account<span class="token punctuation">"</span></span> <span class="token attr-name">required</span> <span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Password<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">[(ngModel)]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>user.password<span class="token punctuation">"</span></span> <span class="token attr-name">required</span> <span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>fieldset</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Register<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>解析上述程式碼：</p>
-<ul>
-<li>第 2 行定義一個範本參考變數 <code>registerForm</code> ，其參考由 Angular 針對此表單所建立的 <code>NgForm</code> 物件實體</li>
-<li>第 5 行與第 7 行的 <code>[(ngModel)]</code> 是一種<strong>雙向綁定（ two-way binding ）</strong>的語法，整合輸入與輸出的行為。<ul>
-<li>輸入 <code>user.account</code> 至表單： <code>[ngModel]=&quot;user.account&quot;</code></li>
-<li>由表單輸出 <code>user.account</code> ： <code>(ngModelChange)=&quot;user.account = $event&quot;</code></li>
-</ul>
-</li>
-<li>第 9 行的按鈕被定義為表單標籤上 <code>ngSubmit</code> 的事件處理器，意旨當 <code>submit</code> 被觸發時， <code>NgForm</code> 會將 <code>ngSubmit</code> 事件發送出去，並且連帶呼叫 <code>register()</code> 函式。</li>
-</ul>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> FormsModule <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/forms'</span><span class="token punctuation">;</span>
-
-<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
-  selector<span class="token operator">:</span> <span class="token string">'app-register'</span><span class="token punctuation">,</span>
-  imports<span class="token operator">:</span> <span class="token punctuation">[</span>FormsModule<span class="token punctuation">]</span><span class="token punctuation">,</span>
-  templateUrl<span class="token operator">:</span> <span class="token string">'register.component.html'</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">RegisterFormComponent</span> <span class="token punctuation">&#123;</span>
-  user <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
-    account<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
-    password<span class="token operator">:</span> <span class="token string">''</span>
-  <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
-
-  <span class="token function">register</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token comment">// Do something</span>
-    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>解析上述程式碼：</p>
-<ul>
-<li>第 6 行匯入 <code>FormsModule</code></li>
-<li>第 10 ~ 13 行定義 <code>user</code> 物件，提供 <code>ngModel</code> 存取</li>
-<li>第 17 行定義按鈕點選後呼叫的行為</li>
-</ul>
-<h3 id="響應式表單-Reactive-forms"><a href="#響應式表單-Reactive-forms" class="headerlink" title="響應式表單 Reactive forms"></a>響應式表單 Reactive forms</h3><p>有別於範本驅動表單以範本內的指令建立並操作物件模型，響應式表單以程式撰寫元件類別層級的控制項定義及驗證機制完成表單運作。</p>
-<ul>
-<li>在元件類別直接、明確存取底層的物件模型</li>
-<li>適用於以表單為應用程式的關鍵項目</li>
-<li>較具可延展性、可複用性與可測試性</li>
-</ul>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">[formGroup]</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>userForm<span class="token punctuation">"</span></span> <span class="token attr-name">(ngSubmit)</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>register()<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>fieldset</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>account<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Account<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>email<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>account<span class="token punctuation">"</span></span> <span class="token attr-name">formControlName</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>account<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Password<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">formControlName</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>fieldset</span><span class="token punctuation">></span></span>
-
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Register<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>解析上述程式碼：</p>
-<ul>
-<li>第 1 行以 <code>formGroup</code> 指令套用到整個表單，並綁定一個變數名稱 <code>userForm</code> ，其內部每一個 <code>input</code> 都能由 <code>formControlName</code> 綁定對應的 <code>FormControl</code> 並獲得其內容值</li>
-<li>第 4 行與第 6 行由 <code>FormControl</code> 實體化每個控制項</li>
-</ul>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component<span class="token punctuation">,</span> inject <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> CommonModule <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/common'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> FormControl<span class="token punctuation">,</span> FormBuilder<span class="token punctuation">,</span> ReactiveFormsModule <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/forms'</span><span class="token punctuation">;</span>
-
-<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
-  selector<span class="token operator">:</span> <span class="token string">'app-register'</span><span class="token punctuation">,</span>
-  templateUrl<span class="token operator">:</span> <span class="token string">'./register-form.component.html'</span><span class="token punctuation">,</span>
-  imports<span class="token operator">:</span> <span class="token punctuation">[</span>CommonModule<span class="token punctuation">,</span> ReactiveFormsModule<span class="token punctuation">]</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">RegisterFormComponent</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">private</span> <span class="token keyword">readonly</span> fb <span class="token operator">=</span> <span class="token function">inject</span><span class="token punctuation">(</span>FormBuilder<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-  userForm <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>fb<span class="token punctuation">.</span><span class="token function">group</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> <span class="token comment">// == new FormGroup(&#123; ... &#125;)</span>
-    account<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token comment">// == new FormControl('')</span>
-    password<span class="token operator">:</span> <span class="token string">''</span> <span class="token comment">// == new FormControl('')</span>
-  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-  <span class="token function">register</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token comment">// Do something</span>
-    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>userForm<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>解析上述程式碼：</p>
-<ul>
-<li>第 8 行匯入 <code>ReactiveFormsModule</code></li>
-<li>第 11 行注入 <code>FormBuilder</code></li>
-<li>第 13 ~ 16 行使用 <code>FormBuilder</code> 提供的函式，幫助我們建立 <code>FormGroup</code> 與 <code>FormControl</code> </li>
-<li>第 20 行直接以 <code>value</code> 取得 <code>user</code> 內容值</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/05/02/Angular-%E6%96%B0%E6%89%8B%E6%9D%91-8-%E8%A1%A8%E5%96%AE/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
