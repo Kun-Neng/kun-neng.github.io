@@ -43,7 +43,7 @@
 <meta property="og:image" content="https://kun-neng.github.io/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/13_user_prompt_2.png">
 <meta property="og:image" content="https://kun-neng.github.io/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/14_result.png">
 <meta property="article:published_time" content="2026-09-03T12:21:26.000Z">
-<meta property="article:modified_time" content="2026-09-06T03:01:05.562Z">
+<meta property="article:modified_time" content="2026-09-06T03:12:30.006Z">
 <meta property="article:author" content="Kun-Neng Hung">
 <meta property="article:tag" content="Angular">
 <meta property="article:tag" content="AI">
@@ -261,7 +261,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:01:05" itemprop="dateModified" datetime="2026-09-06T11:01:05+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-06 11:12:30" itemprop="dateModified" datetime="2026-09-06T11:12:30+08:00">2026-09-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -522,6 +522,7 @@
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>我們可以建立一個元件進行計數器數值的增減，也可以透過呼叫 <code>getCounter</code> &#x2F;<code>incrementCounter</code> &#x2F; <code>decrementCounter</code> 三個工具針對同一個計數狀態進行互動。</p>
+<p>程式範例：<a target="_blank" rel="noopener" href="https://github.com/Kun-Neng/angular-webmcp">GitHub</a></p>
 <h3 id="最佳實踐與注意事項"><a href="#最佳實踐與注意事項" class="headerlink" title="最佳實踐與注意事項"></a>最佳實踐與注意事項</h3><ul>
 <li><strong>命名衝突</strong>：WebMCP 的工具名稱必須是全域唯一的，因此避免將工具註冊在會被多次重複渲染的元件中，造成重複註冊而拋出錯誤。優先考慮註冊在應用程式層級、路由層級或根服務層級裡。</li>
 <li><strong>驗證輸入</strong>：雖然定義了 JSON Schema ，但 Angular 不會攔截或驗證 AI 實際傳來的資料，開發者應當在 <code>execute</code> 函數內手動驗證資料型別，以確保系統穩定。</li>
@@ -745,6 +746,7 @@
 <blockquote>
 <p><code>register</code> 回傳 <code>registerTool</code> 給的 <code>unregister</code> 閉包，讓呼叫端（例如 <code>effect()</code> 的 <code>onCleanup</code> ）自行決定何時清理， <code>WebMcpService</code> 本身不需要碰觸 <code>DestroyRef</code> 或依賴注入環境的限制。</p>
 </blockquote>
+<p>程式範例：<a target="_blank" rel="noopener" href="https://github.com/Kun-Neng/angular-order-list">GitHub</a></p>
 <h2 id="設定與使用-Gemini-API"><a href="#設定與使用-Gemini-API" class="headerlink" title="設定與使用 Gemini API"></a>設定與使用 Gemini API</h2><p><code>Model Context Tool Inspector</code> 只能手動點擊執行工具，若想改用自然語言下 prompt 、讓 AI 判斷該呼叫哪個工具，可以使用 Gemini API 串接 WebMCP 工具。</p>
 <ol>
 <li><p>前往 <a target="_blank" rel="noopener" href="https://aistudio.google.com/apikey">Google AI Studio</a> 取得 API key 。</p>
