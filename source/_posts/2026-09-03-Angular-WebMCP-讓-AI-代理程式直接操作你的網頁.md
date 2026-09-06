@@ -285,6 +285,8 @@ export class Counter {
 
 我們可以建立一個元件進行計數器數值的增減，也可以透過呼叫 `getCounter` /`incrementCounter` / `decrementCounter` 三個工具針對同一個計數狀態進行互動。
 
+程式範例：[GitHub](https://github.com/Kun-Neng/angular-webmcp)
+
 ### 最佳實踐與注意事項
 
 - **命名衝突**：WebMCP 的工具名稱必須是全域唯一的，因此避免將工具註冊在會被多次重複渲染的元件中，造成重複註冊而拋出錯誤。優先考慮註冊在應用程式層級、路由層級或根服務層級裡。
@@ -531,6 +533,8 @@ export class OrderListComponent {
 ```
 
 > `register` 回傳 `registerTool` 給的 `unregister` 閉包，讓呼叫端（例如 `effect()` 的 `onCleanup` ）自行決定何時清理， `WebMcpService` 本身不需要碰觸 `DestroyRef` 或依賴注入環境的限制。
+
+程式範例：[GitHub](https://github.com/Kun-Neng/angular-order-list)
 
 ## 設定與使用 Gemini API
 
