@@ -1,5 +1,5 @@
 ---
-title: Angular WebMCP - 讓 AI 代理程式直接操作你的網頁
+title: Angular WebMCP － 讓 AI 代理程式直接操作你的網頁
 date: 2026-09-03 20:21:26
 tags: [Angular, WebMCP, AI, MCP]
 categories: Angular
@@ -9,7 +9,7 @@ categories: Angular
 
 ## 什麼是 WebMCP
 
-WebMCP 是由 [W3C Web Machine Learning Community Group](https://www.w3.org/community/webmachinelearning/) 主導的網頁標準草案。核心概念可以理解為：網站本身變成一個 MCP Server，只是傳輸層不是 HTTP + JSON-RPC，而是瀏覽器的 JavaScript 環境本身。頁面可以註冊具名的函式工具，並為每個工具定義輸入結構，供同一瀏覽器內運作的 AI 代理程式（側邊欄助理、內建瀏覽器代理或擴充功能）直接呼叫，由於工具的定義方式與 Model Context Protocol （ MCP ） 十分相似而得名，差別只在於傳輸層換成了瀏覽器的 JavaScript heap 。
+WebMCP 是由 [W3C Web Machine Learning Community Group](https://www.w3.org/community/webmachinelearning/) 主導的網頁標準草案。核心概念可以理解為：網站本身變成一個 MCP Server ，只是傳輸層不是 HTTP + JSON-RPC ，而是瀏覽器的 JavaScript 環境本身。頁面可以註冊具名的函式工具，並為每個工具定義輸入結構，供同一瀏覽器內運作的 AI 代理程式（側邊欄助理、內建瀏覽器代理或擴充功能）直接呼叫，由於工具的定義方式與 Model Context Protocol （ MCP ） 十分相似而得名，差別只在於傳輸層換成了瀏覽器的 JavaScript heap 。
 
 **主要優點：**
 - 精準：AI 助手可以直接透過結構化工具與應用程式互動（例如直接建立使用者），不需要依賴複雜的 DOM UI 操作或猜測。
@@ -33,7 +33,7 @@ WebMCP 是由 [W3C Web Machine Learning Community Group](https://www.w3.org/comm
   {% asset_img 2_deprecated_navigator_modelContext.png %}
 
 - 工具邏輯執行於瀏覽器 JavaScript 環境中，無法在沒有瀏覽器的伺服器端場景直接使用。
-- [規格](https://webmachinelearning.github.io/webmcp/#permissions-policy)透過 Permissions Policy 定義了一個名為 `tools` 的功能，預設允許清單只有 `'self'`，也就是說跨來源的 iframe 預設無法註冊或存取工具；子頁面若要跨來源使用，父層需要在 `<iframe>` 上明確加上 `allow` 屬性委派權限，例如：
+- [規格](https://webmachinelearning.github.io/webmcp/#permissions-policy)透過 Permissions Policy 定義了一個名為 `tools` 的功能，預設允許清單只有 `'self'` ，也就是說跨來源的 iframe 預設無法註冊或存取工具；子頁面若要跨來源使用，父層需要在 `<iframe>` 上明確加上 `allow` 屬性委派權限，例如：
 
   ```html
   <!-- 允許所有來源的子頁面使用 -->
@@ -283,7 +283,7 @@ export class Counter {
 }
 ```
 
-我們可以建立一個元件進行計數器數值的增減，也可以透過呼叫 `getCounter` /`incrementCounter` / `decrementCounter` 三個工具針對同一個計數狀態進行互動。
+我們可以建立一個元件進行計數器數值的增減，也可以透過呼叫 `getCounter` / `incrementCounter` / `decrementCounter` 三個工具針對同一個計數狀態進行互動。
 
 程式範例：[GitHub](https://github.com/Kun-Neng/angular-webmcp)
 
@@ -295,9 +295,9 @@ export class Counter {
 
 ## 手動整合 `document.modelContext`
 
-如果專案目前還停留在 Angular 22 以前版本， `provideExperimentalWebMcpTools` 這類官方 API 雖然無法直接使用，但仍然可以透過原生瀏覽器 API 來實作，因為 WebMCP 本質上是建構在瀏覽器的 Model Context API 之上， Angular 官方的封裝只是讓這層 API 更好用，並非必要條件；換言之，只要瀏覽器（或搭配 polyfill）支援，就能繞過 Angular 版本限制，手動調用底層 API 。
+如果專案目前還停留在 Angular 22 以前版本， `provideExperimentalWebMcpTools` 這類官方 API 雖然無法直接使用，但仍然可以透過原生瀏覽器 API 來實作，因為 WebMCP 本質上是建構在瀏覽器的 Model Context API 之上， Angular 官方的封裝只是讓這層 API 更好用，並非必要條件；換言之，只要瀏覽器（或搭配 polyfill ）支援，就能繞過 Angular 版本限制，手動調用底層 API 。
 
-同樣地，即使專案已升級到 Angular 22 ，遇到官方實驗性 API 尚未涵蓋的場景，或是需要更貼近瀏覽器原生行為時，也可以直接操作 `document.modelContext` ，並把 `registerTool` / `unregisterTool` 放進元件的生命週期，讓 `execute` 內部呼叫既有的 service 或更新 Signal。
+同樣地，即使專案已升級到 Angular 22 ，遇到官方實驗性 API 尚未涵蓋的場景，或是需要更貼近瀏覽器原生行為時，也可以直接操作 `document.modelContext` ，並把 `registerTool` / `unregisterTool` 放進元件的生命週期，讓 `execute` 內部呼叫既有的 service 或更新 Signal 。
 
 > 使用 `registerTool` 註冊工具時，需要給定剛才提到的 `name` 、 `description` 、 `inputSchema` 、 `execute` 四個要素。
 
