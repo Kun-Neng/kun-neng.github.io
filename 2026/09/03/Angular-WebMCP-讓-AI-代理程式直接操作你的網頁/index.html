@@ -22,7 +22,7 @@
 
     <meta name="description" content="當 AI 瀏覽器代理程式（ agent ）要幫使用者填表單、查訂單時，傳統做法是對畫面截圖，再用視覺模型猜測哪個矩形是輸入欄位、哪個按鈕能送出——這種方式既不精準也不穩定。WebMCP（ Web Model Context Protocol ）提供了另一條路：讓網頁主動向瀏覽器內的 AI 代理程式宣告這個網站能做什麼，並以結構化的工具（ tool ）暴露操作介面。本文整理 WebMCP 的概念與規">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Angular WebMCP - 讓 AI 代理程式直接操作你的網頁">
+<meta property="og:title" content="Angular WebMCP － 讓 AI 代理程式直接操作你的網頁">
 <meta property="og:url" content="https://kun-neng.github.io/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/index.html">
 <meta property="og:site_name" content="爐邊雜談">
 <meta property="og:description" content="當 AI 瀏覽器代理程式（ agent ）要幫使用者填表單、查訂單時，傳統做法是對畫面截圖，再用視覺模型猜測哪個矩形是輸入欄位、哪個按鈕能送出——這種方式既不精準也不穩定。WebMCP（ Web Model Context Protocol ）提供了另一條路：讓網頁主動向瀏覽器內的 AI 代理程式宣告這個網站能做什麼，並以結構化的工具（ tool ）暴露操作介面。本文整理 WebMCP 的概念與規">
@@ -43,7 +43,7 @@
 <meta property="og:image" content="https://kun-neng.github.io/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/13_user_prompt_2.png">
 <meta property="og:image" content="https://kun-neng.github.io/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/14_result.png">
 <meta property="article:published_time" content="2026-09-03T12:21:26.000Z">
-<meta property="article:modified_time" content="2026-09-06T03:12:30.006Z">
+<meta property="article:modified_time" content="2026-09-07T12:42:44.557Z">
 <meta property="article:author" content="Kun-Neng Hung">
 <meta property="article:tag" content="Angular">
 <meta property="article:tag" content="AI">
@@ -57,10 +57,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/","path":"2026/09/03/Angular-WebMCP-讓-AI-代理程式直接操作你的網頁/","title":"Angular WebMCP - 讓 AI 代理程式直接操作你的網頁"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/","path":"2026/09/03/Angular-WebMCP-讓-AI-代理程式直接操作你的網頁/","title":"Angular WebMCP － 讓 AI 代理程式直接操作你的網頁"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Angular WebMCP - 讓 AI 代理程式直接操作你的網頁 | 爐邊雜談</title>
+<title>Angular WebMCP － 讓 AI 代理程式直接操作你的網頁 | 爐邊雜談</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
@@ -238,12 +238,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Angular WebMCP - 讓 AI 代理程式直接操作你的網頁 | 爐邊雜談">
+      <meta itemprop="name" content="Angular WebMCP － 讓 AI 代理程式直接操作你的網頁 | 爐邊雜談">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Angular WebMCP - 讓 AI 代理程式直接操作你的網頁
+          Angular WebMCP － 讓 AI 代理程式直接操作你的網頁
         </h1>
 
         <div class="post-meta-container">
@@ -261,7 +261,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:12:30" itemprop="dateModified" datetime="2026-09-06T11:12:30+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -283,7 +283,7 @@
     
     
     <div class="post-body" itemprop="articleBody"><p>當 AI 瀏覽器代理程式（ agent ）要幫使用者填表單、查訂單時，傳統做法是對畫面截圖，再用視覺模型猜測哪個矩形是輸入欄位、哪個按鈕能送出——這種方式既不精準也不穩定。WebMCP（ Web Model Context Protocol ）提供了另一條路：讓網頁主動向瀏覽器內的 AI 代理程式宣告<strong>這個網站能做什麼</strong>，並以結構化的工具（ tool ）暴露操作介面。本文整理 WebMCP 的概念與規格現況，說明如何在 Angular 專案中以官方的實驗性 API 與手動整合 <code>document.modelContext</code> 兩種方式實作工具，最後串接 Gemini API ，實際用自然語言下 prompt 驗證代理程式能不能正確呼叫這些工具。</p>
-<h2 id="什麼是-WebMCP"><a href="#什麼是-WebMCP" class="headerlink" title="什麼是 WebMCP"></a>什麼是 WebMCP</h2><p>WebMCP 是由 <a target="_blank" rel="noopener" href="https://www.w3.org/community/webmachinelearning/">W3C Web Machine Learning Community Group</a> 主導的網頁標準草案。核心概念可以理解為：網站本身變成一個 MCP Server，只是傳輸層不是 HTTP + JSON-RPC，而是瀏覽器的 JavaScript 環境本身。頁面可以註冊具名的函式工具，並為每個工具定義輸入結構，供同一瀏覽器內運作的 AI 代理程式（側邊欄助理、內建瀏覽器代理或擴充功能）直接呼叫，由於工具的定義方式與 Model Context Protocol （ MCP ） 十分相似而得名，差別只在於傳輸層換成了瀏覽器的 JavaScript heap 。</p>
+<h2 id="什麼是-WebMCP"><a href="#什麼是-WebMCP" class="headerlink" title="什麼是 WebMCP"></a>什麼是 WebMCP</h2><p>WebMCP 是由 <a target="_blank" rel="noopener" href="https://www.w3.org/community/webmachinelearning/">W3C Web Machine Learning Community Group</a> 主導的網頁標準草案。核心概念可以理解為：網站本身變成一個 MCP Server ，只是傳輸層不是 HTTP + JSON-RPC ，而是瀏覽器的 JavaScript 環境本身。頁面可以註冊具名的函式工具，並為每個工具定義輸入結構，供同一瀏覽器內運作的 AI 代理程式（側邊欄助理、內建瀏覽器代理或擴充功能）直接呼叫，由於工具的定義方式與 Model Context Protocol （ MCP ） 十分相似而得名，差別只在於傳輸層換成了瀏覽器的 JavaScript heap 。</p>
 <p><strong>主要優點：</strong></p>
 <ul>
 <li>精準：AI 助手可以直接透過結構化工具與應用程式互動（例如直接建立使用者），不需要依賴複雜的 DOM UI 操作或猜測。</li>
@@ -306,7 +306,7 @@
 </li>
 <li><p>工具邏輯執行於瀏覽器 JavaScript 環境中，無法在沒有瀏覽器的伺服器端場景直接使用。</p>
 </li>
-<li><p><a target="_blank" rel="noopener" href="https://webmachinelearning.github.io/webmcp/#permissions-policy">規格</a>透過 Permissions Policy 定義了一個名為 <code>tools</code> 的功能，預設允許清單只有 <code>&#39;self&#39;</code>，也就是說跨來源的 iframe 預設無法註冊或存取工具；子頁面若要跨來源使用，父層需要在 <code>&lt;iframe&gt;</code> 上明確加上 <code>allow</code> 屬性委派權限，例如：</p>
+<li><p><a target="_blank" rel="noopener" href="https://webmachinelearning.github.io/webmcp/#permissions-policy">規格</a>透過 Permissions Policy 定義了一個名為 <code>tools</code> 的功能，預設允許清單只有 <code>&#39;self&#39;</code> ，也就是說跨來源的 iframe 預設無法註冊或存取工具；子頁面若要跨來源使用，父層需要在 <code>&lt;iframe&gt;</code> 上明確加上 <code>allow</code> 屬性委派權限，例如：</p>
 <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token comment">&lt;!-- 允許所有來源的子頁面使用 --></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>iframe</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://other-origin.com<span class="token punctuation">"</span></span> <span class="token attr-name">allow</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>tools *<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>iframe</span><span class="token punctuation">></span></span>
 
@@ -521,15 +521,15 @@
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>我們可以建立一個元件進行計數器數值的增減，也可以透過呼叫 <code>getCounter</code> &#x2F;<code>incrementCounter</code> &#x2F; <code>decrementCounter</code> 三個工具針對同一個計數狀態進行互動。</p>
+<p>我們可以建立一個元件進行計數器數值的增減，也可以透過呼叫 <code>getCounter</code> &#x2F; <code>incrementCounter</code> &#x2F; <code>decrementCounter</code> 三個工具針對同一個計數狀態進行互動。</p>
 <p>程式範例：<a target="_blank" rel="noopener" href="https://github.com/Kun-Neng/angular-webmcp">GitHub</a></p>
 <h3 id="最佳實踐與注意事項"><a href="#最佳實踐與注意事項" class="headerlink" title="最佳實踐與注意事項"></a>最佳實踐與注意事項</h3><ul>
 <li><strong>命名衝突</strong>：WebMCP 的工具名稱必須是全域唯一的，因此避免將工具註冊在會被多次重複渲染的元件中，造成重複註冊而拋出錯誤。優先考慮註冊在應用程式層級、路由層級或根服務層級裡。</li>
 <li><strong>驗證輸入</strong>：雖然定義了 JSON Schema ，但 Angular 不會攔截或驗證 AI 實際傳來的資料，開發者應當在 <code>execute</code> 函數內手動驗證資料型別，以確保系統穩定。</li>
 <li><strong>測試</strong>：若要進行單元測試，官方建議使用 <code>@mcp-b/webmcp-polyfill</code> 來做 Mock 實作。</li>
 </ul>
-<h2 id="手動整合-document-modelContext"><a href="#手動整合-document-modelContext" class="headerlink" title="手動整合 document.modelContext"></a>手動整合 <code>document.modelContext</code></h2><p>如果專案目前還停留在 Angular 22 以前版本， <code>provideExperimentalWebMcpTools</code> 這類官方 API 雖然無法直接使用，但仍然可以透過原生瀏覽器 API 來實作，因為 WebMCP 本質上是建構在瀏覽器的 Model Context API 之上， Angular 官方的封裝只是讓這層 API 更好用，並非必要條件；換言之，只要瀏覽器（或搭配 polyfill）支援，就能繞過 Angular 版本限制，手動調用底層 API 。</p>
-<p>同樣地，即使專案已升級到 Angular 22 ，遇到官方實驗性 API 尚未涵蓋的場景，或是需要更貼近瀏覽器原生行為時，也可以直接操作 <code>document.modelContext</code> ，並把 <code>registerTool</code> &#x2F; <code>unregisterTool</code> 放進元件的生命週期，讓 <code>execute</code> 內部呼叫既有的 service 或更新 Signal。</p>
+<h2 id="手動整合-document-modelContext"><a href="#手動整合-document-modelContext" class="headerlink" title="手動整合 document.modelContext"></a>手動整合 <code>document.modelContext</code></h2><p>如果專案目前還停留在 Angular 22 以前版本， <code>provideExperimentalWebMcpTools</code> 這類官方 API 雖然無法直接使用，但仍然可以透過原生瀏覽器 API 來實作，因為 WebMCP 本質上是建構在瀏覽器的 Model Context API 之上， Angular 官方的封裝只是讓這層 API 更好用，並非必要條件；換言之，只要瀏覽器（或搭配 polyfill ）支援，就能繞過 Angular 版本限制，手動調用底層 API 。</p>
+<p>同樣地，即使專案已升級到 Angular 22 ，遇到官方實驗性 API 尚未涵蓋的場景，或是需要更貼近瀏覽器原生行為時，也可以直接操作 <code>document.modelContext</code> ，並把 <code>registerTool</code> &#x2F; <code>unregisterTool</code> 放進元件的生命週期，讓 <code>execute</code> 內部呼叫既有的 service 或更新 Signal 。</p>
 <blockquote>
 <p>使用 <code>registerTool</code> 註冊工具時，需要給定剛才提到的 <code>name</code> 、 <code>description</code> 、 <code>inputSchema</code> 、 <code>execute</code> 四個要素。</p>
 </blockquote>

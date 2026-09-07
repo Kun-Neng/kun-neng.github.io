@@ -218,7 +218,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/" class="post-title-link" itemprop="url">Angular WebMCP - 讓 AI 代理程式直接操作你的網頁</a>
+          <a href="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/" class="post-title-link" itemprop="url">Angular WebMCP － 讓 AI 代理程式直接操作你的網頁</a>
         </h2>
 
         <div class="post-meta-container">
@@ -236,7 +236,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:12:30" itemprop="dateModified" datetime="2026-09-06T11:12:30+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -259,7 +259,7 @@
     
     <div class="post-body" itemprop="articleBody">
           <p>當 AI 瀏覽器代理程式（ agent ）要幫使用者填表單、查訂單時，傳統做法是對畫面截圖，再用視覺模型猜測哪個矩形是輸入欄位、哪個按鈕能送出——這種方式既不精準也不穩定。WebMCP（ Web Model Context Protocol ）提供了另一條路：讓網頁主動向瀏覽器內的 AI 代理程式宣告<strong>這個網站能做什麼</strong>，並以結構化的工具（ tool ）暴露操作介面。本文整理 WebMCP 的概念與規格現況，說明如何在 Angular 專案中以官方的實驗性 API 與手動整合 <code>document.modelContext</code> 兩種方式實作工具，最後串接 Gemini API ，實際用自然語言下 prompt 驗證代理程式能不能正確呼叫這些工具。</p>
-<h2 id="什麼是-WebMCP"><a href="#什麼是-WebMCP" class="headerlink" title="什麼是 WebMCP"></a>什麼是 WebMCP</h2><p>WebMCP 是由 <a target="_blank" rel="noopener" href="https://www.w3.org/community/webmachinelearning/">W3C Web Machine Learning Community Group</a> 主導的網頁標準草案。核心概念可以理解為：網站本身變成一個 MCP Server，只是傳輸層不是 HTTP + JSON-RPC，而是瀏覽器的 JavaScript 環境本身。頁面可以註冊具名的函式工具，並為每個工具定義輸入結構，供同一瀏覽器內運作的 AI 代理程式（側邊欄助理、內建瀏覽器代理或擴充功能）直接呼叫，由於工具的定義方式與 Model Context Protocol （ MCP ） 十分相似而得名，差別只在於傳輸層換成了瀏覽器的 JavaScript heap 。</p>
+<h2 id="什麼是-WebMCP"><a href="#什麼是-WebMCP" class="headerlink" title="什麼是 WebMCP"></a>什麼是 WebMCP</h2><p>WebMCP 是由 <a target="_blank" rel="noopener" href="https://www.w3.org/community/webmachinelearning/">W3C Web Machine Learning Community Group</a> 主導的網頁標準草案。核心概念可以理解為：網站本身變成一個 MCP Server ，只是傳輸層不是 HTTP + JSON-RPC ，而是瀏覽器的 JavaScript 環境本身。頁面可以註冊具名的函式工具，並為每個工具定義輸入結構，供同一瀏覽器內運作的 AI 代理程式（側邊欄助理、內建瀏覽器代理或擴充功能）直接呼叫，由於工具的定義方式與 Model Context Protocol （ MCP ） 十分相似而得名，差別只在於傳輸層換成了瀏覽器的 JavaScript heap 。</p>
 <p><strong>主要優點：</strong></p>
 <ul>
 <li>精準：AI 助手可以直接透過結構化工具與應用程式互動（例如直接建立使用者），不需要依賴複雜的 DOM UI 操作或猜測。</li>
@@ -282,7 +282,7 @@
 </li>
 <li><p>工具邏輯執行於瀏覽器 JavaScript 環境中，無法在沒有瀏覽器的伺服器端場景直接使用。</p>
 </li>
-<li><p><a target="_blank" rel="noopener" href="https://webmachinelearning.github.io/webmcp/#permissions-policy">規格</a>透過 Permissions Policy 定義了一個名為 <code>tools</code> 的功能，預設允許清單只有 <code>&#39;self&#39;</code>，也就是說跨來源的 iframe 預設無法註冊或存取工具；子頁面若要跨來源使用，父層需要在 <code>&lt;iframe&gt;</code> 上明確加上 <code>allow</code> 屬性委派權限，例如：</p>
+<li><p><a target="_blank" rel="noopener" href="https://webmachinelearning.github.io/webmcp/#permissions-policy">規格</a>透過 Permissions Policy 定義了一個名為 <code>tools</code> 的功能，預設允許清單只有 <code>&#39;self&#39;</code> ，也就是說跨來源的 iframe 預設無法註冊或存取工具；子頁面若要跨來源使用，父層需要在 <code>&lt;iframe&gt;</code> 上明確加上 <code>allow</code> 屬性委派權限，例如：</p>
 <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token comment">&lt;!-- 允許所有來源的子頁面使用 --></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>iframe</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://other-origin.com<span class="token punctuation">"</span></span> <span class="token attr-name">allow</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>tools *<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>iframe</span><span class="token punctuation">></span></span>
 
@@ -415,7 +415,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:12:30" itemprop="dateModified" datetime="2026-09-06T11:12:30+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -559,7 +559,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:12:30" itemprop="dateModified" datetime="2026-09-06T11:12:30+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -751,7 +751,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:12:29" itemprop="dateModified" datetime="2026-09-06T11:12:29+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -925,7 +925,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:12:29" itemprop="dateModified" datetime="2026-09-06T11:12:29+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1156,7 +1156,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:12:29" itemprop="dateModified" datetime="2026-09-06T11:12:29+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1334,7 +1334,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:12:29" itemprop="dateModified" datetime="2026-09-06T11:12:29+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1482,7 +1482,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:12:29" itemprop="dateModified" datetime="2026-09-06T11:12:29+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
     </span>
 
   
@@ -1609,7 +1609,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:12:29" itemprop="dateModified" datetime="2026-09-06T11:12:29+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1746,7 +1746,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-06 11:12:29" itemprop="dateModified" datetime="2026-09-06T11:12:29+08:00">2026-09-06</time>
+      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
