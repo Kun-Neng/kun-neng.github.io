@@ -50,6 +50,8 @@ Angular 目前提供的 WebMCP 支援是實驗性質（ Experimental ）， API 
 > - 新建 Angular 22 版本的專案，可以使用 `npx @angular/cli@22 new <專案名稱>`
 > - 需要注意 Angular 22 有 Node.js 最低版本支援（ `v22.22.3` or `v24.15.0` or `v26.0.0` ），可以使用 nvm 套件協助升級（使用方式可參考 [NVM 簡介](https://kun-neng.github.io/2025/09/07/NVM-Introduction/)）。
 
+<!-- more -->
+
 ## 工具安裝
 
 Google 官方針對 WebMCP 提供的擴充套件為 [WebMCP - Model Context Tool Inspector](https://chromewebstore.google.com/detail/webmcp-model-context-tool/gbpdfapgefenggkahomfgkhfehlcenpd)，由 GoogleChromeLabs 團隊開發，其原始碼託管於 GitHub 的 [webmcp-tools](https://github.com/GoogleChromeLabs/webmcp-tools) 專案中。
@@ -109,8 +111,6 @@ bootstrapApplication(AppRoot, {
 網頁啟動後，打開 `WebMCP - Model Context Tool Inspector` 擴充工具可看到已經有工具存在，而 `description` 、 `inputSchema` 和 `name` 會顯示在上半部的 WebTools 列表中。經由點擊＂Execute Tool＂會執行該工具提供的功能並回傳特定內容：
 
 {% asset_img 6_execute_tool.png %}
-
-<!-- more -->
 
 ### 帶有輸入參數的工具
 
