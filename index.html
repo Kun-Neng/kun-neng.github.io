@@ -152,7 +152,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -163,7 +163,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -191,6 +191,186 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2026/09/14/%E4%BD%BF%E7%94%A8-Sheriff-%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E8%A6%8F%E5%89%87%E4%BE%86%E5%AE%88%E8%AD%B7-Angular-%E6%9E%B6%E6%A7%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/09/14/%E4%BD%BF%E7%94%A8-Sheriff-%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E8%A6%8F%E5%89%87%E4%BE%86%E5%AE%88%E8%AD%B7-Angular-%E6%9E%B6%E6%A7%8B/" class="post-title-link" itemprop="url">使用 Sheriff 模組邊界規則來守護 Angular 架構</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2026-09-14 21:23:40 / Modified: 21:28:29" itemprop="dateCreated datePublished" datetime="2026-09-14T21:23:40+08:00">2026-09-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Angular 專案一旦成長到多個 feature 、多個團隊共同維護，很容易出現「元件互相亂 import 」的狀況：訂單模組直接引用客戶模組內部的元件、共用模組反過來依賴某個 feature ，久而久之依賴關係變成一張網，重構時牽一髮動全身。這類問題光靠 code review 很難長期把關，因為 TypeScript 編譯器本身並不理解「資料夾邊界」的概念，只要路徑對得上就能 import 。<a target="_blank" rel="noopener" href="https://github.com/softarc-consulting/sheriff">Sheriff</a> 是一套用來檢查模組邊界與依賴規則的工具，能把架構規範寫成設定檔，讓違規在 commit 前、甚至輸入程式碼的當下就被抓出來。本文說明如何安裝、初始化與使用 Sheriff ，並以 Angular 專案示範如何把它接上 ESLint ，讓 IDE 即時標紅違規的 import 。</p>
+<blockquote>
+<p>以下所有指令與輸出結果，皆在一個以 <code>ng new</code> 建立的 Angular 22 專案中實際執行驗證。</p>
+</blockquote>
+<h2 id="為什麼需要模組邊界工具"><a href="#為什麼需要模組邊界工具" class="headerlink" title="為什麼需要模組邊界工具"></a>為什麼需要模組邊界工具</h2><p>Sheriff 的核心概念是「幫每個資料夾貼標籤（ tag ），再定義標籤之間允許的依賴方向」。舉例來說，若將 <code>orders</code> 與 <code>customers</code> 兩個 feature 分別標記為 <code>domain:orders</code> 與 <code>domain:customers</code>，並宣告兩者互不相依，那麼只要有人在 <code>orders</code> 底下的檔案 import 了 <code>customers</code> 底下的元件，Sheriff 就能在靜態分析階段抓到這個違規，不需要等到執行期或跑過所有測試才發現架構被破壞。</p>
+<p>這與 Nx 的 module boundary 規則概念類似，但 Sheriff 不綁定特定的 monorepo 工具，單一 Angular 專案（甚至沒有使用 Nx ）也能直接套用。</p>
+<h2 id="安裝"><a href="#安裝" class="headerlink" title="安裝"></a>安裝</h2><p>在 Angular 專案根目錄安裝核心套件與 ESLint 外掛：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> i <span class="token parameter variable">-D</span> @softarc/sheriff-core @softarc/eslint-plugin-sheriff<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li><code>@softarc/sheriff-core</code>：提供設定檔解析、依賴圖分析與 <code>sheriff</code> CLI 。</li>
+<li><code>@softarc/eslint-plugin-sheriff</code>：把 Sheriff 的規則包成 ESLint plugin ，讓違規能在 <code>eslint</code> 執行時（含 IDE 即時提示）顯示出來。</li>
+</ul>
+<blockquote>
+<p>兩個套件版本必須一致（本文驗證時為 <code>0.19.6</code>），因為 <code>eslint-plugin-sheriff</code> 內部會直接依賴對應版本的 <code>sheriff-core</code> 。</p>
+</blockquote>
+<h2 id="初始化設定檔"><a href="#初始化設定檔" class="headerlink" title="初始化設定檔"></a>初始化設定檔</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx sheriff init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>執行後會在專案根目錄產生 <code>sheriff.config.ts</code>：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> SheriffConfig <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@softarc/sheriff-core'</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+  * Minimal configuration for Sheriff
+  * Assigns the 'noTag' tag to all modules and
+  * allows all modules to depend on each other.
+  */</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> config<span class="token operator">:</span> SheriffConfig <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  enableBarrelLess<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  modules<span class="token operator">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token comment">// apply tags to your modules</span>
+  depRules<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// root is a virtual module, which contains all files not being part</span>
+    <span class="token comment">// of any module, e.g. application shell, main.ts, etc.</span>
+    <span class="token string-property property">'root'</span><span class="token operator">:</span> <span class="token string">'noTag'</span><span class="token punctuation">,</span>
+    <span class="token string-property property">'noTag'</span><span class="token operator">:</span> <span class="token string">'noTag'</span><span class="token punctuation">,</span>
+
+    <span class="token comment">// add your dependency rules here</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>預設情況下所有檔案都被歸類為 <code>noTag</code>，且互相允許依賴，等於還沒有任何限制。要讓它真正發揮作用，需要修改 <code>modules</code> 與 <code>depRules</code> 這兩個欄位：</p>
+<ul>
+<li><code>modules</code>：用路徑樣式（可含 <code>&lt;placeholder&gt;</code>）幫資料夾貼標籤。</li>
+<li><code>depRules</code>：定義每個標籤「可以依賴」哪些標籤，未列出的方向一律視為違規。</li>
+</ul>
+<p>以一個有 <code>orders</code> 與 <code>customers</code> 兩個 feature 資料夾（<code>src/app/features/orders</code>、<code>src/app/features/customers</code>）的專案為例：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">const</span> config<span class="token operator">:</span> SheriffConfig <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  enableBarrelLess<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  modules<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string-property property">'src/app/features/&lt;domain>'</span><span class="token operator">:</span> <span class="token string">'domain:&lt;domain>'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  depRules<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string-property property">'root'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'domain:orders'</span><span class="token punctuation">,</span> <span class="token string">'domain:customers'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string-property property">'domain:orders'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string-property property">'domain:customers'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>這代表：<code>orders</code> 與 <code>customers</code> 都不能依賴任何其他 domain （空陣列），只有應用程式殼層（<code>root</code>）可以依賴兩者去組裝畫面。</p>
+<h2 id="用-CLI-驗證"><a href="#用-CLI-驗證" class="headerlink" title="用 CLI 驗證"></a>用 CLI 驗證</h2><p>修改設定檔後，先確認目前的程式碼是否合規：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx sheriff verify src/app/features/orders/order-list.component.ts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>通過時會顯示：</p>
+<pre class="line-numbers language-none"><code class="language-none">Verification Report
+
+No issues found. Well done!<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>接著刻意讓 <code>order-list.component.ts</code> import <code>customers</code> 底下的元件（模擬跨界依賴）：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> CustomerListComponent <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'../customers/customer-list.component'</span><span class="token punctuation">;</span> <span class="token comment">// &lt;--</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-order-list'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>CustomerListComponent<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// &lt;--</span>
+  template<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">&lt;p>Order list&lt;/p>&lt;app-customer-list /></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">OrderListComponent</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>再次執行驗證，這次 Sheriff 會明確指出違規的檔案、違反的方向：</p>
+<pre class="line-numbers language-none"><code class="language-none">Verification Report
+
+Issues found:
+  Total Invalid Files: 1
+  Total Encapsulation Violations: 0
+  Total Dependency Rule Violations: 1
+----------------------------------
+
+|-- src\app\features\orders\order-list.component.ts
+|   |-- Dependency Rule Violations
+|   |   |-- from tag domain:orders to tags domain:customers<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>from tag domain:orders to tags domain:customers</code> 這行訊息，精確標出是哪個標籤（也就是哪個 feature ）試圖依賴哪個標籤，比單純的 lint 錯誤訊息更容易對應回架構圖，方便和團隊溝通「這條依賴為什麼不該存在」。</p>
+<blockquote>
+<p>若要一次檢查整個專案而不是單一檔案，可以省略路徑參數，直接執行 <code>npx sheriff verify</code> 即可；<br>CI pipeline 通常會這樣使用，當成 PR 合併前的自動化架構檢查。</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/09/14/%E4%BD%BF%E7%94%A8-Sheriff-%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E8%A6%8F%E5%89%87%E4%BE%86%E5%AE%88%E8%AD%B7-Angular-%E6%9E%B6%E6%A7%8B/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -236,7 +416,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
+      <time title="Modified: 2026-09-14 21:28:29" itemprop="dateModified" datetime="2026-09-14T21:28:29+08:00">2026-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -296,56 +476,6 @@
 <li>需要注意 Angular 22 有 Node.js 最低版本支援（ <code>v22.22.3</code> or <code>v24.15.0</code> or <code>v26.0.0</code> ），可以使用 nvm 套件協助升級（使用方式可參考 <a href="https://kun-neng.github.io/2025/09/07/NVM-Introduction/">NVM 簡介</a>）。</li>
 </ul>
 </blockquote>
-<h2 id="工具安裝"><a href="#工具安裝" class="headerlink" title="工具安裝"></a>工具安裝</h2><p>Google 官方針對 WebMCP 提供的擴充套件為 <a target="_blank" rel="noopener" href="https://chromewebstore.google.com/detail/webmcp-model-context-tool/gbpdfapgefenggkahomfgkhfehlcenpd">WebMCP - Model Context Tool Inspector</a>，由 GoogleChromeLabs 團隊開發，其原始碼託管於 GitHub 的 <a target="_blank" rel="noopener" href="https://github.com/GoogleChromeLabs/webmcp-tools">webmcp-tools</a> 專案中。</p>
-<img data-src="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/3_Model_Context_Tool_Inspector.png" class="">
-
-<p>安裝完畢後，可以自擴充功能點開操作畫面，看起來什麼都沒有，是因為網頁跟它還沒有建立連線，也沒有註冊任何工具。它主要分兩個部分，上半部會顯示可使用的工具，下半部可以與網頁進行互動。</p>
-<img data-src="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/4_Model_Context_Tool_Inspector.png" class="">
-
-<h3 id="應用程式層級"><a href="#應用程式層級" class="headerlink" title="應用程式層級"></a>應用程式層級</h3><p>在應用程式配置中使用 <code>provideExperimentalWebMcpTools</code> 註冊。工具的 <code>execute</code> 回呼函數會在依賴注入環境（ Injection Context ）中執行，代表你可以直接注入其他服務。</p>
-<blockquote>
-<p>在 Angular 22 以前的版本，匯入 <code>provideExperimentalWebMcpTools</code> 時 IDE 會報錯：</p>
-<img data-src="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/5_provideExperimentalWebMcpTools_error.png" class="">
-</blockquote>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Service<span class="token punctuation">,</span> inject<span class="token punctuation">,</span> provideExperimentalWebMcpTools <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> bootstrapApplication <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/platform-browser'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> AppRoot <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./app-root'</span><span class="token punctuation">;</span>
-
-<span class="token decorator"><span class="token at operator">@</span><span class="token function">Service</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token keyword">class</span> <span class="token class-name">Greeter</span> <span class="token punctuation">&#123;</span>
-  <span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">return</span> <span class="token string">'Hello agent!'</span><span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span>
-
-<span class="token function">bootstrapApplication</span><span class="token punctuation">(</span>AppRoot<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
-  providers<span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token function">provideExperimentalWebMcpTools</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
-      <span class="token punctuation">&#123;</span>
-        name<span class="token operator">:</span> <span class="token string">'greet'</span><span class="token punctuation">,</span>
-        description<span class="token operator">:</span> <span class="token string">'Greets the agent.'</span><span class="token punctuation">,</span>
-        inputSchema<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
-          type<span class="token operator">:</span> <span class="token string">'object'</span><span class="token punctuation">,</span>
-          properties<span class="token operator">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
-        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
-        <span class="token function-variable function">execute</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
-          <span class="token keyword">const</span> greeter <span class="token operator">=</span> <span class="token function">inject</span><span class="token punctuation">(</span>Greeter<span class="token punctuation">)</span><span class="token punctuation">;</span>
-          <span class="token keyword">return</span> <span class="token punctuation">&#123;</span>
-            content<span class="token operator">:</span> <span class="token punctuation">[</span>
-              <span class="token punctuation">&#123;</span>
-                type<span class="token operator">:</span> <span class="token string">'text'</span><span class="token punctuation">,</span>
-                text<span class="token operator">:</span> greeter<span class="token punctuation">.</span><span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-              <span class="token punctuation">&#125;</span>
-            <span class="token punctuation">]</span>
-          <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
-        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
-      <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
-    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>網頁啟動後，打開 <code>WebMCP - Model Context Tool Inspector</code> 擴充工具可看到已經有工具存在，而 <code>description</code> 、 <code>inputSchema</code> 和 <code>name</code> 會顯示在上半部的 WebTools 列表中。經由點擊＂Execute Tool＂會執行該工具提供的功能並回傳特定內容：</p>
-<img data-src="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/6_execute_tool.png" class="">
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/#more" rel="contents">
@@ -415,7 +545,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
+      <time title="Modified: 2026-09-14 21:28:29" itemprop="dateModified" datetime="2026-09-14T21:28:29+08:00">2026-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -559,7 +689,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
+      <time title="Modified: 2026-09-14 21:28:29" itemprop="dateModified" datetime="2026-09-14T21:28:29+08:00">2026-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -751,7 +881,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
+      <time title="Modified: 2026-09-14 21:28:29" itemprop="dateModified" datetime="2026-09-14T21:28:29+08:00">2026-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -925,7 +1055,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
+      <time title="Modified: 2026-09-14 21:28:29" itemprop="dateModified" datetime="2026-09-14T21:28:29+08:00">2026-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1156,7 +1286,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
+      <time title="Modified: 2026-09-14 21:28:29" itemprop="dateModified" datetime="2026-09-14T21:28:29+08:00">2026-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1334,7 +1464,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
+      <time title="Modified: 2026-09-14 21:28:29" itemprop="dateModified" datetime="2026-09-14T21:28:29+08:00">2026-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1482,7 +1612,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
+      <time title="Modified: 2026-09-14 21:28:29" itemprop="dateModified" datetime="2026-09-14T21:28:29+08:00">2026-09-14</time>
     </span>
 
   
@@ -1609,7 +1739,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
+      <time title="Modified: 2026-09-14 21:28:29" itemprop="dateModified" datetime="2026-09-14T21:28:29+08:00">2026-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1702,156 +1832,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2025/06/01/Angular-v20-Features/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Kun-Neng Hung">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 爐邊雜談">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/06/01/Angular-v20-Features/" class="post-title-link" itemprop="url">Angular v20 Features</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-06-01 21:50:28" itemprop="dateCreated datePublished" datetime="2025-06-01T21:50:28+08:00">2025-06-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-09-07 20:42:44" itemprop="dateModified" datetime="2026-09-07T20:42:44+08:00">2026-09-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>近年來 Angular 團隊採用以下功能開發的三階段流程，在架構上進行重大變革：</p>
-<ol>
-<li>Vision （願景）：提出早期概念版本</li>
-<li>Preview （預覽）：收集開發者社群的深入回饋</li>
-<li>Stable （穩定版）：根據回饋加以完善，以求最大影響力與穩定性</li>
-</ol>
-<p>以下是本次 Angular v20 版本的重要更新：</p>
-<h3 id="吉祥物"><a href="#吉祥物" class="headerlink" title="吉祥物"></a>吉祥物</h3><p>Angular 標誌性的盾牌符號很強大，不過在過去幾個月裡，團隊與 Dart 、 Flutter 和 Firebase 吉祥物背後的創意團隊合作，激盪出一些令人驚豔的概念。以下為 Angular 官方吉祥物的提案，由左至右分別為：</p>
-<table>
-<thead>
-<tr>
-<th align="center">Angular shaped character</th>
-<th align="center">Anglerfish</th>
-<th align="center">Anglerfish variation</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center"><img data-src="/2025/06/01/Angular-v20-Features/1_Angular_shaped_character.png" class=""></td>
-<td align="center"><img data-src="/2025/06/01/Angular-v20-Features/2_Anglerfish.png" class=""></td>
-<td align="center"><img data-src="/2025/06/01/Angular-v20-Features/3_Anglerfish_variation.png" class=""></td>
-</tr>
-</tbody></table>
-<p>投票 <a target="_blank" rel="noopener" href="https://github.com/angular/angular/discussions/61733">RFC - Angular official mascot #61733</a></p>
-<h3 id="Signals"><a href="#Signals" class="headerlink" title="Signals"></a>Signals</h3><p>在 Angular v16 引入響應式的 Signal ，它可以用於管理元件的狀態。</p>
-<p>Signals 家族</p>
-<img data-src="/2025/06/01/Angular-v20-Features/4_Signals_family.png" class="">
-
-<ul>
-<li><h4 id="resource-API"><a href="#resource-API" class="headerlink" title="resource API"></a><code>resource</code> API</h4><p>考量到使用 Signal 處理異步任務（那些完成時間無法預測的任務），團隊被引導出新的 <code>resource</code> API ，一個用於宣告異步依賴的新原語（ primitive ）。使用 <code>resource</code> 可以將狀態、值和其他屬性做為 Signal 來存取，無縫地將它們整合到其他基於 Signal 的邏輯和範本中。</p>
-</li>
-<li><h4 id="實驗性-httpResource"><a href="#實驗性-httpResource" class="headerlink" title="實驗性 httpResource"></a>實驗性 <code>httpResource</code></h4><p>以響應式的方式發出 HTTP 請求來獲取資料，它建構在 <code>HttpClient</code> 上，所以支援所有原本的功能，像是攔截器、模擬及測試。它同時還具備 Signal 的響應式能力。</p>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// products() 會是一個包含 HTTP 回應的 Signal</span>
-<span class="token keyword">const</span> products <span class="token operator">=</span> <span class="token function">httpResource</span><span class="token punctuation">(</span>
-  <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">/api/product/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span><span class="token function">productId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span>
-<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>官方 API <a target="_blank" rel="noopener" href="https://angular.dev/api/common/http/httpResource">httpResource</a></p>
-</li>
-<li><h4 id="實驗性-resource"><a href="#實驗性-resource" class="headerlink" title="實驗性 resource"></a>實驗性 <code>resource</code></h4><p>從 resource 將回應串流回來，對於需要逐步接收回應的場景（如大型語言模型 LLM 的打字機效果）非常有用。</p>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">characters <span class="token operator">=</span> <span class="token function">resource</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
-  <span class="token function-variable function">stream</span><span class="token operator">:</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">const</span> data <span class="token operator">=</span> <span class="token generic-function"><span class="token function">signal</span><span class="token generic class-name"><span class="token operator">&lt;</span>ResourceStreamItem<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
-      value<span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
-    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token function">getStreamData</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token keyword">return</span> data<span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>至於 Signal API 家族的其他成員，團隊宣布 <code>linkedSignal</code> 、 <code>effect</code> 、 <code>afterNextRender</code> 、 <code>afterRenderEffect</code> 等更多 API 已升級至穩定版，並準備好在生產環境中使用。</p>
-<p>官方指南 <a target="_blank" rel="noopener" href="https://angular.dev/guide/signals/resource">Async reactivity with resources</a></p>
-</li>
-<li><h4 id="Signal-Forms"><a href="#Signal-Forms" class="headerlink" title="Signal Forms"></a>Signal Forms</h4><p>目前團隊正在開發一個新的、基於 Signal 的表單系統進化版，目標是將備受推崇的範本驅動和響應式表單風格的最佳部分，結合成一個統一的表單系統，從最簡單的登入頁面到最複雜的資料表格，都提供卓越的開發者體驗並具備擴展性。一如既往，向後相容性和互通性是團隊的核心考量。</p>
-</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/06/01/Angular-v20-Features/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>

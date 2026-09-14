@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":true,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Angular 專案一旦成長到多個 feature 、多個團隊共同維護，很容易出現「元件互相亂 import 」的狀況：訂單模組直接引用客戶模組內部的元件、共用模組反過來依賴某個 feature ，久而久之依賴關係變成一張網，重構時牽一髮動全身。這類問題光靠 code review 很難長期把關，因為 TypeScript 編譯器本身並不理解「資料夾邊界」的概念，只要路徑對得上就能 import">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Sheriff 模組邊界規則來守護 Angular 架構">
+<meta property="og:url" content="https://kun-neng.github.io/2026/09/14/%E4%BD%BF%E7%94%A8-Sheriff-%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E8%A6%8F%E5%89%87%E4%BE%86%E5%AE%88%E8%AD%B7-Angular-%E6%9E%B6%E6%A7%8B/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="Angular 專案一旦成長到多個 feature 、多個團隊共同維護，很容易出現「元件互相亂 import 」的狀況：訂單模組直接引用客戶模組內部的元件、共用模組反過來依賴某個 feature ，久而久之依賴關係變成一張網，重構時牽一髮動全身。這類問題光靠 code review 很難長期把關，因為 TypeScript 編譯器本身並不理解「資料夾邊界」的概念，只要路徑對得上就能 import">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/2026/09/14/%E4%BD%BF%E7%94%A8-Sheriff-%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E8%A6%8F%E5%89%87%E4%BE%86%E5%AE%88%E8%AD%B7-Angular-%E6%9E%B6%E6%A7%8B/1_eslint_extension.png">
+<meta property="article:published_time" content="2026-09-14T13:23:40.000Z">
+<meta property="article:modified_time" content="2026-09-14T13:28:29.565Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="TypeScript">
+<meta property="article:tag" content="ESLint">
+<meta property="article:tag" content="架構">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2026/09/14/%E4%BD%BF%E7%94%A8-Sheriff-%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E8%A6%8F%E5%89%87%E4%BE%86%E5%AE%88%E8%AD%B7-Angular-%E6%9E%B6%E6%A7%8B/1_eslint_extension.png">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2026/09/14/%E4%BD%BF%E7%94%A8-Sheriff-%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E8%A6%8F%E5%89%87%E4%BE%86%E5%AE%88%E8%AD%B7-Angular-%E6%9E%B6%E6%A7%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2026/09/14/%E4%BD%BF%E7%94%A8-Sheriff-%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E8%A6%8F%E5%89%87%E4%BE%86%E5%AE%88%E8%AD%B7-Angular-%E6%9E%B6%E6%A7%8B/","path":"2026/09/14/使用-Sheriff-模組邊界規則來守護-Angular-架構/","title":"使用 Sheriff 模組邊界規則來守護 Angular 架構"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>使用 Sheriff 模組邊界規則來守護 Angular 架構 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tech-talks"><a href="/tech-talks/" rel="section"><i class="fa fa-microphone fa-fw"></i>Tech Talks</a></li><li class="menu-item menu-item-side-projects"><a href="/side-projects/" rel="section"><i class="fa fa-cube fa-fw"></i>Side Projects</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E9%9C%80%E8%A6%81%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E5%B7%A5%E5%85%B7"><span class="nav-number">1.</span> <span class="nav-text">為什麼需要模組邊界工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D"><span class="nav-number">2.</span> <span class="nav-text">安裝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E8%A8%AD%E5%AE%9A%E6%AA%94"><span class="nav-number">3.</span> <span class="nav-text">初始化設定檔</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8-CLI-%E9%A9%97%E8%AD%89"><span class="nav-number">4.</span> <span class="nav-text">用 CLI 驗證</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A5%E4%B8%8A-ESLint-IDE-%E5%8D%B3%E6%99%82%E6%8F%90%E7%A4%BA"><span class="nav-number">5.</span> <span class="nav-text">接上 ESLint &#x2F; IDE 即時提示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E5%AE%98%E6%96%B9-schematic-%E5%BB%BA%E7%AB%8B-ESLint-%E8%A8%AD%E5%AE%9A"><span class="nav-number">5.1.</span> <span class="nav-text">用官方 schematic 建立 ESLint 設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E8%A1%9D%E7%AA%81%EF%BC%9Aangular-eslint-22-%E6%8B%89-ESLint-10-%EF%BC%8Csheriff-%E5%8F%AA%E6%94%AF%E6%8F%B4%E5%88%B0-9"><span class="nav-number">5.2.</span> <span class="nav-text">版本衝突：angular-eslint 22 拉 ESLint 10 ，sheriff 只支援到 9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%8A-Sheriff-%E8%A6%8F%E5%89%87%E6%8E%A5%E9%80%B2-ESLint"><span class="nav-number">5.3.</span> <span class="nav-text">把 Sheriff 規則接進 ESLint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%97%E8%AD%89-IDE-lint-%E5%B1%A4%E7%B4%9A%E4%B9%9F%E8%83%BD%E6%8A%93%E5%88%B0%E9%81%95%E8%A6%8F"><span class="nav-number">5.4.</span> <span class="nav-text">驗證 IDE &#x2F; lint 層級也能抓到違規</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E4%BD%B3%E5%AF%A6%E8%B8%90"><span class="nav-number">6.</span> <span class="nav-text">最佳實踐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-number">7.</span> <span class="nav-text">總結</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">8.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://medium.com/@kunneng.hung" title="Medium → https:&#x2F;&#x2F;medium.com&#x2F;@kunneng.hung" rel="noopener me" target="_blank"><i class="fab fa-medium fa-fw"></i>Medium</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2026/09/14/%E4%BD%BF%E7%94%A8-Sheriff-%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E8%A6%8F%E5%89%87%E4%BE%86%E5%AE%88%E8%AD%B7-Angular-%E6%9E%B6%E6%A7%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="使用 Sheriff 模組邊界規則來守護 Angular 架構 | 爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用 Sheriff 模組邊界規則來守護 Angular 架構
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2026-09-14 21:23:40 / Modified: 21:28:29" itemprop="dateCreated datePublished" datetime="2026-09-14T21:23:40+08:00">2026-09-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Angular 專案一旦成長到多個 feature 、多個團隊共同維護，很容易出現「元件互相亂 import 」的狀況：訂單模組直接引用客戶模組內部的元件、共用模組反過來依賴某個 feature ，久而久之依賴關係變成一張網，重構時牽一髮動全身。這類問題光靠 code review 很難長期把關，因為 TypeScript 編譯器本身並不理解「資料夾邊界」的概念，只要路徑對得上就能 import 。<a target="_blank" rel="noopener" href="https://github.com/softarc-consulting/sheriff">Sheriff</a> 是一套用來檢查模組邊界與依賴規則的工具，能把架構規範寫成設定檔，讓違規在 commit 前、甚至輸入程式碼的當下就被抓出來。本文說明如何安裝、初始化與使用 Sheriff ，並以 Angular 專案示範如何把它接上 ESLint ，讓 IDE 即時標紅違規的 import 。</p>
+<blockquote>
+<p>以下所有指令與輸出結果，皆在一個以 <code>ng new</code> 建立的 Angular 22 專案中實際執行驗證。</p>
+</blockquote>
+<h2 id="為什麼需要模組邊界工具"><a href="#為什麼需要模組邊界工具" class="headerlink" title="為什麼需要模組邊界工具"></a>為什麼需要模組邊界工具</h2><p>Sheriff 的核心概念是「幫每個資料夾貼標籤（ tag ），再定義標籤之間允許的依賴方向」。舉例來說，若將 <code>orders</code> 與 <code>customers</code> 兩個 feature 分別標記為 <code>domain:orders</code> 與 <code>domain:customers</code>，並宣告兩者互不相依，那麼只要有人在 <code>orders</code> 底下的檔案 import 了 <code>customers</code> 底下的元件，Sheriff 就能在靜態分析階段抓到這個違規，不需要等到執行期或跑過所有測試才發現架構被破壞。</p>
+<p>這與 Nx 的 module boundary 規則概念類似，但 Sheriff 不綁定特定的 monorepo 工具，單一 Angular 專案（甚至沒有使用 Nx ）也能直接套用。</p>
+<h2 id="安裝"><a href="#安裝" class="headerlink" title="安裝"></a>安裝</h2><p>在 Angular 專案根目錄安裝核心套件與 ESLint 外掛：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> i <span class="token parameter variable">-D</span> @softarc/sheriff-core @softarc/eslint-plugin-sheriff<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li><code>@softarc/sheriff-core</code>：提供設定檔解析、依賴圖分析與 <code>sheriff</code> CLI 。</li>
+<li><code>@softarc/eslint-plugin-sheriff</code>：把 Sheriff 的規則包成 ESLint plugin ，讓違規能在 <code>eslint</code> 執行時（含 IDE 即時提示）顯示出來。</li>
+</ul>
+<blockquote>
+<p>兩個套件版本必須一致（本文驗證時為 <code>0.19.6</code>），因為 <code>eslint-plugin-sheriff</code> 內部會直接依賴對應版本的 <code>sheriff-core</code> 。</p>
+</blockquote>
+<h2 id="初始化設定檔"><a href="#初始化設定檔" class="headerlink" title="初始化設定檔"></a>初始化設定檔</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx sheriff init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>執行後會在專案根目錄產生 <code>sheriff.config.ts</code>：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> SheriffConfig <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@softarc/sheriff-core'</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+  * Minimal configuration for Sheriff
+  * Assigns the 'noTag' tag to all modules and
+  * allows all modules to depend on each other.
+  */</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> config<span class="token operator">:</span> SheriffConfig <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  enableBarrelLess<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  modules<span class="token operator">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token comment">// apply tags to your modules</span>
+  depRules<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// root is a virtual module, which contains all files not being part</span>
+    <span class="token comment">// of any module, e.g. application shell, main.ts, etc.</span>
+    <span class="token string-property property">'root'</span><span class="token operator">:</span> <span class="token string">'noTag'</span><span class="token punctuation">,</span>
+    <span class="token string-property property">'noTag'</span><span class="token operator">:</span> <span class="token string">'noTag'</span><span class="token punctuation">,</span>
+
+    <span class="token comment">// add your dependency rules here</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>預設情況下所有檔案都被歸類為 <code>noTag</code>，且互相允許依賴，等於還沒有任何限制。要讓它真正發揮作用，需要修改 <code>modules</code> 與 <code>depRules</code> 這兩個欄位：</p>
+<ul>
+<li><code>modules</code>：用路徑樣式（可含 <code>&lt;placeholder&gt;</code>）幫資料夾貼標籤。</li>
+<li><code>depRules</code>：定義每個標籤「可以依賴」哪些標籤，未列出的方向一律視為違規。</li>
+</ul>
+<p>以一個有 <code>orders</code> 與 <code>customers</code> 兩個 feature 資料夾（<code>src/app/features/orders</code>、<code>src/app/features/customers</code>）的專案為例：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">const</span> config<span class="token operator">:</span> SheriffConfig <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  enableBarrelLess<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  modules<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string-property property">'src/app/features/&lt;domain>'</span><span class="token operator">:</span> <span class="token string">'domain:&lt;domain>'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  depRules<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string-property property">'root'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'domain:orders'</span><span class="token punctuation">,</span> <span class="token string">'domain:customers'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string-property property">'domain:orders'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string-property property">'domain:customers'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>這代表：<code>orders</code> 與 <code>customers</code> 都不能依賴任何其他 domain （空陣列），只有應用程式殼層（<code>root</code>）可以依賴兩者去組裝畫面。</p>
+<h2 id="用-CLI-驗證"><a href="#用-CLI-驗證" class="headerlink" title="用 CLI 驗證"></a>用 CLI 驗證</h2><p>修改設定檔後，先確認目前的程式碼是否合規：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx sheriff verify src/app/features/orders/order-list.component.ts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>通過時會顯示：</p>
+<pre class="line-numbers language-none"><code class="language-none">Verification Report
+
+No issues found. Well done!<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>接著刻意讓 <code>order-list.component.ts</code> import <code>customers</code> 底下的元件（模擬跨界依賴）：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> CustomerListComponent <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'../customers/customer-list.component'</span><span class="token punctuation">;</span> <span class="token comment">// &lt;--</span>
+
+<span class="token decorator"><span class="token at operator">@</span><span class="token function">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  selector<span class="token operator">:</span> <span class="token string">'app-order-list'</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>CustomerListComponent<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// &lt;--</span>
+  template<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">&lt;p>Order list&lt;/p>&lt;app-customer-list /></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">OrderListComponent</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>再次執行驗證，這次 Sheriff 會明確指出違規的檔案、違反的方向：</p>
+<pre class="line-numbers language-none"><code class="language-none">Verification Report
+
+Issues found:
+  Total Invalid Files: 1
+  Total Encapsulation Violations: 0
+  Total Dependency Rule Violations: 1
+----------------------------------
+
+|-- src\app\features\orders\order-list.component.ts
+|   |-- Dependency Rule Violations
+|   |   |-- from tag domain:orders to tags domain:customers<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>from tag domain:orders to tags domain:customers</code> 這行訊息，精確標出是哪個標籤（也就是哪個 feature ）試圖依賴哪個標籤，比單純的 lint 錯誤訊息更容易對應回架構圖，方便和團隊溝通「這條依賴為什麼不該存在」。</p>
+<blockquote>
+<p>若要一次檢查整個專案而不是單一檔案，可以省略路徑參數，直接執行 <code>npx sheriff verify</code> 即可；<br>CI pipeline 通常會這樣使用，當成 PR 合併前的自動化架構檢查。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="接上-ESLint-IDE-即時提示"><a href="#接上-ESLint-IDE-即時提示" class="headerlink" title="接上 ESLint &#x2F; IDE 即時提示"></a>接上 ESLint &#x2F; IDE 即時提示</h2><p>到這一步，<code>sheriff verify</code> 已經能在 CLI 或 CI 抓到違規，但這是「額外執行一個指令」才能看得到的結果。多數 Angular 專案裝好 <code>@softarc/eslint-plugin-sheriff</code> 後，會直覺以為已經能在編輯器裡即時標紅違規的 import ，但是如果專案原本沒有 ESLint 設定（沒有 <code>eslint.config.js</code>），這個 plugin 其實還沒有被接進任何 lint pipeline ，<code>npm run lint</code> 也無從執行，所以要在打字當下就被提醒，需要先有 ESLint 的 flat config ，再把 Sheriff 的規則疊上去。我們先在 VS Code 中搜尋並安裝微軟官方的 <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint"><code>ESLint</code> 延伸模組</a>，就可以在開發中看到呈現效果。</p>
+<img data-src="/2026/09/14/%E4%BD%BF%E7%94%A8-Sheriff-%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E8%A6%8F%E5%89%87%E4%BE%86%E5%AE%88%E8%AD%B7-Angular-%E6%9E%B6%E6%A7%8B/1_eslint_extension.png" class="">
+
+<h3 id="用官方-schematic-建立-ESLint-設定"><a href="#用官方-schematic-建立-ESLint-設定" class="headerlink" title="用官方 schematic 建立 ESLint 設定"></a>用官方 schematic 建立 ESLint 設定</h3><p>若 Angular 專案還沒裝過 ESLint ，可以用官方 schematic 一次建立好基礎設定：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ng <span class="token function">add</span> @angular-eslint/schematics<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>在單一專案、尚未有任何 linter 的 workspace 執行後，它會自動：</p>
+<ul>
+<li>安裝 <code>eslint</code>、<code>@eslint/js</code>、<code>typescript-eslint</code>、<code>angular-eslint</code> 等套件</li>
+<li>建立 <code>eslint.config.js</code>（ flat config ）</li>
+<li>在 <code>angular.json</code> 加入 <code>lint</code> architect target ，之後可用 <code>ng lint</code> 執行</li>
+<li>在 <code>package.json</code> 補上 <code>&quot;lint&quot;: &quot;ng lint&quot;</code> script</li>
+</ul>
+<p>也就是說，這是專案第一次擁有 ESLint 設定，<code>package.json</code>、<code>package-lock.json</code>、<code>angular.json</code> 三個檔案都會因此變動。</p>
+<h3 id="版本衝突：angular-eslint-22-拉-ESLint-10-，sheriff-只支援到-9"><a href="#版本衝突：angular-eslint-22-拉-ESLint-10-，sheriff-只支援到-9" class="headerlink" title="版本衝突：angular-eslint 22 拉 ESLint 10 ，sheriff 只支援到 9"></a>版本衝突：angular-eslint 22 拉 ESLint 10 ，sheriff 只支援到 9</h3><p>實際跑一次會發現，<code>angular-eslint@22</code>（對應 Angular 22 ）預設會安裝 <strong>ESLint 10</strong>（<code>eslint@10.x</code>、<code>@eslint/js@10.x</code>），因為它的 peer dependency 是 <code>eslint@^9.0.0 || ^10.0.0</code>，npm 會選擇符合範圍的最新版本。但目前 <code>@softarc/eslint-plugin-sheriff@0.19.6</code> 的 peer dependency 只到 <code>eslint@^8.0.0 || ^9.0.0</code>，還沒有支援 ESLint 10 。若在裝好 <code>@angular-eslint/schematics</code> 之後才安裝 Sheriff ，會直接撞到 <code>ERESOLVE</code> 錯誤：</p>
+<pre class="line-numbers language-none"><code class="language-none">npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: sheriff-demo@0.0.0
+npm error Found: eslint@10.10.0
+npm error node_modules&#x2F;eslint
+npm error   dev eslint@&quot;^10.9.1&quot; from the root project
+...
+npm error Could not resolve dependency:
+npm error peer eslint@&quot;^8.0.0 || ^9.0.0&quot; from @softarc&#x2F;eslint-plugin-sheriff@0.19.6<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>解法是把 <code>eslint</code>、<code>@eslint/js</code> 都改釘在相容的 9.x 版本，讓兩邊的 peer dependency 都能滿足：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"devDependencies"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"eslint"</span><span class="token operator">:</span> <span class="token string">"^9.39.5"</span><span class="token punctuation">,</span>
+    <span class="token property">"@eslint/js"</span><span class="token operator">:</span> <span class="token string">"^9.39.5"</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>改完後重新 <code>npm install</code>，再安裝 Sheriff 兩個套件，就不會再出現 <code>ERESOLVE</code> 錯誤。</p>
+<blockquote>
+<p>在 Sheriff 支援 ESLint 10 之前，<code>angular-eslint</code> 專案若要同時使用 Sheriff ，得暫時把 ESLint 釘在 9.x 。之後若 <code>eslint-plugin-sheriff</code> 更新 peer dependency ，可以再拿掉這個限制版本，改回 <code>angular-eslint</code> 預設帶入的版本。</p>
+</blockquote>
+<h3 id="把-Sheriff-規則接進-ESLint"><a href="#把-Sheriff-規則接進-ESLint" class="headerlink" title="把 Sheriff 規則接進 ESLint"></a>把 Sheriff 規則接進 ESLint</h3><p>在 <code>eslint.config.js</code> 中匯入 <code>@softarc/eslint-plugin-sheriff</code>，並把 <code>sheriff.configs.all</code> 加進 <code>extends</code>：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// @ts-check</span>
+<span class="token keyword">const</span> eslint <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'@eslint/js'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> <span class="token punctuation">&#123;</span> defineConfig <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'eslint/config'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> tseslint <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'typescript-eslint'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> angular <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'angular-eslint'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> sheriff <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'@softarc/eslint-plugin-sheriff'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">files</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'**/*.ts'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token keyword">extends</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      eslint<span class="token punctuation">.</span>configs<span class="token punctuation">.</span>recommended<span class="token punctuation">,</span>
+      tseslint<span class="token punctuation">.</span>configs<span class="token punctuation">.</span>recommended<span class="token punctuation">,</span>
+      tseslint<span class="token punctuation">.</span>configs<span class="token punctuation">.</span>stylistic<span class="token punctuation">,</span>
+      angular<span class="token punctuation">.</span>configs<span class="token punctuation">.</span>tsRecommended<span class="token punctuation">,</span>
+      sheriff<span class="token punctuation">.</span>configs<span class="token punctuation">.</span>all<span class="token punctuation">,</span> <span class="token comment">// &lt;--</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">processor</span><span class="token operator">:</span> angular<span class="token punctuation">.</span>processInlineTemplates<span class="token punctuation">,</span>
+    <span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token string-property property">'@angular-eslint/directive-selector'</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">'error'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">&#123;</span>
+          <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">'attribute'</span><span class="token punctuation">,</span>
+          <span class="token literal-property property">prefix</span><span class="token operator">:</span> <span class="token string">'app'</span><span class="token punctuation">,</span>
+          <span class="token literal-property property">style</span><span class="token operator">:</span> <span class="token string">'camelCase'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token string-property property">'@angular-eslint/component-selector'</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">'error'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">&#123;</span>
+          <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">'element'</span><span class="token punctuation">,</span>
+          <span class="token literal-property property">prefix</span><span class="token operator">:</span> <span class="token string">'app'</span><span class="token punctuation">,</span>
+          <span class="token literal-property property">style</span><span class="token operator">:</span> <span class="token string">'kebab-case'</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">files</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'**/*.html'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token keyword">extends</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      angular<span class="token punctuation">.</span>configs<span class="token punctuation">.</span>templateRecommended<span class="token punctuation">,</span>
+      angular<span class="token punctuation">.</span>configs<span class="token punctuation">.</span>templateAccessibility<span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">rules</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>sheriff.configs.all</code> 會啟用 Sheriff 提供的三條規則：</p>
+<ul>
+<li><code>dependency-rule</code> （依賴方向檢查）</li>
+<li><code>encapsulation</code> （模組內部檔案不得被外部直接 import ，只能從該模組的 <code>index.ts</code> 引入）</li>
+<li><code>deep-import</code> （與 encapsulation 相輔相成，防堵透過相對路徑進行跨模組的深層抓取）</li>
+</ul>
+<h3 id="驗證-IDE-lint-層級也能抓到違規"><a href="#驗證-IDE-lint-層級也能抓到違規" class="headerlink" title="驗證 IDE &#x2F; lint 層級也能抓到違規"></a>驗證 IDE &#x2F; lint 層級也能抓到違規</h3><p>沿用前面 <code>orders</code> import <code>customers</code> 的例子，直接對該檔案跑 <code>eslint</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx eslint src/app/features/orders/order-list.component.ts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>輸出結果：</p>
+<pre class="line-numbers language-none"><code class="language-none">src&#x2F;app&#x2F;features&#x2F;orders&#x2F;order-list.component.ts
+  2:1  error  module \src\app\features\orders cannot access \src\app\features\customers.
+              Tag domain:orders has no clearance for tags domain:customers  @softarc&#x2F;sheriff&#x2F;dependency-rule
+
+✖ 1 problem (1 error, 0 warnings)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>這次錯誤是由 <code>@softarc/sheriff/dependency-rule</code> 這條 ESLint 規則直接報出來的，代表只要編輯器有啟用 ESLint 延伸模組，寫下違規 import 的當下就會立刻出現紅色波浪線，不用額外執行 <code>sheriff verify</code> 或等 CI 才發現； <code>npm run lint</code>（也就是 <code>ng lint</code>）也會因為這條規則而失敗，我們可以將它加入至 CI 的檢查步驟。測試再把違規的 import 還原後， <code>eslint</code> 與 <code>sheriff verify</code> 都會再次回報無問題。</p>
+<h2 id="最佳實踐"><a href="#最佳實踐" class="headerlink" title="最佳實踐"></a>最佳實踐</h2><ul>
+<li>從寬鬆的標籤開始，逐步收緊：<br>一開始可以先用較粗的分類（例如 <code>feature</code> &#x2F; <code>shared</code> &#x2F; <code>core</code>），確認整體依賴方向正確後，再細分到每個 domain ，避免一開始規則太嚴格導致大量既有程式碼被擋下來。</li>
+<li><code>sheriff verify</code> 用於 CI ，ESLint 用於開發當下：<br>兩者互補而非取代， <code>sheriff verify</code> 可以檢查整個專案（含尚未被 lint 涵蓋到的檔案），適合放進 CI 的必要檢查； ESLint 則提供即時回饋，讓開發者在寫程式碼時就能修正，不需要等到推送後才發現。</li>
+<li><code>enableBarrelLess: true</code> 讓模組不需要 barrel 檔：<br>較舊版本的 Sheriff 要求每個模組要有 <code>index.ts</code> 作為對外窗口，<code>sheriff init</code> 產生的新設定預設已改用 barrel-less 模式，可以直接依實際檔案路徑判斷模組邊界，減少維護 barrel 檔的成本。</li>
+<li>鎖定套件版本，定期檢查相容性：<br><code>angular-eslint</code> 與 <code>@softarc/eslint-plugin-sheriff</code> 對 ESLint 主版本的支援時程不一定同步，升級 Angular 或 ESLint 前，建議先用 <code>npm view &lt;package&gt; peerDependencies</code> 確認相容範圍，避免升級後才卡在依賴衝突。</li>
+</ul>
+<h2 id="總結"><a href="#總結" class="headerlink" title="總結"></a>總結</h2><p>Sheriff 讓「模組邊界」從團隊口頭約定變成可以自動驗證的規則：<code>sheriff init</code> 建立設定檔、用 <code>modules</code> 與 <code>depRules</code> 描述允許的依賴方向、<code>sheriff verify</code> 提供 CLI 與 CI 層級的把關，但要讓違規在寫程式碼的當下就被標紅，還需要專案本身已有 ESLint flat config ，並把 <code>sheriff.configs.all</code> 加入至 <code>extends</code> 。若專案還沒有 ESLint ，<code>ng add @angular-eslint/schematics</code> 是最快的起點，只是要注意目前（本文發佈時） <code>angular-eslint</code> 與 <code>eslint-plugin-sheriff</code> 對 ESLint 主版本的支援有落差，需要暫時把 <code>eslint</code> 與 <code>@eslint/js</code> 釘在 9.x 才能兩邊相容。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li>Sheriff 官方 GitHub ：<a target="_blank" rel="noopener" href="https://github.com/softarc-consulting/sheriff">https://github.com/softarc-consulting/sheriff</a></li>
+<li>angular-eslint 官方 GitHub ：<a target="_blank" rel="noopener" href="https://github.com/angular-eslint/angular-eslint">https://github.com/angular-eslint/angular-eslint</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/TypeScript/" rel="tag"># TypeScript</a>
+              <a href="/tags/ESLint/" rel="tag"># ESLint</a>
+              <a href="/tags/%E6%9E%B6%E6%A7%8B/" rel="tag"># 架構</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/" rel="prev" title="Angular WebMCP － 讓 AI 代理程式直接操作你的網頁">
+                  <i class="fa fa-angle-left"></i> Angular WebMCP － 讓 AI 代理程式直接操作你的網頁
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.min.js","integrity":"sha256-TtLOdUA8mstPoO6sGvHIGx2ceXrrX4KgIItO06XOn8A="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
