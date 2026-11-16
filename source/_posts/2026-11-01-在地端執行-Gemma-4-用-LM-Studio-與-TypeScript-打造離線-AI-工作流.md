@@ -151,11 +151,11 @@ curl.exe http://localhost:1234/v1/models
 
 ## 實作一：本機聊天
 
-以下範例都使用 Node.js 20 以上版本與官方 [`openai`](https://www.npmjs.com/package/openai) 套件。先建立專案：
+以下範例都使用 Node.js 22 以上版本與官方 [`openai`](https://www.npmjs.com/package/openai) 套件（ Node.js 22 是 `openai` 套件的最低需求）。先建立專案：
 
 ```bash
-mkdir gemma4-local
-cd gemma4-local
+mkdir gemma-lmstudio-typescript
+cd gemma-lmstudio-typescript
 npm init -y
 npm pkg set type=module   # 啟用 ESM ，才能使用 top-level await
 npm i openai
@@ -468,6 +468,8 @@ npx tsx agent.ts ../my-angular-app
 **說明：**
 - 這裡沿用前面下載的 `google/gemma-4-e4b` 。多步驟的工具呼叫對模型的推理能力要求較高，若有 16 GB 以上的 VRAM ，建議改用 `google/gemma-4-26b-a4b` ： MoE 架構讓它的速度仍接近 4B 模型，選錯工具或參數的機率也比較低。
 - 若偏好 Python ， LM Studio 的 [Python SDK](https://lmstudio.ai/docs/python/agent/act) 提供 `model.act()` ，能直接把 Python 函式當作工具傳入，並自動處理上述迴圈。
+
+程式範例：[GitHub](https://github.com/Kun-Neng/gemma-lmstudio-typescript)
 
 ## 還能用在哪些地方
 
