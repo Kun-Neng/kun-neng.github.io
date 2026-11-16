@@ -42,7 +42,7 @@
 <meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/13_tools_result.png">
 <meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/14_tools_file_not_found.png">
 <meta property="article:published_time" content="2026-11-01T02:41:55.000Z">
-<meta property="article:modified_time" content="2026-11-16T12:07:56.412Z">
+<meta property="article:modified_time" content="2026-11-16T12:30:28.109Z">
 <meta property="article:author" content="Kun-Neng Hung">
 <meta property="article:tag" content="AI">
 <meta property="article:tag" content="LLM">
@@ -260,7 +260,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-11-16 20:07:56" itemprop="dateModified" datetime="2026-11-16T20:07:56+08:00">2026-11-16</time>
+      <time title="Modified: 2026-11-16 20:30:28" itemprop="dateModified" datetime="2026-11-16T20:30:28+08:00">2026-11-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -490,9 +490,9 @@ lms server stop<span aria-hidden="true" class="line-numbers-rows"><span></span><
 </blockquote>
 <img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/9_lms_ps.png" class="">
 
-<h2 id="實作一：本機聊天"><a href="#實作一：本機聊天" class="headerlink" title="實作一：本機聊天"></a>實作一：本機聊天</h2><p>以下範例都使用 Node.js 20 以上版本與官方 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/openai"><code>openai</code></a> 套件。先建立專案：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> gemma4-local
-<span class="token builtin class-name">cd</span> gemma4-local
+<h2 id="實作一：本機聊天"><a href="#實作一：本機聊天" class="headerlink" title="實作一：本機聊天"></a>實作一：本機聊天</h2><p>以下範例都使用 Node.js 22 以上版本與官方 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/openai"><code>openai</code></a> 套件（ Node.js 22 是 <code>openai</code> 套件的最低需求）。先建立專案：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> gemma-lmstudio-typescript
+<span class="token builtin class-name">cd</span> gemma-lmstudio-typescript
 <span class="token function">npm</span> init <span class="token parameter variable">-y</span>
 <span class="token function">npm</span> pkg <span class="token builtin class-name">set</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>module   <span class="token comment"># 啟用 ESM ，才能使用 top-level await</span>
 <span class="token function">npm</span> i openai
@@ -768,6 +768,7 @@ lms server stop<span aria-hidden="true" class="line-numbers-rows"><span></span><
 <li>這裡沿用前面下載的 <code>google/gemma-4-e4b</code> 。多步驟的工具呼叫對模型的推理能力要求較高，若有 16 GB 以上的 VRAM ，建議改用 <code>google/gemma-4-26b-a4b</code> ： MoE 架構讓它的速度仍接近 4B 模型，選錯工具或參數的機率也比較低。</li>
 <li>若偏好 Python ， LM Studio 的 <a target="_blank" rel="noopener" href="https://lmstudio.ai/docs/python/agent/act">Python SDK</a> 提供 <code>model.act()</code> ，能直接把 Python 函式當作工具傳入，並自動處理上述迴圈。</li>
 </ul>
+<p>程式範例：<a target="_blank" rel="noopener" href="https://github.com/Kun-Neng/gemma-lmstudio-typescript">GitHub</a></p>
 <h2 id="還能用在哪些地方"><a href="#還能用在哪些地方" class="headerlink" title="還能用在哪些地方"></a>還能用在哪些地方</h2><p>除了上述三個範例， Gemma 4 的特性也適合以下情境：</p>
 <table>
 <thead>
