@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":true,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Gemma 4 的 E2B 與 E4B 內建語音辨識能力。本文以 llama-server 在本機提供 OpenAI 相容 API ，再用 TypeScript 將任意長度的錄音檔轉成逐字稿，全程離線，並說明影響準確度的關鍵設定、整合到 Angular 網頁的做法與常見陷阱。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字">
+<meta property="og:url" content="https://kun-neng.github.io/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="Gemma 4 的 E2B 與 E4B 內建語音辨識能力。本文以 llama-server 在本機提供 OpenAI 相容 API ，再用 TypeScript 將任意長度的錄音檔轉成逐字稿，全程離線，並說明影響準確度的關鍵設定、整合到 Angular 網頁的做法與常見陷阱。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/1_audio_support_issue.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/2_winget_install_llama.cpp.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/3_curl_8080.png">
+<meta property="article:published_time" content="2026-11-05T13:06:02.000Z">
+<meta property="article:modified_time" content="2026-11-16T12:07:56.420Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="TypeScript">
+<meta property="article:tag" content="Gemma">
+<meta property="article:tag" content="llama.cpp">
+<meta property="article:tag" content="語音辨識">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/1_audio_support_issue.png">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/","path":"2026/11/05/用-llama-cpp-與-TypeScript-實作-Gemma-4-語音轉文字/","title":"用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tech-talks"><a href="/tech-talks/" rel="section"><i class="fa fa-microphone fa-fw"></i>Tech Talks</a></li><li class="menu-item menu-item-side-projects"><a href="/side-projects/" rel="section"><i class="fa fa-cube fa-fw"></i>Side Projects</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%AA%E4%BA%9B%E7%89%88%E6%9C%AC%E8%83%BD%E8%99%95%E7%90%86%E8%AA%9E%E9%9F%B3"><span class="nav-number">1.</span> <span class="nav-text">哪些版本能處理語音</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E4%B8%8D%E7%94%A8-LM-Studio"><span class="nav-number">2.</span> <span class="nav-text">為什麼不用 LM Studio</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%95%9F%E5%8B%95-llama-server"><span class="nav-number">3.</span> <span class="nav-text">啟動 llama-server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%A6%E4%BD%9C%E8%BD%89%E9%8C%84%E5%B7%A5%E5%85%B7"><span class="nav-number">4.</span> <span class="nav-text">實作轉錄工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F-1%EF%BC%9A%E5%BB%BA%E7%AB%8B%E5%B0%88%E6%A1%88"><span class="nav-number">4.1.</span> <span class="nav-text">步驟 1：建立專案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F-2%EF%BC%9A%E5%88%87%E5%89%B2%E9%9F%B3%E6%AA%94"><span class="nav-number">4.2.</span> <span class="nav-text">步驟 2：切割音檔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F-3%EF%BC%9A%E8%BD%89%E9%8C%84%E5%96%AE%E4%B8%80%E7%89%87%E6%AE%B5"><span class="nav-number">4.3.</span> <span class="nav-text">步驟 3：轉錄單一片段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F-4%EF%BC%9A%E7%B5%84%E5%90%88%E6%88%90%E5%91%BD%E4%BB%A4%E5%88%97%E5%B7%A5%E5%85%B7"><span class="nav-number">4.4.</span> <span class="nav-text">步驟 4：組合成命令列工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F-5%EF%BC%9A%E5%9F%B7%E8%A1%8C"><span class="nav-number">4.5.</span> <span class="nav-text">步驟 5：執行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E5%90%88%E5%88%B0-Angular-%E7%B6%B2%E9%A0%81"><span class="nav-number">5.</span> <span class="nav-text">整合到 Angular 網頁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A6%8B%E9%99%B7%E9%98%B1"><span class="nav-number">6.</span> <span class="nav-text">常見陷阱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E4%BC%B8%E6%87%89%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text">延伸應用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%8A%E8%BD%89%E9%8C%84%E9%82%8A%E7%BF%BB%E8%AD%AF"><span class="nav-number">7.1.</span> <span class="nav-text">邊轉錄邊翻譯</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E7%90%86%E6%9C%83%E8%AD%B0%E6%91%98%E8%A6%81"><span class="nav-number">7.2.</span> <span class="nav-text">整理會議摘要</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-number">8.</span> <span class="nav-text">總結</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://medium.com/@kunneng.hung" title="Medium → https:&#x2F;&#x2F;medium.com&#x2F;@kunneng.hung" rel="noopener me" target="_blank"><i class="fab fa-medium fa-fw"></i>Medium</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字 | 爐邊雜談">
+      <meta itemprop="description" content="Gemma 4 的 E2B 與 E4B 內建語音辨識能力。本文以 llama-server 在本機提供 OpenAI 相容 API ，再用 TypeScript 將任意長度的錄音檔轉成逐字稿，全程離線，並說明影響準確度的關鍵設定、整合到 Angular 網頁的做法與常見陷阱。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-11-05 21:06:02" itemprop="dateCreated datePublished" datetime="2026-11-05T21:06:02+08:00">2026-11-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-11-16 20:07:56" itemprop="dateModified" datetime="2026-11-16T20:07:56+08:00">2026-11-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">Gemma 4 的 E2B 與 E4B 內建語音辨識能力。本文以 llama-server 在本機提供 OpenAI 相容 API ，再用 TypeScript 將任意長度的錄音檔轉成逐字稿，全程離線，並說明影響準確度的關鍵設定、整合到 Angular 網頁的做法與常見陷阱。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>會議錄音、訪談、語音筆記常常包含不適合上傳到雲端的內容，但要在本機做語音辨識，過去通常得另外架設一套專用模型。 Google 的 <a target="_blank" rel="noopener" href="https://gemma.ai/models/gemma-4/model-card/">Gemma 4 model card</a> 改變了這件事：最小的 E2B 與 E4B 本身就<a target="_blank" rel="noopener" href="https://gemma.ai/get-started/capabilities/audio/">訓練過多語言語音辨識</a>，同一個模型既能聽寫，也能接著整理內容。本文以 <a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp"><code>llama.cpp</code></a> 的 <code>llama-server</code> 在本機提供 OpenAI 相容的 API ，再用 TypeScript 寫一支命令列工具，把任意長度的錄音檔轉成逐字稿，錄音內容全程不離開你的電腦。</p>
+<blockquote>
+<p>本文的指令與數據於 Windows 11 、 RTX 3060 Ti 8 GB 、以 <code>winget</code> 安裝的 <code>llama.cpp</code> （ Vulkan 版， build 12199 ）上驗證。</p>
+</blockquote>
+<h2 id="哪些版本能處理語音"><a href="#哪些版本能處理語音" class="headerlink" title="哪些版本能處理語音"></a>哪些版本能處理語音</h2><p>並非所有 Gemma 4 都能接收音訊。根據 <a target="_blank" rel="noopener" href="https://gemma.ai/models/gemma-4/model-card/">Gemma 4 model card</a> ，只有 E2B 、 E4B 與 12B Unified 支援音訊輸入， 26B A4B 與 31B 則沒有這項能力。</p>
+<p><code>llama.cpp</code> 的<a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp/blob/master/docs/multimodal.md">多模態文件</a>目前將 E2B 與 E4B 列為支援音訊的模型，所以本文以這兩個版本為主。本文使用 Google 官方發布的 <a target="_blank" rel="noopener" href="https://huggingface.co/google/gemma-4-E4B-it-qat-q4_0-gguf">QAT Q4_0 GGUF</a>。 QAT （量化感知訓練）指模型在訓練階段就考慮了 4 位元量化，比訓練完才量化的版本更能保留原本的準確度。模型本體之外，還需要處理音訊與圖片的 mmproj 檔：</p>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>模型（ QAT Q4_0 ）</th>
+<th>mmproj</th>
+<th>實測記憶體占用</th>
+<th>適合的環境</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>E2B</td>
+<td>3.35 GB</td>
+<td>0.99 GB</td>
+<td>約 2.7 GB VRAM</td>
+<td>一般筆電，或要同時執行其他 GPU 程式</td>
+</tr>
+<tr>
+<td>E4B</td>
+<td>5.15 GB</td>
+<td>0.99 GB</td>
+<td>約 4.3 GB VRAM ＋ 3.5 GB RAM</td>
+<td>8 GB VRAM 顯示卡</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>提示：</strong> 表格為 Hugging Face 標示的十進位 GB ， Windows 檔案總管以 1024 進位顯示，看起來會小約 7% 。另外， Windows 桌面本身也會占用部分 VRAM （筆者的環境約 2.4 GB ），載入 E4B 後 8 GB 顯示卡大約只剩 1.4 GB 。</p>
+</blockquote>
+<p>以四段 TTS 產生的測試音檔實測， E2B 的平均字元錯誤率（ CER ）為 3.3% ， E4B 為 1.2% ，每段分別約 0.3 秒與 0.5 秒就能轉完。在 8 GB 顯示卡上，除非 VRAM 不夠，否則建議直接使用 E4B 。</p>
+<h2 id="為什麼不用-LM-Studio"><a href="#為什麼不用-LM-Studio" class="headerlink" title="為什麼不用 LM Studio"></a>為什麼不用 LM Studio</h2><p>LM Studio 是在本機執行 Gemma 4 最方便的工具之一（用法請見 <a href="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/" title="在地端執行 Gemma 4：用 LM Studio 與 TypeScript 打造離線 AI 工作流">在地端執行 Gemma 4：用 LM Studio 與 TypeScript 打造離線 AI 工作流</a> ），但截至本文撰寫時，它的<a target="_blank" rel="noopener" href="https://lmstudio.ai/docs/developer">開發者文件</a>與<a target="_blank" rel="noopener" href="https://lmstudio.ai/changelog">更新紀錄</a>都沒有提到將音訊傳給 Gemma 4 的方式，語音轉文字 API 仍是<a target="_blank" rel="noopener" href="https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1715">尚未結案的功能請求</a>。模型支援音訊，不代表執行工具也支援。</p>
+<img data-src="/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/1_audio_support_issue.png" class="">
+
+<p>能實際處理 Gemma 4 音訊的路徑主要有四條：</p>
+<table>
+<thead>
+<tr>
+<th>路徑</th>
+<th>語言</th>
+<th>需要後端</th>
+<th>特點</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>llama-server</code> （本文）</td>
+<td>TypeScript 或任何能呼叫 HTTP 的語言</td>
+<td>本機伺服器</td>
+<td>使用量化模型， 8 GB VRAM 可執行 E4B ；相容 OpenAI SDK</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.vllm.ai/">vLLM</a></td>
+<td>任何能呼叫 HTTP 的語言</td>
+<td>GPU 伺服器</td>
+<td>適合多人同時使用，但 E4B BF16 約需 24 GB VRAM ，連 E2B 的 w4a16 版本也有 8.32 GB ，放不進 8 GB 顯示卡</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://gemma.ai/get-started/capabilities/audio/">Hugging Face Transformers</a></td>
+<td>Python</td>
+<td>無</td>
+<td>Google 文件的示範方式，但完整權重較大（ E4B 約 16 GB ）</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/kexi/gemma4-transcribe">Transformers.js</a></td>
+<td>TypeScript</td>
+<td>無，於瀏覽器執行</td>
+<td>透過 WebGPU 執行，首次下載 E2B 約 3.4 GB ，需要桌面版 Chrome 或 Edge</td>
+</tr>
+</tbody></table>
+<p>本文選擇第一項：在 Node.js 環境就能開發，而且 API 格式和呼叫 OpenAI 幾乎相同，之後要換成 vLLM 等其他伺服器，只需要改連線位址。</p>
+<h2 id="啟動-llama-server"><a href="#啟動-llama-server" class="headerlink" title="啟動 llama-server"></a>啟動 llama-server</h2><p><code>llama.cpp</code> 是用 C&#x2F;C++ 寫的本地 LLM 推論引擎，可以在自己的電腦上跑 GGUF 格式的模型（ Llama 、 Qwen 、 Gemma 等），不需要 Python 環境。用 <code>winget</code> 安裝就不用自己下載 zip 、解壓縮、設定 PATH 。</p>
+<p>依<a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp/blob/master/docs/install.md">官方安裝文件</a>安裝 <code>llama.cpp</code> ，並另外安裝 <a target="_blank" rel="noopener" href="https://ffmpeg.org/download.html">ffmpeg</a> ，後面切割音檔時會用到：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># Windows</span>
+winget <span class="token function">install</span> llama.cpp
+winget <span class="token function">install</span> <span class="token parameter variable">--id</span> Gyan.FFmpeg <span class="token parameter variable">-e</span>
+
+<span class="token comment"># macOS 與 Linux</span>
+brew <span class="token function">install</span> llama.cpp ffmpeg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li><code>winget</code> 是	Windows 內建的套件管理員（Windows Package Manager），類似 Linux 的 apt、macOS 的 brew</li>
+<li><code>install</code>	子命令，用來安裝套件</li>
+<li><code>llama.cpp</code>	是搜尋關鍵字， <code>winget</code> 會用它比對套件的名稱、ID 和 moniker ，這裡比對到的是 ID <code>ggml.llamacpp</code></li>
+</ul>
+<img data-src="/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/2_winget_install_llama.cpp.png" class="">
+
+<blockquote>
+<p>安裝完畢，試著使用上圖打勾的指令：</p>
+<ul>
+<li><code>llama-cli --version</code> 查詢目前安裝的 <code>llama-cli</code> 工具版本資訊</li>
+<li><code>llama-server --list-devices</code> 顯示當前系統中所有可供 <code>llama.cpp</code> 進行運算加速或模型卸載的硬體設備清單</li>
+</ul>
+</blockquote>
+<p>接著啟動伺服器。第一次執行會從 Hugging Face 下載模型與 mmproj ：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">llama-server <span class="token parameter variable">-hf</span> google/gemma-4-E4B-it-qat-q4_0-gguf <span class="token parameter variable">-hff</span> gemma-4-E4B_q4_0-it.gguf <span class="token parameter variable">-c</span> <span class="token number">8192</span> <span class="token parameter variable">-np</span> <span class="token number">1</span> <span class="token parameter variable">--port</span> <span class="token number">8080</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>說明：</strong></p>
+<ul>
+<li><code>-hf</code> 指定 Hugging Face 上的模型 repo ， mmproj 會一併自動下載。</li>
+<li><code>-hff</code> 直接指定模型檔名，這個 repo 的檔名是 <code>gemma-4-E4B_q4_0-it.gguf</code> 。</li>
+<li>顯示卡記憶體不足時可改用 E2B ： <code>-hf google/gemma-4-E2B-it-qat-q4_0-gguf -hff gemma-4-E2B_q4_0-it.gguf</code> 。較新的版本也可以用 <code>llama serve</code> 子指令啟動，參數相同。</li>
+<li><code>-c 8192</code> 設定 context 長度。<a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md">預設值會沿用模型的上限</a>，以 E4B 而言高達 128K ，會佔用大量記憶體。 8192 足以容納單段語音，也夠後面把逐字稿送回去整理摘要。</li>
+<li><code>-np 1</code> 只開一個處理槽位。本文的程式逐段依序處理，不需要平行。</li>
+<li><code>--port 8080</code> 指定監聽埠。各版本的預設值不同，明確指定可以避免後面的連線位址對不上。</li>
+<li>若想在不用時釋放資源，可加上 <code>--sleep-idle-seconds 600</code> ：閒置 10 分鐘後卸載模型，下一個請求會自動重新載入，實測約多等 4 秒。</li>
+</ul>
+<blockquote>
+<p>註：如果已經把模型下載到本機，可以改用 <code>-m</code> 指定模型路徑、 <code>--mmproj</code> 指定 mmproj 路徑，直接載入本機檔案，不必再經過 Hugging Face 。這種方式不會自動尋找 mmproj ，少了 <code>--mmproj</code> 就無法處理音訊：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">llama-server <span class="token parameter variable">-m</span> models/gemma-4-E4B_q4_0-it.gguf <span class="token parameter variable">--mmproj</span> models/gemma-4-E4B-it-mmproj.gguf <span class="token parameter variable">-c</span> <span class="token number">8192</span> <span class="token parameter variable">-np</span> <span class="token number">1</span> <span class="token parameter variable">--port</span> <span class="token number">8080</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</blockquote>
+<p>確認模型載入完成：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">curl.exe http://localhost:8080/v1/models<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<img data-src="/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/3_curl_8080.png" class="">
+
+<blockquote>
+<p>Windows PowerShell 5.1 的 <code>curl</code> 是 <code>Invoke-WebRequest</code> 的別名。若執行時會跳出＂Security Warning: Script Execution Risk＂的確認提示，則改打 <code>curl.exe</code> 呼叫 Windows 內建的 curl ，輸出的 JSON 會和其他平台相同。 <code>Invoke-RestMethod</code> 雖然也能呼叫，但會把 JSON 解析成 PowerShell 物件再顯示，巢狀欄位會被截斷成 <code>...</code> 。</p>
+</blockquote>
+<p>注意：</p>
+<ol>
+<li>使用較新的 build ，因為 2026 年 5 月曾有一版 master 的 <a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp/issues/23688">KV cache 量化錯誤</a>造成音訊請求失敗與輸出亂碼，已於數小時內修正。</li>
+<li>在 Windows 上安裝時，有兩個容易卡住的地方：</li>
+</ol>
+<ul>
+<li>找不到 <code>llama-server</code> 指令： <code>winget</code> 安裝後，已開啟的終端機不會讀到新的 PATH 。在 VS Code 的終端機裡執行時，要把整個 VS Code 重新啟動，只開新的終端機分頁並不夠。</li>
+<li>執行檔突然消失：部分防毒軟體會把 <code>llama-server.exe</code> 誤判而隔離，請到防毒軟體的隔離區自行還原，或把它加入例外清單。</li>
+</ul>
+<h2 id="實作轉錄工具"><a href="#實作轉錄工具" class="headerlink" title="實作轉錄工具"></a>實作轉錄工具</h2><p>整體流程如下，步驟 2 至 4 依序實作這三個環節：</p>
+<pre class="mermaid">flowchart TB
+  A["錄音檔<br/>WAV、MP3、M4A…"] -- "步驟 2：ffmpeg<br/>16 kHz 單聲道、每段 28 秒" --> B["chunk_000.wav<br/>chunk_001.wav<br/>…"]
+  B -- "步驟 3：逐段送給 llama-server" --> C["每段的轉錄文字"]
+  C -- "步驟 4：加上時間標記並合併" --> D["meeting.txt"]</pre>
+
+<h3 id="步驟-1：建立專案"><a href="#步驟-1：建立專案" class="headerlink" title="步驟 1：建立專案"></a>步驟 1：建立專案</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> gemma-llamacpp-transcribe
+<span class="token builtin class-name">cd</span> gemma-llamacpp-transcribe
+<span class="token function">npm</span> init <span class="token parameter variable">-y</span>
+<span class="token function">npm</span> pkg <span class="token builtin class-name">set</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>module   <span class="token comment"># 啟用 ESM ，才能使用 top-level await</span>
+<span class="token function">npm</span> i openai
+<span class="token function">npm</span> i <span class="token parameter variable">-D</span> tsx @types/node  <span class="token comment"># 直接執行 TypeScript</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接著在專案根目錄建立 <code>tsconfig.json</code> ：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"compilerOptions"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"module"</span><span class="token operator">:</span> <span class="token string">"nodenext"</span><span class="token punctuation">,</span>
+    <span class="token property">"types"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"node"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"noEmit"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>說明：</strong></p>
+<ul>
+<li><code>tsx</code> 執行時不做型別檢查，這個檔案是給編輯器用的。</li>
+<li><code>&quot;types&quot;: [&quot;node&quot;]</code> 不能省略。 TypeScript 6.0 起 <code>types</code> 的預設值改為 <code>[]</code> ，不再自動載入 <code>node_modules/@types</code> 底下的套件。少了這行， VS Code 會在 <code>node:child_process</code> 等 import 上顯示「找不到名稱」（ ts2591 ）的錯誤。</li>
+<li><code>&quot;module&quot;: &quot;nodenext&quot;</code> 搭配 <code>package.json</code> 的 <code>&quot;type&quot;: &quot;module&quot;</code> ，讓編輯器以 ESM 解析，接受 top-level await 。</li>
+</ul>
+<h3 id="步驟-2：切割音檔"><a href="#步驟-2：切割音檔" class="headerlink" title="步驟 2：切割音檔"></a>步驟 2：切割音檔</h3><p>Gemma 4 單段音訊的<a target="_blank" rel="noopener" href="https://gemma.ai/get-started/capabilities/audio/#audio-data">上限是 30 秒</a>，每秒佔用 25 個 token 。雖然 <code>llama.cpp</code> 的<a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp/blob/master/tools/mtmd/mtmd-audio.cpp">前處理</a>會自動把長音訊分塊，但整段錄音會被塞進同一則請求，一小時的錄音就需要約 90,000 個 token 的 context ，輸出也無法逐段顯示。</p>
+<p>此外，<code>llama-server</code> 只接受 <a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-v1chatcompletions-openai-compatible-chat-completions-api">MP3 、 WAV 與 FLAC</a> ，手機常見的 M4A 無法直接傳送。因此先用 ffmpeg 統一轉檔並切段，一次解決這兩個問題：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// transcribe.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> execFile <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'node:child_process'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> mkdtemp<span class="token punctuation">,</span> readdir<span class="token punctuation">,</span> readFile<span class="token punctuation">,</span> rm<span class="token punctuation">,</span> writeFile <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'node:fs/promises'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> tmpdir <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'node:os'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> path <span class="token keyword">from</span> <span class="token string">'node:path'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> promisify <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'node:util'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> OpenAI <span class="token keyword">from</span> <span class="token string">'openai'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> run <span class="token operator">=</span> <span class="token function">promisify</span><span class="token punctuation">(</span>execFile<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> <span class="token constant">SEGMENT_SECONDS</span> <span class="token operator">=</span> <span class="token number">28</span><span class="token punctuation">;</span> <span class="token comment">// 單段上限為 30 秒，保留一點餘裕</span>
+
+<span class="token comment">// 轉成 16 kHz 單聲道 WAV，並切成固定長度的片段</span>
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">splitAudio</span><span class="token punctuation">(</span>source<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> outputDir<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">await</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token string">'ffmpeg'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
+    <span class="token string">'-y'</span><span class="token punctuation">,</span> <span class="token string">'-loglevel'</span><span class="token punctuation">,</span> <span class="token string">'error'</span><span class="token punctuation">,</span>
+    <span class="token string">'-i'</span><span class="token punctuation">,</span> source<span class="token punctuation">,</span>
+    <span class="token string">'-ac'</span><span class="token punctuation">,</span> <span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token string">'-ar'</span><span class="token punctuation">,</span> <span class="token string">'16000'</span><span class="token punctuation">,</span>
+    <span class="token string">'-f'</span><span class="token punctuation">,</span> <span class="token string">'segment'</span><span class="token punctuation">,</span> <span class="token string">'-segment_time'</span><span class="token punctuation">,</span> <span class="token function">String</span><span class="token punctuation">(</span><span class="token constant">SEGMENT_SECONDS</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token string">'-c:a'</span><span class="token punctuation">,</span> <span class="token string">'pcm_s16le'</span><span class="token punctuation">,</span>
+    path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>outputDir<span class="token punctuation">,</span> <span class="token string">'chunk_%03d.wav'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> files <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">readdir</span><span class="token punctuation">(</span>outputDir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> files<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span> <span class="token operator">=></span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>outputDir<span class="token punctuation">,</span> file<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="步驟-3：轉錄單一片段"><a href="#步驟-3：轉錄單一片段" class="headerlink" title="步驟 3：轉錄單一片段"></a>步驟 3：轉錄單一片段</h3><p>Prompt 採用<a target="_blank" rel="noopener" href="https://gemma.ai/get-started/capabilities/audio/#speech-to-text">官方的語音辨識範本</a>，把範本中的兩個 <code>&#123;LANGUAGE&#125;</code> 都填入 <code>Traditional Chinese</code> 。音訊透過 <code>input_audio</code> 內容傳送。以下程式碼接在 <code>transcribe.ts</code> 的 <code>splitAudio</code> 後面，需要的模組已在步驟 2 一併 import ：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">OpenAI</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  baseURL<span class="token operator">:</span> <span class="token string">'http://localhost:8080/v1'</span><span class="token punctuation">,</span> <span class="token comment">// 指向 llama-server</span>
+  apiKey<span class="token operator">:</span> <span class="token string">'llama.cpp'</span><span class="token punctuation">,</span>                 <span class="token comment">// 本機伺服器不驗證金鑰，填任意字串即可</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// #1 兩處語言都填 Traditional Chinese</span>
+<span class="token keyword">const</span> <span class="token constant">PROMPT</span> <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Transcribe the following speech segment in Traditional Chinese into Traditional Chinese text.
+
+Follow these specific instructions for formatting the answer:
+* Only output the transcription, with no newlines.
+* When transcribing numbers, write the digits, i.e. write 1.7 and not one point seven, and write 3 instead of three.</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">transcribeChunk</span><span class="token punctuation">(</span>chunk<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> audio <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">readFile</span><span class="token punctuation">(</span>chunk<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> completion <span class="token operator">=</span> <span class="token keyword">await</span> client<span class="token punctuation">.</span>chat<span class="token punctuation">.</span>completions<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+    model<span class="token operator">:</span> <span class="token string">'gemma-4-E4B-it'</span><span class="token punctuation">,</span> <span class="token comment">// 伺服器只載入一個模型時，這個名稱不影響結果</span>
+    messages<span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">&#123;</span>
+        role<span class="token operator">:</span> <span class="token string">'user'</span><span class="token punctuation">,</span>
+        content<span class="token operator">:</span> <span class="token punctuation">[</span> <span class="token comment">// #2 音訊放在文字前面</span>
+          <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'input_audio'</span><span class="token punctuation">,</span> input_audio<span class="token operator">:</span> <span class="token punctuation">&#123;</span> data<span class="token operator">:</span> audio<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token string">'base64'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> format<span class="token operator">:</span> <span class="token string">'wav'</span> <span class="token punctuation">&#125;</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+          <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'text'</span><span class="token punctuation">,</span> text<span class="token operator">:</span> <span class="token constant">PROMPT</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    temperature<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token comment">// 轉錄不需要創意</span>
+    max_tokens<span class="token operator">:</span> <span class="token number">512</span><span class="token punctuation">,</span>
+    <span class="token comment">// @ts-expect-error `llama.cpp` 的擴充參數，不在 OpenAI SDK 的型別定義中</span>
+    chat_template_kwargs<span class="token operator">:</span> <span class="token punctuation">&#123;</span> enable_thinking<span class="token operator">:</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token comment">// #3 關閉思考模式</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> choice <span class="token operator">=</span> completion<span class="token punctuation">.</span>choices<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>choice<span class="token punctuation">.</span>finish_reason <span class="token operator">===</span> <span class="token string">'length'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">警告：</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>path<span class="token punctuation">.</span><span class="token function">basename</span><span class="token punctuation">(</span>chunk<span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string"> 的輸出達到 max_tokens 上限，內容可能不完整</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">return</span> choice<span class="token punctuation">.</span>message<span class="token punctuation">.</span>content<span class="token operator">?.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token string">''</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>這段程式有幾個設定會直接影響準確度。以下的錯字率是在 E4B 上，每次只改一項設定所量到的平均 CER （不計標點）。</p>
+<p><strong>說明：</strong></p>
+<ul>
+<li>#1 兩個語言都寫 <code>Traditional Chinese</code>：照官方範本把兩處填成相同語言最穩定。改成＂ Mandarin Chinese 轉成 Traditional Chinese ＂時，錯字率從 1.2% 升到 14.8% ，四段中有兩段輸出簡體字。</li>
+<li>#2 音訊放在文字前面： <a target="_blank" rel="noopener" href="https://gemma.ai/models/gemma-4/model-card/#4-modality-order">Gemma 4 model card</a> 建議把音訊放在文字之後，實測放在前面的錯字略少（ 1.2% 對 2.0% ），標點也維持全形，不過差距不大。</li>
+<li>#3 一定要關閉思考模式：在 <code>llama.cpp</code> 上， Gemma 4 預設會先輸出一段英文推理才開始轉錄，每段多產生約 270 個 token ，耗時增加為 6 倍以上，錯字率也升到 15.6% 。若 <code>max_tokens</code> 設得較小，推理甚至會把額度用光，導致轉錄結果被截斷。</li>
+<li><code>max_tokens</code> 不能照抄官方範例的 64 。那是給短句用的值，一段 28 秒的中文語音很容易超過。</li>
+<li><code>chat_template_kwargs</code> 是 <code>llama.cpp</code> 的擴充參數， OpenAI SDK 沒有定義這個欄位，所以用 <a target="_blank" rel="noopener" href="https://github.com/openai/openai-node#undocumented-request-params"><code>@ts-expect-error</code></a> 略過型別檢查， SDK 仍會原樣送出。</li>
+<li><code>finish_reason</code> 為 <code>length</code> 代表輸出被截斷。檢查它才能發現問題，否則逐字稿只會默默少一段。</li>
+</ul>
+<blockquote>
+<p>以上數字是用 Windows TTS 產生的四段乾淨音檔量的，真人錄音的錯字率會更高。量測工具與測試句子放在 <a target="_blank" rel="noopener" href="https://github.com/Kun-Neng/asr-eval-kit">asr-eval-kit</a> ，音檔沒有放進 repo ，可以用其中的 <code>make-test-audio.ps1</code> 產生，或自己念 <code>refs.tsv</code> 裡的句子錄音，再以 <code>--source-lang</code> 、 <code>--audio-last</code> 、 <code>--think</code> 分別重現 #1 至 #3 。</p>
+</blockquote>
+<h3 id="步驟-4：組合成命令列工具"><a href="#步驟-4：組合成命令列工具" class="headerlink" title="步驟 4：組合成命令列工具"></a>步驟 4：組合成命令列工具</h3><p>最後在 <code>transcribe.ts</code> 的結尾加上主程式：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> source <span class="token operator">=</span> process<span class="token punctuation">.</span>argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>source<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">'用法：npx tsx transcribe.ts &lt;音檔路徑>'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  process<span class="token punctuation">.</span><span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">const</span> workDir <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">mkdtemp</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token function">tmpdir</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'gemma-llamacpp-'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> lines<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> chunks <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">splitAudio</span><span class="token punctuation">(</span>source<span class="token punctuation">,</span> workDir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token punctuation">[</span>index<span class="token punctuation">,</span> chunk<span class="token punctuation">]</span> <span class="token keyword">of</span> chunks<span class="token punctuation">.</span><span class="token function">entries</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> text <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">transcribeChunk</span><span class="token punctuation">(</span>chunk<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> start <span class="token operator">=</span> index <span class="token operator">*</span> <span class="token constant">SEGMENT_SECONDS</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> minutes <span class="token operator">=</span> <span class="token function">String</span><span class="token punctuation">(</span>Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span>start <span class="token operator">/</span> <span class="token number">60</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">padStart</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token string">'0'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> seconds <span class="token operator">=</span> <span class="token function">String</span><span class="token punctuation">(</span>start <span class="token operator">%</span> <span class="token number">60</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">padStart</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token string">'0'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">const</span> line <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">[</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>minutes<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string">:</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>seconds<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string">] </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>text<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>line<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    lines<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>line<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">await</span> <span class="token function">rm</span><span class="token punctuation">(</span>workDir<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> recursive<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> force<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 暫存的音檔片段不留在磁碟上</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">const</span> <span class="token punctuation">&#123;</span> dir<span class="token punctuation">,</span> name <span class="token punctuation">&#125;</span> <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">await</span> <span class="token function">writeFile</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>dir<span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>name<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string">.txt</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span> lines<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'\n'</span><span class="token punctuation">,</span> <span class="token string">'utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>說明：</strong></p>
+<ul>
+<li>逐段依序轉錄：用 <code>for...of</code> 搭配 <code>await</code> ，一次只送一段。 <code>llama-server</code> 啟動時以 <code>-np 1</code> 只開一個處理槽位，同時送出多段也只會排隊，不會比較快；依序處理還能讓結果轉完一段就顯示一段。</li>
+<li><code>finally</code> 負責清理：即使轉錄途中出錯（例如 <code>llama-server</code> 沒有啟動），暫存的音檔片段也會被刪除。</li>
+<li>逐字稿在全部轉完後才存檔：若中途失敗，已轉完的內容只會留在終端機上。處理很長的錄音時，可以改成每轉完一段就用 <code>appendFile</code> 寫入檔案。</li>
+</ul>
+<h3 id="步驟-5：執行"><a href="#步驟-5：執行" class="headerlink" title="步驟 5：執行"></a>步驟 5：執行</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx tsx transcribe.ts ./meeting.wav<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>逐字稿會逐段顯示在終端機，並存成與音檔同名的 <code>meeting.txt</code> ，格式如下：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">[00:00] 第一段的轉錄文字
+[00:28] 第二段的轉錄文字<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>時間標記是依片段順序推算的起始時間，只能用來大致定位，並非模型輸出的精確時間軸。</p>
+<p>程式範例：<a target="_blank" rel="noopener" href="https://github.com/Kun-Neng/gemma-llamacpp-transcribe/tree/gemma4">GitHub</a></p>
+<h2 id="整合到-Angular-網頁"><a href="#整合到-Angular-網頁" class="headerlink" title="整合到 Angular 網頁"></a>整合到 Angular 網頁</h2><p>命令列工具適合處理既有的錄音檔。若要在網頁上錄完音直接轉文字，做法是把工作拆成三層：</p>
+<ol>
+<li><strong>瀏覽器（ Angular ）</strong>：以 <code>MediaRecorder</code> 錄音，解碼後轉成 16 kHz 單聲道、切成不超過 28 秒的片段，再編碼成 WAV 逐段上傳。</li>
+<li><strong>後端（ Express ）</strong>：收到 WAV 後組成 <code>transcribeChunk</code> 的請求，轉送給 <code>llama-server</code> ，回傳 <code>&#123; text &#125;</code> 。</li>
+<li><strong>模型伺服器</strong>： <code>llama-server</code> 只監聽 <code>127.0.0.1</code> ，不直接對外開放。</li>
+</ol>
+<p>切段放在前端，後端就不需要 ffmpeg ，也不必保存任何狀態。瀏覽器錄到的通常是 WebM 容器搭配 Opus 音訊編碼（ WebM&#x2F;Opus ）， <code>llama-server</code> 無法接受，所以要先用 Web Audio API 解碼並重新取樣：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// wav.ts：把瀏覽器錄到的音訊轉成 16 kHz 單聲道 PCM</span>
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">decodeToMono16k</span><span class="token punctuation">(</span>blob<span class="token operator">:</span> Blob<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>Float32Array<span class="token operator">></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> ctx <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AudioContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> decoded <span class="token operator">=</span> <span class="token keyword">await</span> ctx<span class="token punctuation">.</span><span class="token function">decodeAudioData</span><span class="token punctuation">(</span><span class="token keyword">await</span> blob<span class="token punctuation">.</span><span class="token function">arrayBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> offline <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">OfflineAudioContext</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> Math<span class="token punctuation">.</span><span class="token function">ceil</span><span class="token punctuation">(</span>decoded<span class="token punctuation">.</span>duration <span class="token operator">*</span> <span class="token number">16_000</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">16_000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> source <span class="token operator">=</span> offline<span class="token punctuation">.</span><span class="token function">createBufferSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    source<span class="token punctuation">.</span>buffer <span class="token operator">=</span> decoded<span class="token punctuation">;</span> <span class="token comment">// 多聲道連到單聲道目的地時會自動混音</span>
+    source<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span>offline<span class="token punctuation">.</span>destination<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    source<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token keyword">await</span> offline<span class="token punctuation">.</span><span class="token function">startRendering</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getChannelData</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">await</span> ctx<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>拿到 <code>Float32Array</code> 之後，每 <code>16_000 × 28</code> 個取樣切一段，再轉成 16 位元整數並加上 44 bytes 的 WAV 標頭，就能直接當作 <code>input_audio</code> 傳送。</p>
+<h2 id="常見陷阱"><a href="#常見陷阱" class="headerlink" title="常見陷阱"></a>常見陷阱</h2><ul>
+<li><strong>麥克風品質影響很大</strong>：藍牙耳機在錄音時通常會切換到通話模式，音訊變成窄頻，辨識率會明顯下降。在瀏覽器中錄音時，模式切換還可能讓錄音中斷，得到空的音訊或無法解碼的檔案。需要準確度時，建議改用有線麥克風。</li>
+<li><strong>切點可能落在句子中間</strong>：固定長度切段可能把一個詞切成兩半，造成交界處辨識錯誤。例如把四段測試音檔串成 81 秒交給命令列工具時，第二段的開頭正好切在「今天天氣很好」中間，後半段被聽成「你好」。對品質要求較高時，可改用語音活動偵測（ VAD ）在靜音處切段。</li>
+<li><strong>輸出可能不是繁體</strong>： Prompt 的語言寫法與思考模式都會影響繁簡（見步驟 3 ）。若調整後仍偶爾出現簡體字，可再用 <a target="_blank" rel="noopener" href="https://github.com/BYVoid/OpenCC">OpenCC</a> 轉換。</li>
+<li><strong>只適合語音內容</strong>：根據 <a target="_blank" rel="noopener" href="https://huggingface.co/blog/gemma4">Hugging Face 的介紹</a>，訓練資料不包含音樂與非語音聲音。</li>
+<li><strong>沒有說話者標記</strong>：官方 prompt 只要求輸出文字。需要區分說話者、精確時間軸，或大量台灣華語與中英夾雜的內容時，專用的語音辨識模型（例如針對台灣華語微調的 <a target="_blank" rel="noopener" href="https://huggingface.co/MediaTek-Research/Breeze-ASR-25">Breeze-ASR-25</a> ）會更合適。</li>
+<li><strong>換工具時留意截斷行為</strong>：不同工具處理超長音訊的方式並不相同。 Python 的 Transformers 預設 <code>max_length=480_000</code> 且 <code>truncation=True</code> （見 <a target="_blank" rel="noopener" href="https://github.com/huggingface/transformers/blob/main/src/transformers/models/gemma4/feature_extraction_gemma4.py#L230-L231"><code>feature_extraction_gemma4.py</code></a> ， 16 kHz 下超過 30 秒的內容會被直接截斷，而且不會報錯。</li>
+</ul>
+<h2 id="延伸應用"><a href="#延伸應用" class="headerlink" title="延伸應用"></a>延伸應用</h2><h3 id="邊轉錄邊翻譯"><a href="#邊轉錄邊翻譯" class="headerlink" title="邊轉錄邊翻譯"></a>邊轉錄邊翻譯</h3><p>把 <code>PROMPT</code> 換成<a target="_blank" rel="noopener" href="https://gemma.ai/get-started/capabilities/audio/#automated-speech-translation">官方的翻譯範本</a>，就能同時取得原文與譯文。輸出內容約為兩倍，記得把 <code>max_tokens</code> 調高到 1024 左右：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> <span class="token constant">PROMPT</span> <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Transcribe the following speech segment in Traditional Chinese, then translate it into English.
+When formatting the answer, first output the transcription in Traditional Chinese, then one newline, then output the string 'English: ', then the translation in English.</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="整理會議摘要"><a href="#整理會議摘要" class="headerlink" title="整理會議摘要"></a>整理會議摘要</h3><p>同一個模型也能處理文字，不需要再載入其他模型。把逐字稿送回同一個伺服器即可，但逐字稿超過數千字時，要記得調高啟動時的 <code>-c</code> ：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> summary <span class="token operator">=</span> <span class="token keyword">await</span> client<span class="token punctuation">.</span>chat<span class="token punctuation">.</span>completions<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  model<span class="token operator">:</span> <span class="token string">'gemma-4-E4B-it'</span><span class="token punctuation">,</span>
+  messages<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span> role<span class="token operator">:</span> <span class="token string">'system'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token string">'你是會議記錄助理，請以臺灣用語的繁體中文回答。'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span> role<span class="token operator">:</span> <span class="token string">'user'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">請整理以下逐字稿的重點與待辦事項：\n\n</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>lines<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>summary<span class="token punctuation">.</span>choices<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>message<span class="token punctuation">.</span>content<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="總結"><a href="#總結" class="headerlink" title="總結"></a>總結</h2><p>Gemma 4 的 E2B 與 E4B 不必搭配專用語音模型就能做語音辨識。雖然 LM Studio 目前無法直接使用這項能力，但透過 <code>llama-server</code> 的 <code>input_audio</code> ，一樣能用熟悉的 OpenAI SDK 與 TypeScript 完成。官方的 QAT 版 E4B 在 8 GB VRAM 的顯示卡上可以整個放進 GPU ，每段語音不到 1 秒就能完成。</p>
+<p>實作時最重要的是關閉思考模式，並在 prompt 裡把語言寫成 <code>Traditional Chinese</code> ，這兩項設定對準確度的影響遠大於模型大小。此外，記得先切段、調高 <code>max_tokens</code> 並檢查 <code>finish_reason</code> ，就能避開最容易遺漏內容的問題。</p>
+<p>延伸閱讀：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://gemma.ai/get-started/capabilities/audio/">Gemma 音訊文件</a>：語音辨識與翻譯的官方 prompt 範本</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp/blob/master/docs/multimodal.md">llama.cpp 多模態文件</a>：支援的模型與啟動方式</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/kexi/gemma4-transcribe">gemma4-transcribe</a>：完全在瀏覽器內執行的 Transformers.js 版本</li>
+<li>在 Windows 上建立 Linux 開發環境來編譯或執行 <code>llama.cpp</code> ，可參考 <a href="/2026/08/29/Building-a-Linux-Dev-Environment-with-WSL/" title="在 Windows 用 WSL 打造 Linux 開發環境">Building a Linux Dev Environment with WSL</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AI/" rel="tag"># AI</a>
+              <a href="/tags/TypeScript/" rel="tag"># TypeScript</a>
+              <a href="/tags/Gemma/" rel="tag"># Gemma</a>
+              <a href="/tags/llama-cpp/" rel="tag"># llama.cpp</a>
+              <a href="/tags/%E8%AA%9E%E9%9F%B3%E8%BE%A8%E8%AD%98/" rel="tag"># 語音辨識</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="prev" title="在地端執行 Gemma 4：用 LM Studio 與 TypeScript 打造離線 AI 工作流">
+                  <i class="fa fa-angle-left"></i> 在地端執行 Gemma 4：用 LM Studio 與 TypeScript 打造離線 AI 工作流
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.min.js","integrity":"sha256-TtLOdUA8mstPoO6sGvHIGx2ceXrrX4KgIItO06XOn8A="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

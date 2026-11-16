@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kun-neng.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":true,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":true,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="介紹 Google 開放權重模型 Gemma 4 的多模態、思考模式、原生函式呼叫與 MoE 架構，並以 LM Studio 啟動 OpenAI 相容 API ，用 TypeScript 實作聊天、收據圖片轉 JSON 與專案助理代理程式，附上結構化輸出與工具呼叫的實測踩雷紀錄。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在地端執行 Gemma 4：用 LM Studio 與 TypeScript 打造離線 AI 工作流">
+<meta property="og:url" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/index.html">
+<meta property="og:site_name" content="爐邊雜談">
+<meta property="og:description" content="介紹 Google 開放權重模型 Gemma 4 的多模態、思考模式、原生函式呼叫與 MoE 架構，並以 LM Studio 啟動 OpenAI 相容 API ，用 TypeScript 實作聊天、收據圖片轉 JSON 與專案助理代理程式，附上結構化輸出與工具呼叫的實測踩雷紀錄。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/1_download_lm_studio.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/2_lm_studio_get_started.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/3_lm_studio_first_model.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/4_lm_studio_discover_tab.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/5_lm_studio_gemma_4_e4b.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/6_lm_studio_load_model.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/7_lm_studio_start_server.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/8_curl.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/9_lms_ps.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/10_chat_message_content.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/11_receipt_format_date.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/12_receipt_message_content.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/13_tools_result.png">
+<meta property="og:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/14_tools_file_not_found.png">
+<meta property="article:published_time" content="2026-11-01T02:41:55.000Z">
+<meta property="article:modified_time" content="2026-11-16T12:07:56.412Z">
+<meta property="article:author" content="Kun-Neng Hung">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="Gemma">
+<meta property="article:tag" content="LM Studio">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/1_download_lm_studio.png">
+
+
+<link rel="canonical" href="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-tw","comments":true,"permalink":"https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/","path":"2026/11/01/在地端執行-Gemma-4-用-LM-Studio-與-TypeScript-打造離線-AI-工作流/","title":"在地端執行 Gemma 4：用 LM Studio 與 TypeScript 打造離線 AI 工作流"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>在地端執行 Gemma 4：用 LM Studio 與 TypeScript 打造離線 AI 工作流 | 爐邊雜談</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8KS90DSPY"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-E8KS90DSPY","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">爐邊雜談</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">享受片刻寧靜</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tech-talks"><a href="/tech-talks/" rel="section"><i class="fa fa-microphone fa-fw"></i>Tech Talks</a></li><li class="menu-item menu-item-side-projects"><a href="/side-projects/" rel="section"><i class="fa fa-cube fa-fw"></i>Side Projects</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Gemma-4-%E6%9C%89%E5%93%AA%E4%BA%9B%E7%89%88%E6%9C%AC"><span class="nav-number">1.</span> <span class="nav-text">Gemma 4 有哪些版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%80%BC%E5%BE%97%E9%97%9C%E6%B3%A8%E7%9A%84%E4%BA%94%E5%80%8B%E7%89%B9%E8%89%B2"><span class="nav-number">2.</span> <span class="nav-text">值得關注的五個特色</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E6%A8%A1%E5%9E%8B%E4%B9%9F%E6%9C%89%E5%A4%A7%E8%83%BD%E5%8A%9B"><span class="nav-number">2.1.</span> <span class="nav-text">小模型也有大能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MoE-%EF%BC%9A%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%9F%A5%E8%AD%98%E3%80%81%E5%B0%8F%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%80%9F%E5%BA%A6"><span class="nav-number">2.2.</span> <span class="nav-text">MoE ：大模型的知識、小模型的速度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F%E5%A4%9A%E6%A8%A1%E6%85%8B"><span class="nav-number">2.3.</span> <span class="nav-text">原生多模態</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%96%8B%E9%97%9C%E7%9A%84%E6%80%9D%E8%80%83%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.4.</span> <span class="nav-text">可開關的思考模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F%E5%87%BD%E5%BC%8F%E5%91%BC%E5%8F%AB%E8%88%87%E7%B3%BB%E7%B5%B1%E6%8F%90%E7%A4%BA"><span class="nav-number">2.5.</span> <span class="nav-text">原生函式呼叫與系統提示</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8-LM-Studio-%E5%9C%A8%E6%9C%AC%E6%A9%9F%E5%95%9F%E5%8B%95-Gemma-4"><span class="nav-number">3.</span> <span class="nav-text">用 LM Studio 在本機啟動 Gemma 4</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%9D%E7%A1%AC%E9%AB%94%E9%81%B8%E6%93%87%E7%89%88%E6%9C%AC"><span class="nav-number">3.1.</span> <span class="nav-text">依硬體選擇版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A%E5%9C%96%E5%BD%A2%E4%BB%8B%E9%9D%A2"><span class="nav-number">3.2.</span> <span class="nav-text">方法一：圖形介面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9Alms-%E5%91%BD%E4%BB%A4%E5%88%97"><span class="nav-number">3.3.</span> <span class="nav-text">方法二：lms 命令列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%A6%E4%BD%9C%E4%B8%80%EF%BC%9A%E6%9C%AC%E6%A9%9F%E8%81%8A%E5%A4%A9"><span class="nav-number">4.</span> <span class="nav-text">實作一：本機聊天</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%A6%E4%BD%9C%E4%BA%8C%EF%BC%9A%E6%94%B6%E6%93%9A%E5%9C%96%E7%89%87%E8%BD%89%E6%88%90%E8%A8%98%E5%B8%B3-JSON"><span class="nav-number">5.</span> <span class="nav-text">實作二：收據圖片轉成記帳 JSON</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B8%A9%E9%9B%B7%E7%B4%80%E9%8C%84%EF%BC%9Adescription-%E4%B8%8D%E6%9C%83%E8%A2%AB%E5%BC%B7%E5%88%B6"><span class="nav-number">5.1.</span> <span class="nav-text">踩雷紀錄：description 不會被強制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E6%AD%A3%E7%A2%BA%E4%B8%8D%E7%AD%89%E6%96%BC%E5%85%A7%E5%AE%B9%E6%AD%A3%E7%A2%BA"><span class="nav-number">5.2.</span> <span class="nav-text">格式正確不等於內容正確</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%A6%E4%BD%9C%E4%B8%89%EF%BC%9A%E8%AE%80%E5%8F%96%E5%B0%88%E6%A1%88%E6%AA%94%E6%A1%88%E7%9A%84%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F"><span class="nav-number">6.</span> <span class="nav-text">實作三：讀取專案檔案的代理程式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F-1%EF%BC%9A%E5%AE%A3%E5%91%8A%E5%B7%A5%E5%85%B7"><span class="nav-number">6.1.</span> <span class="nav-text">步驟 1：宣告工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F-2%EF%BC%9A%E5%AF%A6%E4%BD%9C%E5%B7%A5%E5%85%B7"><span class="nav-number">6.2.</span> <span class="nav-text">步驟 2：實作工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F-3%EF%BC%9A%E4%BB%A3%E7%90%86%E8%BF%B4%E5%9C%88"><span class="nav-number">6.3.</span> <span class="nav-text">步驟 3：代理迴圈</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%84%E8%83%BD%E7%94%A8%E5%9C%A8%E5%93%AA%E4%BA%9B%E5%9C%B0%E6%96%B9"><span class="nav-number">7.</span> <span class="nav-text">還能用在哪些地方</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E4%BD%B3%E5%AF%A6%E8%B8%90"><span class="nav-number">8.</span> <span class="nav-text">最佳實踐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-number">9.</span> <span class="nav-text">總結</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Kun-Neng Hung</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun-neng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun-neng" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/kunneng" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;kunneng" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://medium.com/@kunneng.hung" title="Medium → https:&#x2F;&#x2F;medium.com&#x2F;@kunneng.hung" rel="noopener me" target="_blank"><i class="fab fa-medium fa-fw"></i>Medium</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://kun-neng.github.io/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Kun-Neng Hung">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爐邊雜談">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="在地端執行 Gemma 4：用 LM Studio 與 TypeScript 打造離線 AI 工作流 | 爐邊雜談">
+      <meta itemprop="description" content="介紹 Google 開放權重模型 Gemma 4 的多模態、思考模式、原生函式呼叫與 MoE 架構，並以 LM Studio 啟動 OpenAI 相容 API ，用 TypeScript 實作聊天、收據圖片轉 JSON 與專案助理代理程式，附上結構化輸出與工具呼叫的實測踩雷紀錄。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在地端執行 Gemma 4：用 LM Studio 與 TypeScript 打造離線 AI 工作流
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-11-01 10:41:55" itemprop="dateCreated datePublished" datetime="2026-11-01T10:41:55+08:00">2026-11-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-11-16 20:07:56" itemprop="dateModified" datetime="2026-11-16T20:07:56+08:00">2026-11-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">介紹 Google 開放權重模型 Gemma 4 的多模態、思考模式、原生函式呼叫與 MoE 架構，並以 LM Studio 啟動 OpenAI 相容 API ，用 TypeScript 實作聊天、收據圖片轉 JSON 與專案助理代理程式，附上結構化輸出與工具呼叫的實測踩雷紀錄。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>把程式碼、合約或客戶資料貼給雲端 AI 之前，多數團隊都會猶豫一下：資料會不會被留存？離線時還能不能用？每次呼叫的費用加起來是多少？ Google 於 2026 年 4 月推出的開放權重模型 <strong>Gemma 4</strong> ，讓這些問題有了不同的答案——最小的版本能在 4 GB 記憶體的裝置上執行，較大的版本在數學與程式能力上已大幅超越上一代的 Gemma 3 27B ，而且採用可商用的 Apache 2.0 授權。本文整理 Gemma 4 值得關注的功能，並透過 <a target="_blank" rel="noopener" href="https://lmstudio.ai/">LM Studio</a> 在本機啟動 OpenAI 相容的 API 伺服器，以 TypeScript 實作三個實際能派上用場的範例：本機聊天、把收據圖片轉成結構化 JSON ，以及能自己讀取專案檔案的代理程式（ agent ）。</p>
+<blockquote>
+<p>本文撰寫時（ 2026 年 11 月）， Gemma 4 為最新一代 Gemma 模型。 Google 原本在 ai.google.dev 的 <a target="_blank" rel="noopener" href="https://ai.google.dev/gemma/docs/integrations/lmstudio?hl=zh-tw">LM Studio 整合頁面</a>已標示為淘汰，新版文件移至 <a target="_blank" rel="noopener" href="https://gemma.ai/deployment/lmstudio/">gemma.ai</a> ；本文的 LM Studio 操作與 API 格式則以 <a target="_blank" rel="noopener" href="https://lmstudio.ai/docs/developer">LM Studio 開發者文件</a>為準。</p>
+</blockquote>
+<blockquote>
+<p>本文的操作畫面與實作結果，以 Windows 11 上的 LM Studio 0.4.28 搭配 <code>google/gemma-4-e4b</code> （ GGUF Q4_K_M ）、 RTX 3060 Ti 8 GB 實測。</p>
+</blockquote>
+<h2 id="Gemma-4-有哪些版本"><a href="#Gemma-4-有哪些版本" class="headerlink" title="Gemma 4 有哪些版本"></a>Gemma 4 有哪些版本</h2><p>Gemma 4 依照部署環境分成五種尺寸，從手機到工作站都有對應的選擇（資料來源：<a target="_blank" rel="noopener" href="https://gemma.ai/models/gemma-4/model-card/">Gemma 4 model card</a>）：</p>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>架構</th>
+<th>參數量</th>
+<th>Context</th>
+<th>輸入模態</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>E2B</td>
+<td>Dense</td>
+<td>有效 2.3B （含 embedding 共 5.1B ）</td>
+<td>128K</td>
+<td>文字、圖片、音訊</td>
+</tr>
+<tr>
+<td>E4B</td>
+<td>Dense</td>
+<td>有效 4.5B （含 embedding 共 8B ）</td>
+<td>128K</td>
+<td>文字、圖片、音訊</td>
+</tr>
+<tr>
+<td>12B Unified</td>
+<td>Dense ，無獨立編碼器</td>
+<td>11.95B</td>
+<td>256K</td>
+<td>文字、圖片、音訊</td>
+</tr>
+<tr>
+<td>26B A4B</td>
+<td>MoE</td>
+<td>總計 25.2B ，每次僅啟用 3.8B</td>
+<td>256K</td>
+<td>文字、圖片</td>
+</tr>
+<tr>
+<td>31B</td>
+<td>Dense</td>
+<td>30.7B</td>
+<td>256K</td>
+<td>文字、圖片</td>
+</tr>
+</tbody></table>
+<p>E2B 、 E4B 、 26B A4B 與 31B 於 2026 年 4 月初釋出， 12B Unified 則於 2026 年 6 月補上，是 Gemma 系列第一個支援原生音訊輸入的中型模型（見 <a target="_blank" rel="noopener" href="https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemma-4-12b/">Google 官方部落格</a>）。</p>
+<h2 id="值得關注的五個特色"><a href="#值得關注的五個特色" class="headerlink" title="值得關注的五個特色"></a>值得關注的五個特色</h2><h3 id="小模型也有大能力"><a href="#小模型也有大能力" class="headerlink" title="小模型也有大能力"></a>小模型也有大能力</h3><p>E2B 與 E4B 名稱中的「 E 」代表 effective （有效參數）。它們採用<strong>逐層嵌入</strong>（ Per-Layer Embeddings ， PLE ）設計：每一層 decoder 擁有自己的小型 embedding 表，推論時只做查表、不參與矩陣運算，因此實際運算量遠低於總參數量。根據 <a target="_blank" rel="noopener" href="https://developers.googleblog.com/bring-state-of-the-art-agentic-skills-to-the-edge-with-gemma-4/">Google Developers Blog</a> 的數據， E2B 在部分裝置上只需不到 1.5 GB 記憶體，甚至能在 Raspberry Pi 5 上以每秒 7.6 個 token 的速度生成文字。</p>
+<h3 id="MoE-：大模型的知識、小模型的速度"><a href="#MoE-：大模型的知識、小模型的速度" class="headerlink" title="MoE ：大模型的知識、小模型的速度"></a>MoE ：大模型的知識、小模型的速度</h3><p><strong>26B A4B</strong> 是混合專家（ Mixture of Experts ， MoE ）模型，共有 128 個專家，每個 token 只啟用其中 8 個加上 1 個共享專家，實際參與運算的參數約 3.8B 。換句話說，它需要足以放下 25B 參數的記憶體，但生成速度接近 4B 模型。對於有 16 GB 以上顯示記憶體、又希望回應夠快的開發者，這通常是最划算的選擇。</p>
+<h3 id="原生多模態"><a href="#原生多模態" class="headerlink" title="原生多模態"></a>原生多模態</h3><p>全系列都能理解圖片，並可將影片視為逐格影像處理（最長 60 秒、每秒 1 格）； E2B 、 E4B 與 12B 還能接收最長 30 秒的音訊，用於語音轉文字（實作請見 <a href="/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/" title="用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字">用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字</a> ）。實務上常見的任務包括：</p>
+<ul>
+<li><strong>OCR 與文件解析</strong>：讀取發票、表格、截圖中的文字</li>
+<li><strong>GUI 元素定位</strong>：回傳畫面元件的 bounding box （座標以 1000 × 1000 為基準）</li>
+<li><strong>截圖轉程式碼</strong>：依照網頁截圖產生 HTML</li>
+</ul>
+<p>圖片的 <a target="_blank" rel="noopener" href="https://gemma.ai/models/gemma-4/model-card/#5-variable-image-resolution">token 預算</a>可在 70 、 140 、 280 、 560 、 1120 之間調整：分類或簡單描述用低預算即可， OCR 、文件解析則建議用高預算以保留細節。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://gemma.ai/models/gemma-4/model-card/#4-modality-order">官方建議</a>將<strong>圖片放在文字之前</strong>、音訊放在文字之後，模型的表現會比較穩定。不過筆者在 <code>llama.cpp</code> 上實測語音轉文字時，音訊放在文字前面的錯字反而略少，詳見 <a href="/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/" title="用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字">語音轉文字的實作</a> 。</p>
+</blockquote>
+<h3 id="可開關的思考模式"><a href="#可開關的思考模式" class="headerlink" title="可開關的思考模式"></a>可開關的思考模式</h3><p>Gemma 4 內建可設定的<a target="_blank" rel="noopener" href="https://gemma.ai/get-started/capabilities/thinking/">思考（ thinking ）模式</a>：在 system prompt 開頭加入 <code>&lt;|think|&gt;</code> 控制 token 即可啟用，模型會先在 <code>&lt;|channel&gt;thought ... &lt;channel|&gt;</code> 區塊中推理，再輸出最終答案。數學、程式除錯等需要多步推理的任務適合開啟；簡單的翻譯或摘要關閉即可節省時間。</p>
+<p>要注意的是，執行工具的預設值不一定和模型文件相同。例如在 <code>llama-server</code> 上實測， Gemma 4 預設就會進入思考模式，必須在請求中明確關閉（詳見 <a href="/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/" title="用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字">語音轉文字的實作</a> ）。若簡單的問題也回得特別慢，可以先檢查思考模式是否被開啟。</p>
+<p>在 LM Studio 中，支援推理的模型會在聊天介面顯示可收合的思考內容；透過 API 呼叫時，可在 Developer 設定中讓伺服器把推理內容分離到 <code>reasoning_content</code> 欄位，避免與正式回答混在一起（實際選項名稱請依所使用的 LM Studio 版本確認）。</p>
+<blockquote>
+<p>多輪對話時，官方建議<strong>不要</strong>把先前的思考內容放回對話歷史；唯一的例外是包含工具呼叫的回合，該回合的思考內容需要保留。</p>
+</blockquote>
+<h3 id="原生函式呼叫與系統提示"><a href="#原生函式呼叫與系統提示" class="headerlink" title="原生函式呼叫與系統提示"></a>原生函式呼叫與系統提示</h3><p>Gemma 4 原生支援 <code>system</code> 角色與函式呼叫（ function calling ），不必再用 prompt 技巧模擬。搭配 128K 至 256K 的 context window 與 140 種以上語言的預訓練資料，它很適合用來打造在本機執行的代理程式。下表節錄 model card 中 instruction-tuned 版本的部分成績，可以看出世代間的差距：</p>
+<table>
+<thead>
+<tr>
+<th>Benchmark</th>
+<th>Gemma 4 31B</th>
+<th>Gemma 4 26B A4B</th>
+<th>Gemma 4 E4B</th>
+<th>Gemma 3 27B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MMLU Pro</td>
+<td>85.2%</td>
+<td>82.6%</td>
+<td>69.4%</td>
+<td>67.6%</td>
+</tr>
+<tr>
+<td>AIME 2026 （無工具）</td>
+<td>89.2%</td>
+<td>88.3%</td>
+<td>42.5%</td>
+<td>20.8%</td>
+</tr>
+<tr>
+<td>LiveCodeBench v6</td>
+<td>80.0%</td>
+<td>77.1%</td>
+<td>52.0%</td>
+<td>29.1%</td>
+</tr>
+<tr>
+<td>GPQA Diamond</td>
+<td>84.3%</td>
+<td>82.3%</td>
+<td>58.6%</td>
+<td>42.4%</td>
+</tr>
+</tbody></table>
+<h2 id="用-LM-Studio-在本機啟動-Gemma-4"><a href="#用-LM-Studio-在本機啟動-Gemma-4" class="headerlink" title="用 LM Studio 在本機啟動 Gemma 4"></a>用 LM Studio 在本機啟動 Gemma 4</h2><p>LM Studio 是跨平台（ Windows 、 macOS 、 Linux ）的桌面應用程式，底層使用 <code>llama.cpp</code> （ GGUF 格式）與 Apple MLX 引擎，同時提供圖形介面與 <code>lms</code> 命令列工具。最重要的是，它能把本機模型包裝成 <strong>OpenAI 相容的 API</strong> ，既有的 OpenAI SDK 程式碼只要改一行 <code>baseURL</code> 就能切換到本機模型。</p>
+<h3 id="依硬體選擇版本"><a href="#依硬體選擇版本" class="headerlink" title="依硬體選擇版本"></a>依硬體選擇版本</h3><p>LM Studio 上的 Gemma 4 模型下載大小如下（資料來源：<a target="_blank" rel="noopener" href="https://lmstudio.ai/models/gemma-4">LM Studio Gemma 4 頁面</a>），右欄為依下載大小推估的參考配置：</p>
+<table>
+<thead>
+<tr>
+<th>Model ID</th>
+<th>下載大小</th>
+<th>參考配置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>google/gemma-4-e2b</code></td>
+<td>4.20 GB</td>
+<td>一般筆電、無獨立顯示卡</td>
+</tr>
+<tr>
+<td><code>google/gemma-4-e4b</code></td>
+<td>5.90 GB</td>
+<td>8 GB VRAM 顯示卡</td>
+</tr>
+<tr>
+<td><code>google/gemma-4-12b</code></td>
+<td>7.40 GB</td>
+<td>8 GB VRAM 需部分卸載至 CPU ； 12 GB 以上較順暢</td>
+</tr>
+<tr>
+<td><code>google/gemma-4-26b-a4b</code></td>
+<td>15.60 GB</td>
+<td>16 至 24 GB VRAM ，或 32 GB 統一記憶體的 Mac</td>
+</tr>
+<tr>
+<td><code>google/gemma-4-31b</code></td>
+<td>19.00 GB</td>
+<td>24 GB VRAM</td>
+</tr>
+</tbody></table>
+<p>每個版本另有 <code>-qat</code> 後綴的變體，代表<strong>量化感知訓練</strong>（ Quantization-Aware Training ）：模型在訓練階段就考慮了低位元量化的誤差，因此在相同大小下通常比一般量化版本保有更好的品質，建議優先選用。</p>
+<h3 id="方法一：圖形介面"><a href="#方法一：圖形介面" class="headerlink" title="方法一：圖形介面"></a>方法一：圖形介面</h3><ol>
+<li><p>從 <a target="_blank" rel="noopener" href="https://lmstudio.ai/download">LM Studio 下載頁面</a>下載並安裝。頁面最上方的 <strong>Bionic</strong> 是另一個<a target="_blank" rel="noopener" href="https://lmstudio.ai/docs/bionic">獨立的代理程式應用</a>，操作方式與本文不同，請選擇下方的 <strong>Download LM Studio</strong> 。</p>
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/1_download_lm_studio.png" class="">
+<p>第一次開啟 LM Studio 會先看到歡迎畫面，按下 <strong>Get Started</strong> 後，它會推薦第一個要下載的模型。以筆者的環境為例，推薦的正是 <code>google/gemma-4-e4b</code> ，可以直接下載，或按 <strong>Skip for now</strong> 稍後再下載：</p>
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/2_lm_studio_get_started.png" class="">
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/3_lm_studio_first_model.png" class="">
+</li>
+<li><p>點選左側側邊欄的 <strong>Model Search</strong> ，在彈出的搜尋視窗中輸入 <code>Gemma 4 E4B</code> ，選擇 Google 官方的模型。右側的 <strong>Download Options</strong> 會依照你的硬體推薦合適的量化版本（筆者的環境為 <code>Q4_K_M</code> ，並標示 <strong>Full GPU Offload Possible</strong> ，代表整個模型都能放進 GPU ），按下 <strong>Download</strong> 下載：</p>
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/4_lm_studio_discover_tab.png" class="">
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/5_lm_studio_gemma_4_e4b.png" class="">
+<p>模型資訊中的 <strong>Capabilities</strong> 標示了它在 LM Studio 中可以使用的能力：</p>
+</li>
+</ol>
+<ul>
+<li><strong>Vision</strong> （眼睛圖示）：可以輸入圖片，用於後面的實作二</li>
+<li><strong>Tool Use</strong> （扳手圖示）：支援工具呼叫，用於後面的實作三</li>
+<li><strong>Reasoning</strong> ：支援前面介紹的思考模式</li>
+</ul>
+<blockquote>
+<p>雖然下方 README 提到小模型支援音訊， Capabilities 卻沒有列出音訊，語音轉文字需要改用其他工具（詳見 <a href="/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/" title="用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字">語音轉文字的實作</a> ）。</p>
+</blockquote>
+<ol start="3">
+<li>下載完成後，右下角會跳出通知，按下 <strong>Load Model</strong> 將模型載入記憶體（之後也可以在 <strong>Model Server</strong> 頁面按 <strong>Load Model</strong> 或 <code>Ctrl + L</code> 選擇要載入的模型）。旁邊的 <strong>Use in New Chat</strong> 則是在 LM Studio 內建的聊天介面中試用模型，本文的實作都透過 API 呼叫，因此選擇 <strong>Load Model</strong> ：<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/6_lm_studio_load_model.png" class="">
+接著點選左側側邊欄的 <strong>Model Server</strong> ，打開上方的 <strong>Status</strong> 開關，顯示 <strong>Running</strong> 即代表本機伺服器已啟動，位址為 <code>http://127.0.0.1:1234</code> 。 <strong>Loaded Models</strong> 中的模型標示為 <strong>READY</strong> 後就可以呼叫，右側的 <strong>API Model Identifier</strong> （ <code>google/gemma-4-e4b</code> ）就是程式中 <code>model</code> 參數要填入的名稱：<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/7_lm_studio_start_server.png" class=""></li>
+</ol>
+<blockquote>
+<p><strong>注意：</strong> 按視窗右上角的 X 只會把 LM Studio 縮到系統匣，伺服器與已載入的模型仍會繼續執行，並持續占用記憶體與 VRAM 。不使用時，請在系統匣的 LM Studio 圖示按右鍵選擇 <strong>Quit</strong> ，或用下方的 <code>lms unload --all</code> 與 <code>lms server stop</code> 停止。</p>
+</blockquote>
+<h3 id="方法二：lms-命令列"><a href="#方法二：lms-命令列" class="headerlink" title="方法二：lms 命令列"></a>方法二：<code>lms</code> 命令列</h3><p>偏好終端機或需要寫進腳本時，可以使用 <code>lms</code> CLI 。 <code>lms</code> 隨 LM Studio 一起安裝，不需要另外下載，但<a target="_blank" rel="noopener" href="https://lmstudio.ai/docs/cli">必須先開啟過一次 LM Studio</a> ，它才會把 <code>lms</code> 所在的 <code>~/.lmstudio/bin</code> 加入 PATH 。已經開著的終端機讀不到新的 PATH ，要重新開啟；在 VS Code 的終端機裡使用時，要把整個 VS Code 重新啟動：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 下載模型</span>
+lms get google/gemma-4-e4b
+
+<span class="token comment"># 列出本機已下載的模型</span>
+lms <span class="token function">ls</span>
+
+<span class="token comment"># 載入模型，並將 context 長度設為 16K</span>
+lms load google/gemma-4-e4b --context-length <span class="token number">16384</span>
+
+<span class="token comment"># 啟動 API 伺服器（預設埠號 1234）</span>
+lms server start
+
+<span class="token comment"># 查看目前已載入的模型與 context 長度</span>
+lms <span class="token function">ps</span>
+
+<span class="token comment"># 用完後卸載模型並停止伺服器</span>
+lms unload <span class="token parameter variable">--all</span>
+lms server stop<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>伺服器啟動後，用以下指令確認模型已可供呼叫：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">curl.exe http://localhost:1234/v1/models<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/8_curl.png" class="">
+
+<blockquote>
+<p>Context 長度越長， KV cache 佔用的記憶體就越多。雖然 Gemma 4 最高支援 256K ，日常使用設定 8K 至 32K 就足夠，需要分析長文件時再調高。從圖形介面按 <strong>Load Model</strong> 載入時，預設 context 長度為 8K （可用 <code>lms ps</code> 確認），若要調整，可以在 <strong>Model Server</strong> 頁面右側的 <strong>Load</strong> 分頁修改後重新載入。</p>
+</blockquote>
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/9_lms_ps.png" class="">
+
+<h2 id="實作一：本機聊天"><a href="#實作一：本機聊天" class="headerlink" title="實作一：本機聊天"></a>實作一：本機聊天</h2><p>以下範例都使用 Node.js 20 以上版本與官方 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/openai"><code>openai</code></a> 套件。先建立專案：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> gemma4-local
+<span class="token builtin class-name">cd</span> gemma4-local
+<span class="token function">npm</span> init <span class="token parameter variable">-y</span>
+<span class="token function">npm</span> pkg <span class="token builtin class-name">set</span> <span class="token assign-left variable">type</span><span class="token operator">=</span>module   <span class="token comment"># 啟用 ESM ，才能使用 top-level await</span>
+<span class="token function">npm</span> i openai
+<span class="token function">npm</span> i <span class="token parameter variable">-D</span> tsx @types/node  <span class="token comment"># 直接執行 TypeScript</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接著在專案根目錄建立 <code>tsconfig.json</code> ：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"compilerOptions"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"module"</span><span class="token operator">:</span> <span class="token string">"nodenext"</span><span class="token punctuation">,</span>
+    <span class="token property">"types"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"node"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"noEmit"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>tsx</code> 執行時不做型別檢查，這個檔案是給編輯器用的。 TypeScript 6.0 起 <code>types</code> 的預設值改為 <code>[]</code> ，少了 <code>&quot;types&quot;: [&quot;node&quot;]</code> ，編輯器會在後面的 <code>node:fs/promises</code> 等 import 上顯示找不到名稱的錯誤。</p>
+<p>建立 <code>chat.ts</code> ：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// chat.ts</span>
+<span class="token keyword">import</span> OpenAI <span class="token keyword">from</span> <span class="token string">'openai'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">OpenAI</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  baseURL<span class="token operator">:</span> <span class="token string">'http://localhost:1234/v1'</span><span class="token punctuation">,</span> <span class="token comment">// 指向 LM Studio</span>
+  apiKey<span class="token operator">:</span> <span class="token string">'lm-studio'</span><span class="token punctuation">,</span>                 <span class="token comment">// 本機伺服器不驗證金鑰，填任意字串即可</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> completion <span class="token operator">=</span> <span class="token keyword">await</span> client<span class="token punctuation">.</span>chat<span class="token punctuation">.</span>completions<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  model<span class="token operator">:</span> <span class="token string">'google/gemma-4-e4b'</span><span class="token punctuation">,</span>
+  messages<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span> role<span class="token operator">:</span> <span class="token string">'system'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token string">'你是資深 Angular 工程師，請以臺灣用語的繁體中文回答。'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span> role<span class="token operator">:</span> <span class="token string">'user'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token string">'用三點說明 Signal 與 RxJS 各自適合的使用時機。'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  temperature<span class="token operator">:</span> <span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token comment">// 官方建議的取樣參數</span>
+  top_p<span class="token operator">:</span> <span class="token number">0.95</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>completion<span class="token punctuation">.</span>choices<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>message<span class="token punctuation">.</span>content<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>執行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx tsx chat.ts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/10_chat_message_content.png" class="">
+
+<p><strong>說明：</strong></p>
+<ul>
+<li><code>baseURL</code> 與 <code>apiKey</code> 是唯一和呼叫 OpenAI 雲端不同的地方，其餘程式碼完全相同。這代表既有的工具鏈（ LangChain 、 Vercel AI SDK 等）大多也能直接接上本機模型。</li>
+<li><code>model</code> 填入 <code>lms ls</code> 顯示的 model key 。</li>
+<li>Gemma 4 官方建議的取樣參數為 <code>temperature = 1.0</code> 、 <code>top_p = 0.95</code> 、 <code>top_k = 64</code> ； <code>top_k</code> 不在 OpenAI 的標準參數中，可在 LM Studio 的模型設定裡調整。</li>
+</ul>
+<p><strong>實際執行時的注意事項：</strong></p>
+<ul>
+<li>輸出中的 <code>**</code> 、 <code>*</code> 是模型回傳的 Markdown 原文， <code>console.log</code> 不會轉換格式，這是正常現象。要在網頁上顯示時，再交給 Markdown 渲染套件處理。</li>
+<li>提示要求「用三點說明」，筆者執行時模型只列出兩點再加上總結。 4B 等級的模型不一定會精確遵守數量、格式等細節指示，必要時可以重新產生，或改用較大的模型。</li>
+<li>雖然 system prompt 要求臺灣用語，輸出仍出現「用戶」（臺灣慣用「使用者」）等用語。若用詞很重要，可以在提示中直接列出要使用的詞彙。</li>
+</ul>
+<h2 id="實作二：收據圖片轉成記帳-JSON"><a href="#實作二：收據圖片轉成記帳-JSON" class="headerlink" title="實作二：收據圖片轉成記帳 JSON"></a>實作二：收據圖片轉成記帳 JSON</h2><p>這個範例結合<strong>多模態</strong>與<strong>結構化輸出</strong>：讀入一張收據照片，要求模型依照 JSON Schema 回傳店家、日期、品項與分類，結果可以直接寫入資料庫或記帳 App 。由於整個流程都在本機進行，消費紀錄不會離開你的電腦。</p>
+<p>LM Studio 的結構化輸出使用語法約束取樣（ GGUF 模型透過 <code>llama.cpp</code> 的 grammar ， MLX 模型透過 Outlines ），能<strong>保證</strong>輸出符合 Schema 格式（見 <a target="_blank" rel="noopener" href="https://lmstudio.ai/docs/developer/openai-compat/structured-output">Structured Output 文件</a>）。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// receipt.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> readFile <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'node:fs/promises'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> OpenAI <span class="token keyword">from</span> <span class="token string">'openai'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">OpenAI</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> baseURL<span class="token operator">:</span> <span class="token string">'http://localhost:1234/v1'</span><span class="token punctuation">,</span> apiKey<span class="token operator">:</span> <span class="token string">'lm-studio'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 將圖片轉成 base64 data URL （這裡以 JPEG 為例， PNG 或 WebP 請改成 image/png 、 image/webp ）</span>
+<span class="token keyword">const</span> image <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">readFile</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token string">'./receipt.jpg'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> dataUrl <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">data:image/jpeg;base64,</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>image<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token string">'base64'</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+
+<span class="token comment">// 定義期望的輸出結構</span>
+<span class="token keyword">const</span> receiptSchema <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  type<span class="token operator">:</span> <span class="token string">'object'</span><span class="token punctuation">,</span>
+  properties<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    store<span class="token operator">:</span> <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'string'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    date<span class="token operator">:</span> <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'string'</span><span class="token punctuation">,</span> format<span class="token operator">:</span> <span class="token string">'date'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token comment">// 強制輸出 YYYY-MM-DD</span>
+    items<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      type<span class="token operator">:</span> <span class="token string">'array'</span><span class="token punctuation">,</span>
+      items<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        type<span class="token operator">:</span> <span class="token string">'object'</span><span class="token punctuation">,</span>
+        properties<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+          name<span class="token operator">:</span> <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'string'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+          quantity<span class="token operator">:</span> <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'integer'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+          price<span class="token operator">:</span> <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'number'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        required<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">,</span> <span class="token string">'quantity'</span><span class="token punctuation">,</span> <span class="token string">'price'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    total<span class="token operator">:</span> <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'number'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    category<span class="token operator">:</span> <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'string'</span><span class="token punctuation">,</span> <span class="token keyword">enum</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'餐飲'</span><span class="token punctuation">,</span> <span class="token string">'交通'</span><span class="token punctuation">,</span> <span class="token string">'購物'</span><span class="token punctuation">,</span> <span class="token string">'其他'</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  required<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'store'</span><span class="token punctuation">,</span> <span class="token string">'date'</span><span class="token punctuation">,</span> <span class="token string">'items'</span><span class="token punctuation">,</span> <span class="token string">'total'</span><span class="token punctuation">,</span> <span class="token string">'category'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> completion <span class="token operator">=</span> <span class="token keyword">await</span> client<span class="token punctuation">.</span>chat<span class="token punctuation">.</span>completions<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+  model<span class="token operator">:</span> <span class="token string">'google/gemma-4-e4b'</span><span class="token punctuation">,</span>
+  messages<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+      role<span class="token operator">:</span> <span class="token string">'user'</span><span class="token punctuation">,</span>
+      content<span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'image_url'</span><span class="token punctuation">,</span> image_url<span class="token operator">:</span> <span class="token punctuation">&#123;</span> url<span class="token operator">:</span> dataUrl <span class="token punctuation">&#125;</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token comment">// 圖片放在文字之前</span>
+        <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'text'</span><span class="token punctuation">,</span> text<span class="token operator">:</span> <span class="token string">'請讀取這張收據，整理成記帳資料。'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  response_format<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    type<span class="token operator">:</span> <span class="token string">'json_schema'</span><span class="token punctuation">,</span>
+    json_schema<span class="token operator">:</span> <span class="token punctuation">&#123;</span> name<span class="token operator">:</span> <span class="token string">'receipt'</span><span class="token punctuation">,</span> strict<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> schema<span class="token operator">:</span> receiptSchema <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 結構化輸出仍以字串形式回傳，需要自行 parse</span>
+<span class="token keyword">const</span> receipt <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>completion<span class="token punctuation">.</span>choices<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>message<span class="token punctuation">.</span>content <span class="token operator">??</span> <span class="token string">'&#123;&#125;'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>receipt<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>執行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx tsx receipt.ts ./my-receipt.jpg<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/11_receipt_format_date.png" class="">
+
+<p><strong>說明：</strong></p>
+<ul>
+<li><code>date</code> 使用 <code>format: &#39;date&#39;</code> ，語法約束會強制輸出 <code>YYYY-MM-DD</code> 格式的日期。</li>
+<li><code>category</code> 使用 <code>enum</code> 限制可選值，模型只能從四個分類中挑選，後續程式不必處理意料之外的字串。</li>
+<li><code>required</code> 確保每個欄位都會出現，避免下游程式遇到 <code>undefined</code> 。</li>
+<li><code>content</code> 改成陣列，即可在同一則訊息中混合圖片與文字。</li>
+</ul>
+<h3 id="踩雷紀錄：description-不會被強制"><a href="#踩雷紀錄：description-不會被強制" class="headerlink" title="踩雷紀錄：description 不會被強制"></a>踩雷紀錄：<code>description</code> 不會被強制</h3><p>一開始把 <code>date</code> 寫成以下，想用說明文字告訴模型日期格式規範：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">date<span class="token operator">:</span> <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'string'</span><span class="token punctuation">,</span> description<span class="token operator">:</span> <span class="token string">'格式為 YYYY-MM-DD'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>結果模型照著收據上的寫法輸出了 <code>&#39;2024年8月7日&#39;</code> 。下圖左邊是收據，右下是當時 Gemma 4 E4B 的輸出；右上則是在 <a target="_blank" rel="noopener" href="https://gemini.google.com/">Gemini App</a> 網頁版以 3.5 Flash-Lite 讀取同一張收據的結果，供對照參考：</p>
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/12_receipt_message_content.png" class="">
+
+<p>原因是語法約束只會強制 JSON Schema 中的結構性規則（型別、 <code>enum</code> 、 <code>required</code> 、 <code>pattern</code> 、 <code>format</code> 等）， <code>description</code> 只是給模型的提示，模型可以不遵守。假設以「請把 date 原樣填入『2024年8月7日』這幾個中文字，絕對不要轉換成其他格式。」的提示測試三種寫法，各執行兩次：</p>
+<table>
+<thead>
+<tr>
+<th><code>date</code> 的寫法</th>
+<th>輸出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>description: &#39;格式為 YYYY-MM-DD&#39;</code></td>
+<td>兩次都是 <code>2024年8月7日</code></td>
+</tr>
+<tr>
+<td><code>pattern: &#39;^[0-9]&#123;4&#125;-[0-9]&#123;2&#125;-[0-9]&#123;2&#125;$&#39;</code></td>
+<td>兩次都是 <code>2024-08-07</code></td>
+</tr>
+<tr>
+<td><code>format: &#39;date&#39;</code></td>
+<td>兩次都是 <code>2024-08-07</code></td>
+</tr>
+</tbody></table>
+<p>即使提示明確要求不要轉換，使用 <code>pattern</code> 或 <code>format</code> 時仍輸出規定的格式。因此，<strong>一定要遵守的格式請寫成 Schema 規則，不要只寫在 <code>description</code> 裡</strong>。</p>
+<h3 id="格式正確不等於內容正確"><a href="#格式正確不等於內容正確" class="headerlink" title="格式正確不等於內容正確"></a>格式正確不等於內容正確</h3><p>語法約束只保證「格式正確」，不保證「內容正確」。同一張收據、同一個模型，每次執行的結果都可能不同。 LM Studio 文件也提醒 7B 以下的模型在結構化輸出上能力較有限，若辨識錯誤率偏高，可改用 <code>google/gemma-4-12b</code> 或 <code>google/gemma-4-26b-a4b</code> 。無論使用哪個模型，都建議在程式中加上驗證邏輯，例如檢查品項加總是否等於總計：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> sum <span class="token operator">=</span> receipt<span class="token punctuation">.</span>items<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span>acc<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> item<span class="token operator">:</span> <span class="token punctuation">&#123;</span> quantity<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> price<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span> <span class="token operator">=></span> acc <span class="token operator">+</span> item<span class="token punctuation">.</span>quantity <span class="token operator">*</span> item<span class="token punctuation">.</span>price<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>sum <span class="token operator">!==</span> receipt<span class="token punctuation">.</span>total<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">品項加總 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>sum<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string"> 與總計 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>receipt<span class="token punctuation">.</span>total<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string"> 不符，請人工確認</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="實作三：讀取專案檔案的代理程式"><a href="#實作三：讀取專案檔案的代理程式" class="headerlink" title="實作三：讀取專案檔案的代理程式"></a>實作三：讀取專案檔案的代理程式</h2><p>最後一個範例展示 Gemma 4 的<strong>函式呼叫</strong>能力：提供兩個唯讀工具給模型，讓它自行決定何時讀取 <code>package.json</code> 或原始碼檔案，再根據結果回答問題。這就是 AI 代理程式最核心的「思考 → 呼叫工具 → 觀察結果 → 再思考」迴圈。</p>
+<p>以下三個步驟的程式碼都寫在同一個 <code>agent.ts</code> 檔案中，依序接續在前一段程式碼後面。</p>
+<h3 id="步驟-1：宣告工具"><a href="#步驟-1：宣告工具" class="headerlink" title="步驟 1：宣告工具"></a>步驟 1：宣告工具</h3><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// agent.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> readFile <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'node:fs/promises'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> path <span class="token keyword">from</span> <span class="token string">'node:path'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> OpenAI <span class="token keyword">from</span> <span class="token string">'openai'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token keyword">type</span> <span class="token punctuation">&#123;</span>
+  ChatCompletionMessageParam<span class="token punctuation">,</span>
+  ChatCompletionTool<span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'openai/resources/chat/completions'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">OpenAI</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> baseURL<span class="token operator">:</span> <span class="token string">'http://localhost:1234/v1'</span><span class="token punctuation">,</span> apiKey<span class="token operator">:</span> <span class="token string">'lm-studio'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> <span class="token constant">PROJECT_ROOT</span> <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">??</span> process<span class="token punctuation">.</span><span class="token function">cwd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> tools<span class="token operator">:</span> ChatCompletionTool<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    type<span class="token operator">:</span> <span class="token string">'function'</span><span class="token punctuation">,</span>
+    <span class="token keyword">function</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      name<span class="token operator">:</span> <span class="token string">'get_dependencies'</span><span class="token punctuation">,</span>
+      description<span class="token operator">:</span> <span class="token string">'讀取專案 package.json 中的 dependencies 與 devDependencies'</span><span class="token punctuation">,</span>
+      parameters<span class="token operator">:</span> <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'object'</span><span class="token punctuation">,</span> properties<span class="token operator">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span>
+    type<span class="token operator">:</span> <span class="token string">'function'</span><span class="token punctuation">,</span>
+    <span class="token keyword">function</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      name<span class="token operator">:</span> <span class="token string">'read_file'</span><span class="token punctuation">,</span>
+      description<span class="token operator">:</span> <span class="token string">'讀取專案內指定檔案的內容'</span><span class="token punctuation">,</span>
+      parameters<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        type<span class="token operator">:</span> <span class="token string">'object'</span><span class="token punctuation">,</span>
+        properties<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+          filePath<span class="token operator">:</span> <span class="token punctuation">&#123;</span> type<span class="token operator">:</span> <span class="token string">'string'</span><span class="token punctuation">,</span> description<span class="token operator">:</span> <span class="token string">'相對於專案根目錄的路徑，例如 src/app/app.config.ts'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        required<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'filePath'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>工具的 <code>description</code> 就是模型判斷「何時該用哪個工具」的依據，描述越具體，模型越不容易選錯。</p>
+<h3 id="步驟-2：實作工具"><a href="#步驟-2：實作工具" class="headerlink" title="步驟 2：實作工具"></a>步驟 2：實作工具</h3><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// agent.ts （接續步驟 1）</span>
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">runTool</span><span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> args<span class="token operator">:</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token operator">></span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>name <span class="token operator">===</span> <span class="token string">'get_dependencies'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">const</span> pkg <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token function">readFile</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token constant">PROJECT_ROOT</span><span class="token punctuation">,</span> <span class="token string">'package.json'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">return</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> dependencies<span class="token operator">:</span> pkg<span class="token punctuation">.</span>dependencies<span class="token punctuation">,</span> devDependencies<span class="token operator">:</span> pkg<span class="token punctuation">.</span>devDependencies <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>name <span class="token operator">===</span> <span class="token string">'read_file'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">const</span> target <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token constant">PROJECT_ROOT</span><span class="token punctuation">,</span> args<span class="token punctuation">.</span>filePath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">const</span> relative <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">relative</span><span class="token punctuation">(</span><span class="token constant">PROJECT_ROOT</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">// 防止模型透過 ../ 讀取專案以外的檔案</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>relative<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span><span class="token string">'..'</span><span class="token punctuation">)</span> <span class="token operator">||</span> path<span class="token punctuation">.</span><span class="token function">isAbsolute</span><span class="token punctuation">(</span>relative<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token string">'錯誤：不允許讀取專案目錄以外的檔案'</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+      <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token function">readFile</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> <span class="token string">'utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 要加 await ，讀取失敗時才會進入下方的 catch</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">錯誤：未知的工具 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>name<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 找不到檔案、 JSON 格式錯誤、缺少參數等例外，都轉成字串交給模型判斷</span>
+    <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">錯誤：</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span><span class="token punctuation">(</span>error <span class="token keyword">as</span> Error<span class="token punctuation">)</span><span class="token punctuation">.</span>message<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>工具內發生的任何錯誤都以字串回傳給模型，而不是直接丟出例外：一方面避免整個程式中止，另一方面模型也有機會根據錯誤訊息修正參數再試一次。例如執行時指定的目錄沒有 <code>package.json</code> ，模型會收到 <code>錯誤：ENOENT: no such file or directory, open &#39;.../package.json&#39;</code> ，並據此回覆找不到檔案，而不是讓程式直接當掉（執行結果見步驟 3 ）。</p>
+<h3 id="步驟-3：代理迴圈"><a href="#步驟-3：代理迴圈" class="headerlink" title="步驟 3：代理迴圈"></a>步驟 3：代理迴圈</h3><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// agent.ts （接續步驟 2）</span>
+<span class="token keyword">const</span> messages<span class="token operator">:</span> ChatCompletionMessageParam<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span> role<span class="token operator">:</span> <span class="token string">'system'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token string">'你是 Angular 專案助理。需要資訊時請呼叫工具，不要猜測。以繁體中文回答。'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span> role<span class="token operator">:</span> <span class="token string">'user'</span><span class="token punctuation">,</span> content<span class="token operator">:</span> <span class="token string">'這個專案使用哪個 Angular 版本？app.config.ts 註冊了哪些 provider？'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> <span class="token constant">MAX_STEPS</span> <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span> <span class="token comment">// 避免模型無限呼叫工具</span>
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> step <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> step <span class="token operator">&lt;</span> <span class="token constant">MAX_STEPS</span><span class="token punctuation">;</span> step<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> <span class="token punctuation">&#123;</span> choices <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token keyword">await</span> client<span class="token punctuation">.</span>chat<span class="token punctuation">.</span>completions<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+    model<span class="token operator">:</span> <span class="token string">'google/gemma-4-e4b'</span><span class="token punctuation">,</span>
+    messages<span class="token punctuation">,</span>
+    tools<span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> message <span class="token operator">=</span> choices<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>message<span class="token punctuation">;</span>
+  messages<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 保留含 tool_calls 的回合，模型才知道自己呼叫過什麼</span>
+
+  <span class="token comment">// 沒有要求呼叫工具，代表模型已經得出最終答案</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>message<span class="token punctuation">.</span>tool_calls<span class="token operator">?.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>message<span class="token punctuation">.</span>content<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">break</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> call <span class="token keyword">of</span> message<span class="token punctuation">.</span>tool_calls<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>call<span class="token punctuation">.</span>type <span class="token operator">!==</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">continue</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">→ 呼叫 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>call<span class="token punctuation">.</span>function<span class="token punctuation">.</span>name<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string">(</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>call<span class="token punctuation">.</span>function<span class="token punctuation">.</span>arguments<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string">)</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">const</span> args <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>call<span class="token punctuation">.</span>function<span class="token punctuation">.</span>arguments <span class="token operator">||</span> <span class="token string">'&#123;&#125;'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    messages<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+      role<span class="token operator">:</span> <span class="token string">'tool'</span><span class="token punctuation">,</span>
+      tool_call_id<span class="token operator">:</span> call<span class="token punctuation">.</span>id<span class="token punctuation">,</span> <span class="token comment">// 對應到哪一次工具呼叫</span>
+      content<span class="token operator">:</span> <span class="token keyword">await</span> <span class="token function">runTool</span><span class="token punctuation">(</span>call<span class="token punctuation">.</span>function<span class="token punctuation">.</span>name<span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>對任一 Angular 專案執行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx tsx agent.ts <span class="token punctuation">..</span>/my-angular-app<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/13_tools_result.png" class="">
+
+<p>如上圖所示，模型先呼叫 <code>get_dependencies</code> 取得 <code>@angular/core</code> 版本，再呼叫 <code>read_file</code> 讀取 <code>src/app/app.config.ts</code> ，最後彙整兩者的結果回答。</p>
+<p>若指定的目錄不對（例如目錄中沒有 <code>package.json</code> ），兩個工具都會回傳錯誤字串，模型會據此說明原因並建議確認路徑，程式不會中止：</p>
+<img data-src="/2026/11/01/%E5%9C%A8%E5%9C%B0%E7%AB%AF%E5%9F%B7%E8%A1%8C-Gemma-4-%E7%94%A8-LM-Studio-%E8%88%87-TypeScript-%E6%89%93%E9%80%A0%E9%9B%A2%E7%B7%9A-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/14_tools_file_not_found.png" class="">
+
+<p><strong>說明：</strong></p>
+<ul>
+<li>這裡沿用前面下載的 <code>google/gemma-4-e4b</code> 。多步驟的工具呼叫對模型的推理能力要求較高，若有 16 GB 以上的 VRAM ，建議改用 <code>google/gemma-4-26b-a4b</code> ： MoE 架構讓它的速度仍接近 4B 模型，選錯工具或參數的機率也比較低。</li>
+<li>若偏好 Python ， LM Studio 的 <a target="_blank" rel="noopener" href="https://lmstudio.ai/docs/python/agent/act">Python SDK</a> 提供 <code>model.act()</code> ，能直接把 Python 函式當作工具傳入，並自動處理上述迴圈。</li>
+</ul>
+<h2 id="還能用在哪些地方"><a href="#還能用在哪些地方" class="headerlink" title="還能用在哪些地方"></a>還能用在哪些地方</h2><p>除了上述三個範例， Gemma 4 的特性也適合以下情境：</p>
+<table>
+<thead>
+<tr>
+<th>情境</th>
+<th>搭配的特色</th>
+<th>建議版本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>內部文件問答、程式碼審查</td>
+<td>長 context 、資料不出本機</td>
+<td>26B A4B 、 31B</td>
+</tr>
+<tr>
+<td>會議錄音轉逐字稿與摘要</td>
+<td>音訊輸入</td>
+<td>E2B 、 E4B</td>
+</tr>
+<tr>
+<td>網頁截圖轉 HTML 、 UI 自動化測試</td>
+<td>圖片理解、 GUI 元素定位</td>
+<td>12B 以上</td>
+</tr>
+<tr>
+<td>手機或 IoT 裝置上的離線助理</td>
+<td>PLE 、低記憶體需求</td>
+<td>E2B 、 E4B</td>
+</tr>
+<tr>
+<td>本機 coding agent 的後端模型</td>
+<td>函式呼叫、思考模式</td>
+<td>26B A4B</td>
+</tr>
+</tbody></table>
+<p>LM Studio 之外， Gemma 4 也能透過 <code>llama.cpp</code> 、 MLX 、 Ollama 或瀏覽器端的 transformers.js 執行；行動裝置則可使用 Google 的 <a target="_blank" rel="noopener" href="https://developers.googleblog.com/bring-state-of-the-art-agentic-skills-to-the-edge-with-gemma-4/">LiteRT-LM</a> 與 Google AI Edge Gallery App 。</p>
+<h2 id="最佳實踐"><a href="#最佳實踐" class="headerlink" title="最佳實踐"></a>最佳實踐</h2><ul>
+<li><strong>先選模型，再談 prompt</strong>：依硬體從上方表格挑選，優先使用 <code>-qat</code> 版本；模型能完整放進 VRAM 時，速度通常會比部分卸載快上數倍。</li>
+<li><strong>Context 長度按需設定</strong>：預設值不夠才調高，避免 KV cache 吃光記憶體導致載入失敗。</li>
+<li><strong>思考模式按任務開關</strong>：推理型任務開啟，簡單任務關閉，並遵守「不把舊思考內容放回歷史」的規則。</li>
+<li><strong>多模態輸入注意順序</strong>：圖片放在文字前；音訊依官方建議放在文字後，但不同執行工具的實測結果可能不同，最好用自己的資料比較。 OCR 類任務記得提高圖片 token 預算。</li>
+<li><strong>結構化輸出要再驗證</strong>：格式由語法約束保證，內容仍需商業邏輯檢查（例如品項加總是否等於總額）。</li>
+<li><strong>工具設計以唯讀、最小權限為原則</strong>：限制可存取的路徑，涉及寫入或刪除的工具應加上人工確認，並設定迴圈的最大步數。</li>
+<li><strong>留意授權與資料</strong>： Apache 2.0 允許商業使用，但模型輸出的正確性仍需自行把關；地端執行解決了資料外流的疑慮，卻不代表輸出內容可以直接信任。</li>
+</ul>
+<h2 id="總結"><a href="#總結" class="headerlink" title="總結"></a>總結</h2><p>Gemma 4 讓「在自己的電腦上跑一個夠聰明的模型」從實驗變成日常選項： E2B 、 E4B 以 PLE 壓低記憶體需求， 26B A4B 以 MoE 兼顧能力與速度，全系列支援多模態、思考模式與原生函式呼叫。透過 LM Studio 的 OpenAI 相容 API ，現有程式碼只需修改 <code>baseURL</code> 就能切換到本機模型，從簡單的聊天、圖片轉 JSON ，到能自行讀取檔案的代理程式都能實現。至於語音轉文字， LM Studio 目前尚無法使用，可改用 <code>llama.cpp</code> 實作。</p>
+<p>延伸閱讀：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://gemma.ai/models/gemma-4/model-card/">Gemma 4 model card</a>：完整規格、思考模式格式與 benchmark</li>
+<li>想把錄音檔轉成逐字稿，可參考 <a href="/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/" title="用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字">用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字</a></li>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/blog/gemma4">Welcome Gemma 4 （ Hugging Face Blog ）</a>：多模態、 GUI 定位與微調範例</li>
+<li><a target="_blank" rel="noopener" href="https://lmstudio.ai/docs/developer">LM Studio 開發者文件</a>： REST API 、結構化輸出、工具呼叫與 SDK</li>
+<li>想把本機模型接上開發工具，可參考 <a href="/2025/09/13/Angular-CLI-MCP/" title="Angular CLI MCP 介紹">Angular CLI MCP</a> 與 <a href="/2026/09/03/Angular-WebMCP-%E8%AE%93-AI-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E4%BD%A0%E7%9A%84%E7%B6%B2%E9%A0%81/" title="Angular WebMCP － 讓 AI 代理程式直接操作你的網頁">Angular WebMCP － 讓 AI 代理程式直接操作你的網頁</a></li>
+<li>在 Windows 上建立 Linux 開發環境來執行 <code>llama.cpp</code> 等工具，可參考 <a href="/2026/08/29/Building-a-Linux-Dev-Environment-with-WSL/" title="在 Windows 用 WSL 打造 Linux 開發環境">Building a Linux Dev Environment with WSL</a></li>
+<li>對代理優先的開發環境有興趣，可參考 <a href="/2025/12/28/Introduction-to-the-Google-Antigravity/" title="Introduction to the Google Antigravity">Introduction to the Google Antigravity</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AI/" rel="tag"># AI</a>
+              <a href="/tags/LLM/" rel="tag"># LLM</a>
+              <a href="/tags/Gemma/" rel="tag"># Gemma</a>
+              <a href="/tags/LM-Studio/" rel="tag"># LM Studio</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/09/14/%E4%BD%BF%E7%94%A8-Sheriff-%E6%A8%A1%E7%B5%84%E9%82%8A%E7%95%8C%E8%A6%8F%E5%89%87%E4%BE%86%E5%AE%88%E8%AD%B7-Angular-%E6%9E%B6%E6%A7%8B/" rel="prev" title="使用 Sheriff 模組邊界規則來守護 Angular 架構">
+                  <i class="fa fa-angle-left"></i> 使用 Sheriff 模組邊界規則來守護 Angular 架構
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/11/05/%E7%94%A8-llama-cpp-%E8%88%87-TypeScript-%E5%AF%A6%E4%BD%9C-Gemma-4-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%96%87%E5%AD%97/" rel="next" title="用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字">
+                  用 llama.cpp 與 TypeScript 實作 Gemma 4 語音轉文字 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Kun-Neng Hung</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.min.js","integrity":"sha256-TtLOdUA8mstPoO6sGvHIGx2ceXrrX4KgIItO06XOn8A="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"Kun-Neng/kun-neng.github.io-utterances","issue_term":"title","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
